@@ -217,7 +217,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get brokersEtoroDesc =>
-      'Брокер с простым мобильным приложением и вкладками из готовых портфелей; регулируется в ЕС (Кипр/Мальта).';
+      'Брокер с простым мобильным приложением и готовыми подборками портфелей; регулируется в ЕС (Кипр/Мальта).';
 
   @override
   String get brokersIbkrDesc =>

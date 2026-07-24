@@ -11,6 +11,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// true, если пользователь включил в ОС «уменьшить анимацию» (доступность,
+/// вестибулярка, экономия батареи). Вечные/повторяющиеся анимации при этом
+/// надо гасить. Виджеты комбинируют это со своим флагом `animated`.
+bool reduceMotion(BuildContext context) =>
+    MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+
 // ------------------------------------------------------------- тактильность
 
 /// Тактильная отдача. На Windows молча ничего не делает.
@@ -108,9 +114,12 @@ class _SpringyState extends State<Springy> with SingleTickerProviderStateMixin {
       child: AnimatedBuilder(
         animation: _scale,
         builder: (_, child) => Transform.scale(
-          // На отпускании — пружина с перелётом.
+          // На отпускании — пружина ИЗ вдавленного (1-depth) НАРУЖУ до ~1.0 с
+          // лёгким перелётом выше 1.0 (elasticOut overshoot). Раньше формула
+          // была перевёрнута: прыжок к 1.0, провал ниже вдавленного, рывок.
           scale: _c.status == AnimationStatus.reverse
-              ? 1 - widget.depth * Curves.elasticOut.transform(1 - _c.value)
+              ? (1 - widget.depth) +
+                  widget.depth * Curves.elasticOut.transform(1 - _c.value)
               : _scale.value,
           child: child,
         ),

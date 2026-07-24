@@ -143,8 +143,14 @@ class _RootState extends State<_Root> {
     // онбординг). Планирование уведомлений НЕ блокирует первый кадр —
     // запускаем его в фоне: пользователю незачем ждать расписание напоминаний,
     // чтобы увидеть онбординг/портфель.
-    Future.wait([_portfolio.load(), _learn.load(), _settings.load()])
-        .then((_) {
+    // Каждая load() глушит свою ошибку (у состояний безопасные значения по
+    // умолчанию), а общий таймаут страхует от зависшего диска — иначе одно
+    // исключение/зависание навсегда оставило бы пользователя на заставке.
+    Future.wait([
+      _portfolio.load().catchError((_) {}),
+      _learn.load().catchError((_) {}),
+      _settings.load().catchError((_) {}),
+    ]).timeout(const Duration(seconds: 8), onTimeout: () => <void>[]).whenComplete(() {
       if (mounted) setState(() => _loaded = true);
       _notifications.init(); // фоном, по настройкам
     });
@@ -230,7 +236,7 @@ class _ShellState extends State<Shell> {
     // IndexedStack — вкладки сохраняют состояние при переключении.
     final tabs = <Widget>[
       const HomeScreen(),
-      MarketScreen(state: scope.market),
+      MarketScreen(state: scope.market, active: _tab == 1),
       CosmoScreen(chatState: scope.chat),
       LearnScreen(
         state: scope.learn,

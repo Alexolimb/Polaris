@@ -183,7 +183,8 @@ class PortfolioState extends ChangeNotifier {
       if (d.exDate.isBefore(heldSince)) continue; // куплено уже ПОСЛЕ отсечки
       final key = '${d.symbol}@${d.exDate.toIso8601String().substring(0, 10)}';
       if (_paidDividendKeys.contains(key)) continue;
-      final payout = _engine.payDividend(d.symbol, d.perShareCents);
+      final payout =
+          _engine.payDividend(d.symbol, d.perShareCents, asOf: d.exDate);
       if (payout != null) {
         _paidDividendKeys.add(key); // помечаем только реально начисленные
         fresh.add(payout);

@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../theme/theme.dart';
+import '../fx/motion.dart' show reduceMotion;
 
 // -------------------------------------------------------------------- Mood
 
@@ -68,17 +69,29 @@ class _CosmoMascotState extends State<CosmoMascot>
   void initState() {
     super.initState();
     _ticker = createTicker((d) => setState(() => _t = d.inMicroseconds / 1e6));
-    if (widget.animated) _ticker.start();
+    // Старт — в didChangeDependencies (reduce-motion доступен там).
+  }
+
+  void _syncAnim() {
+    final on = widget.animated && !reduceMotion(context);
+    if (on && !_ticker.isActive) {
+      _ticker.start();
+    } else if (!on && _ticker.isActive) {
+      _ticker.stop();
+      _t = 0; // за _syncAnim всегда следует build — setState не нужен
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnim();
   }
 
   @override
   void didUpdateWidget(covariant CosmoMascot old) {
     super.didUpdateWidget(old);
-    if (widget.animated && !_ticker.isActive) _ticker.start();
-    if (!widget.animated && _ticker.isActive) {
-      _ticker.stop();
-      setState(() => _t = 0);
-    }
+    _syncAnim();
   }
 
   @override
@@ -135,17 +148,29 @@ class _CosmoBadgeState extends State<CosmoBadge>
   void initState() {
     super.initState();
     _ticker = createTicker((d) => setState(() => _t = d.inMicroseconds / 1e6));
-    if (widget.animated) _ticker.start();
+    // Старт — в didChangeDependencies (reduce-motion доступен там).
+  }
+
+  void _syncAnim() {
+    final on = widget.animated && !reduceMotion(context);
+    if (on && !_ticker.isActive) {
+      _ticker.start();
+    } else if (!on && _ticker.isActive) {
+      _ticker.stop();
+      _t = 0;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnim();
   }
 
   @override
   void didUpdateWidget(covariant CosmoBadge old) {
     super.didUpdateWidget(old);
-    if (widget.animated && !_ticker.isActive) _ticker.start();
-    if (!widget.animated && _ticker.isActive) {
-      _ticker.stop();
-      setState(() => _t = 0);
-    }
+    _syncAnim();
   }
 
   @override

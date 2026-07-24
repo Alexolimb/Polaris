@@ -109,9 +109,20 @@ class _LearnScreenState extends State<LearnScreen> {
             color: PolarisColors.polar, strokeWidth: 2.5),
       );
     }
-    if (content.isEmpty) return _emptyState(l10n);
+    // Пустой экран не только когда уроков нет, но и когда ни один модуль не
+    // отрисовывается (битый/пустой modules при живых lessons) — иначе показали
+    // бы заголовок со стриком без единого урока.
+    if (content.isEmpty || content.modulesSorted.isEmpty) {
+      return _emptyState(l10n);
+    }
 
-    final orderedIds = content.lessonIdsInPathOrder;
+    // Прогресс и порядок — ТОЛЬКО по реально отображаемым урокам (из известных
+    // модулей). Уроки-сироты (moduleId без модуля) не рендерятся и не должны
+    // раздувать знаменатель, иначе 100% недостижимы.
+    final orderedIds = [
+      for (final module in content.modulesSorted)
+        ...content.lessonsOf(module.id).map((l) => l.id),
+    ];
     final overallPct = _state.overallProgressPct(orderedIds);
 
     return CustomScrollView(

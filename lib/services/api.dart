@@ -196,21 +196,30 @@ class PolarisApi {
       throw const ApiException(
           ApiErrorKind.badResponse, 'Ожидался объект с полем assets');
     }
+    // is List, а НЕ `as List?`: если поле присутствует, но не список,
+    // `as List?` бросил бы TypeError мимо ApiException — и оффлайн-фолбэк
+    // репозитория не сработал бы (как у остальных эндпоинтов).
     final assets = <Asset>[];
-    for (final raw in (json['assets'] as List?) ?? const []) {
-      try {
-        assets.add(Asset.fromJson(raw as Map<String, dynamic>));
-      } catch (_) {
-        // битую запись пропускаем — одна кривая бумага не роняет каталог
+    final assetsRaw = json['assets'];
+    if (assetsRaw is List) {
+      for (final raw in assetsRaw) {
+        try {
+          assets.add(Asset.fromJson(raw as Map<String, dynamic>));
+        } catch (_) {
+          // битую запись пропускаем — одна кривая бумага не роняет каталог
+        }
       }
     }
     final themes = <MarketTheme>[];
-    for (final raw in (json['themes'] as List?) ?? const []) {
-      try {
-        final m = raw as Map<String, dynamic>;
-        final id = m['id'] as String;
-        themes.add(MarketTheme(id: id, title: (m['title'] as String?) ?? id));
-      } catch (_) {}
+    final themesRaw = json['themes'];
+    if (themesRaw is List) {
+      for (final raw in themesRaw) {
+        try {
+          final m = raw as Map<String, dynamic>;
+          final id = m['id'] as String;
+          themes.add(MarketTheme(id: id, title: (m['title'] as String?) ?? id));
+        } catch (_) {}
+      }
     }
     return MarketCatalog(assets: assets, themes: themes);
   }
@@ -308,6 +317,10 @@ class PolarisApi {
       // SocketException, HandshakeException, HttpException — всё сюда
       throw ApiException(
           ApiErrorKind.offline, 'Нет соединения с сервером Polaris: $e');
+    } on FormatException {
+      // Битое/усечённое UTF-8 тело — это плохой ОТВЕТ, а не отсутствие сети.
+      throw const ApiException(
+          ApiErrorKind.badResponse, 'Сервер вернул некорректные данные');
     } catch (e) {
       throw ApiException(ApiErrorKind.offline, 'Сеть недоступна: $e');
     }

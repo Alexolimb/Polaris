@@ -24,6 +24,9 @@ class SimError implements Exception {
 const startingCashCents = 1000000; // $10 000.00 — решение Алекса, фикс у всех
 
 double _roundQty(double q) => (q * 1e8).roundToDouble() / 1e8;
+// Для ПОКУПКИ на сумму: округляем количество ВНИЗ, чтобы никогда не выдать
+// больше долей, чем реально оплачено (round мог бы дать «бесплатную» долю).
+double _floorQty(double q) => (q * 1e8).floorToDouble() / 1e8;
 
 class SimEngine {
   int _cashCents;
@@ -85,16 +88,20 @@ class SimEngine {
     if (spendCents > _cashCents) {
       throw const SimError('insufficient_cash', 'Не хватает виртуальных денег');
     }
-    final qty = _roundQty(spendCents / priceCents);
+    final qty = _floorQty(spendCents / priceCents);
     if (qty <= 0) {
       throw const SimError('amount_too_small', 'Слишком маленькая сумма для этой цены');
     }
-    _cashCents -= spendCents;
+    // Списываем ровно за купленное количество (не полный spendCents): остаток-
+    // «пыль» ниже цены одной 1e-8-доли остаётся кэшем, а не превращается в
+    // фантомный убыток. Для ровных делений actualCents == spendCents.
+    final actualCents = (qty * priceCents).round();
+    _cashCents -= actualCents;
     final old = _positions[symbol];
     _positions[symbol] = Position(
       symbol: symbol,
       qty: _roundQty((old?.qty ?? 0) + qty),
-      costCents: (old?.costCents ?? 0) + spendCents,
+      costCents: (old?.costCents ?? 0) + actualCents,
     );
     final t = Trade(
       id: 't${++_seq}',
@@ -102,7 +109,7 @@ class SimEngine {
       side: TradeSide.buy,
       qty: qty,
       priceCents: priceCents,
-      totalCents: spendCents,
+      totalCents: actualCents,
       ts: _now(),
     );
     _trades.add(t);
@@ -121,6 +128,10 @@ class SimEngine {
       throw const SimError('no_position', 'Такой бумаги в портфеле нет');
     }
     var sellQty = _roundQty(qty);
+    if (sellQty <= 0) {
+      throw const SimError(
+          'sell_qty_too_small', 'Слишком маленькое количество для продажи');
+    }
     if (sellQty > pos.qty + 1e-8) {
       throw const SimError('sell_too_much', 'В портфеле меньше, чем продаёшь');
     }
@@ -156,22 +167,37 @@ class SimEngine {
     return t;
   }
 
-  /// Начисление дивиденда: [perShareCents] за штуку по текущей позиции.
-  /// Возвращает null, если бумаги нет (начислять нечего) или выплата
-  /// округлилась в ноль.
-  DividendPayout? payDividend(String symbol, int perShareCents) {
+  /// Сколько бумаг символа держали на конец даты [date] — восстанавливаем
+  /// реплеем сделок (buy +qty, sell -qty) с ts <= date. Нужно для честных
+  /// дивидендов: начисляем на количество на ДАТУ ОТСЕЧКИ, а не текущее.
+  double qtyHeldAsOf(String symbol, DateTime date) {
+    var q = 0.0;
+    for (final t in _trades) {
+      if (t.symbol != symbol || t.ts.isAfter(date)) continue;
+      q += t.side == TradeSide.buy ? t.qty : -t.qty;
+    }
+    return q <= 0 ? 0.0 : _roundQty(q);
+  }
+
+  /// Начисление дивиденда: [perShareCents] за штуку. Если задан [asOf]
+  /// (дата отсечки), база начисления — количество, которое держали на эту дату
+  /// (реплей сделок), иначе текущая позиция. Возвращает null, если держать
+  /// было нечего или выплата округлилась в ноль.
+  DividendPayout? payDividend(String symbol, int perShareCents, {DateTime? asOf}) {
     if (perShareCents <= 0) {
       throw const SimError('dividend_invalid', 'Дивиденд должен быть больше нуля');
     }
     final pos = _positions[symbol];
     if (pos == null || pos.qty <= 0) return null;
-    final total = (pos.qty * perShareCents).round();
+    final basisQty = asOf != null ? qtyHeldAsOf(symbol, asOf) : pos.qty;
+    if (basisQty <= 0) return null;
+    final total = (basisQty * perShareCents).round();
     if (total <= 0) return null;
     _cashCents += total;
     final d = DividendPayout(
       symbol: symbol,
       perShareCents: perShareCents,
-      qtyAtRecord: pos.qty,
+      qtyAtRecord: basisQty,
       totalCents: total,
       ts: _now(),
     );
@@ -205,23 +231,41 @@ class SimEngine {
     final e = SimEngine(now: now);
     if (j == null) return e;
     e._cashCents = math.max(0, _asInt(j['cashCents']) ?? startingCashCents);
-    e._seq = _asInt(j['seq']) ?? 0;
-    for (final raw in (j['positions'] as List? ?? const [])) {
-      try {
-        final p = Position.fromJson(raw as Map<String, dynamic>);
-        if (p.qty > 0 && p.costCents >= 0) e._positions[p.symbol] = p;
-      } catch (_) {}
+    // Поля-списки берём с проверкой типа (is List), а НЕ через `as List?`:
+    // валидный JSON, где positions/trades оказались не списком, иначе бросил бы
+    // TypeError мимо внутренних try/catch и уронил бы старт (вечная заставка).
+    var maxSeq = _asInt(j['seq']) ?? 0;
+    final positionsRaw = j['positions'];
+    if (positionsRaw is List) {
+      for (final raw in positionsRaw) {
+        try {
+          final p = Position.fromJson(raw as Map<String, dynamic>);
+          if (p.qty > 0 && p.costCents >= 0) e._positions[p.symbol] = p;
+        } catch (_) {}
+      }
     }
-    for (final raw in (j['trades'] as List? ?? const [])) {
-      try {
-        e._trades.add(Trade.fromJson(raw as Map<String, dynamic>));
-      } catch (_) {}
+    final tradesRaw = j['trades'];
+    if (tradesRaw is List) {
+      for (final raw in tradesRaw) {
+        try {
+          final t = Trade.fromJson(raw as Map<String, dynamic>);
+          e._trades.add(t);
+          // Согласуем счётчик id с загруженными сделками — иначе при
+          // отсутствующем/заниженном seq новые сделки получат дублирующие id.
+          final n = t.id.startsWith('t') ? int.tryParse(t.id.substring(1)) : null;
+          if (n != null && n > maxSeq) maxSeq = n;
+        } catch (_) {}
+      }
     }
-    for (final raw in (j['dividends'] as List? ?? const [])) {
-      try {
-        e._dividends.add(DividendPayout.fromJson(raw as Map<String, dynamic>));
-      } catch (_) {}
+    final dividendsRaw = j['dividends'];
+    if (dividendsRaw is List) {
+      for (final raw in dividendsRaw) {
+        try {
+          e._dividends.add(DividendPayout.fromJson(raw as Map<String, dynamic>));
+        } catch (_) {}
+      }
     }
+    e._seq = maxSeq;
     return e;
   }
 }

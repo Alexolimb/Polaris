@@ -88,7 +88,7 @@ class MarketState extends ChangeNotifier {
       _assets = cat.assets;
       _themes = cat.themes;
       final qs = await repo.quotes(_pollSymbols());
-      _quotes.addAll(qs);
+      _mergeQuotes(qs);
       _error = null;
       _initDone = true;
     } catch (_) {
@@ -129,7 +129,7 @@ class MarketState extends ChangeNotifier {
     if (!_initDone || _disposed) return;
     final qs = await repo.quotes(_pollSymbols(), refresh: true);
     if (_disposed) return;
-    _quotes.addAll(qs);
+    _mergeQuotes(qs);
     _notify();
   }
 
@@ -143,7 +143,7 @@ class MarketState extends ChangeNotifier {
     if (need.isEmpty) return;
     final qs = await repo.quotes(need, refresh: refresh);
     if (_disposed) return;
-    _quotes.addAll(qs);
+    _mergeQuotes(qs);
     _notify();
   }
 
@@ -163,7 +163,7 @@ class MarketState extends ChangeNotifier {
     if (missing.isEmpty || _disposed) return;
     final qs = await repo.quotes(missing);
     if (_disposed) return;
-    _quotes.addAll(qs);
+    _mergeQuotes(qs);
     _notify();
   }
 
@@ -175,6 +175,17 @@ class MarketState extends ChangeNotifier {
       _timer!.cancel();
       _timer = null;
     }
+  }
+
+  /// Слить пришедшие котировки, НЕ затирая более свежие. Запросы идут
+  /// параллельно (таймер + смена фильтра + догрузка), порядок завершения не
+  /// гарантирован — поздно пришедший СТАРЫЙ ответ (ts раньше) игнорируется по
+  /// символу, иначе на экране мигала бы устаревшая цена.
+  void _mergeQuotes(Map<String, Quote> qs) {
+    qs.forEach((sym, q) {
+      final existing = _quotes[sym];
+      if (existing == null || !q.ts.isBefore(existing.ts)) _quotes[sym] = q;
+    });
   }
 
   void _notify() {

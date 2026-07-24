@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../../theme/theme.dart';
+import 'motion.dart' show reduceMotion;
 
 // ---------------------------------------------------------------- GlowCard
 
@@ -99,14 +100,29 @@ class _PulseDotState extends State<PulseDot>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    if (widget.animated) _c.repeat();
+    // Запуск переносим в didChangeDependencies — там доступен MediaQuery
+    // (reduce-motion).
+  }
+
+  void _syncAnim() {
+    final on = widget.animated && !reduceMotion(context);
+    if (on && !_c.isAnimating) {
+      _c.repeat();
+    } else if (!on && _c.isAnimating) {
+      _c.stop();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnim();
   }
 
   @override
   void didUpdateWidget(covariant PulseDot old) {
     super.didUpdateWidget(old);
-    if (widget.animated && !_c.isAnimating) _c.repeat();
-    if (!widget.animated && _c.isAnimating) _c.stop();
+    _syncAnim();
   }
 
   @override
@@ -209,14 +225,28 @@ class _AuroraTextState extends State<AuroraText>
   void initState() {
     super.initState();
     _c = AnimationController(vsync: this, duration: widget.period);
-    if (widget.animated) _c.repeat();
+    // Запуск — в didChangeDependencies (там доступен reduce-motion).
+  }
+
+  void _syncAnim() {
+    final on = widget.animated && !reduceMotion(context);
+    if (on && !_c.isAnimating) {
+      _c.repeat();
+    } else if (!on && _c.isAnimating) {
+      _c.stop();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnim();
   }
 
   @override
   void didUpdateWidget(covariant AuroraText old) {
     super.didUpdateWidget(old);
-    if (widget.animated && !_c.isAnimating) _c.repeat();
-    if (!widget.animated && _c.isAnimating) _c.stop();
+    _syncAnim();
   }
 
   @override

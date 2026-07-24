@@ -77,7 +77,16 @@ class LearnState extends ChangeNotifier {
   int get completedCount => _completed.length;
   Set<String> get completedLessonIds => Set.unmodifiable(_completed);
 
-  int get currentStreak => _currentStreak;
+  /// Живой стрик: если последний урок был сегодня или вчера — хранимое
+  /// значение; при пропуске 2+ дней стрик уже «сгорел» (возвращаем 0), даже
+  /// если он ещё не пересчитан следующим прохождением. Иначе карточка врала бы
+  /// «N дней подряд» после многодневного простоя.
+  int get currentStreak {
+    final last = _lastLessonDate;
+    if (last == null || _currentStreak == 0) return 0;
+    return _daysBetween(_dateOnly(_now()), last) <= 1 ? _currentStreak : 0;
+  }
+
   int get longestStreak => _longestStreak;
   DateTime? get lastLessonDate => _lastLessonDate;
 
@@ -209,7 +218,7 @@ class LearnState extends ChangeNotifier {
     if (last == null) {
       _currentStreak = 1;
     } else {
-      final diff = today.difference(last).inDays;
+      final diff = _daysBetween(today, last);
       if (diff == 0) {
         // уже отмечались сегодня — стрик не трогаем
       } else if (diff == 1) {
@@ -223,6 +232,15 @@ class LearnState extends ChangeNotifier {
   }
 
   static DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  /// Разница в КАЛЕНДАРНЫХ днях между двумя датами. Через UTC-полуночи —
+  /// иначе в сутки перехода на летнее/зимнее время соседние локальные полуночи
+  /// отстоят на 23/25 ч и Duration.inDays даёт неверный 0/2, ломая стрик.
+  static int _daysBetween(DateTime a, DateTime b) {
+    final ua = DateTime.utc(a.year, a.month, a.day);
+    final ub = DateTime.utc(b.year, b.month, b.day);
+    return ua.difference(ub).inDays;
+  }
 
   static bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;

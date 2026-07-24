@@ -21,7 +21,12 @@ class MarketScreen extends StatefulWidget {
   /// Внешнее состояние; null — экран создаёт и владеет своим.
   final MarketState? state;
 
-  const MarketScreen({super.key, this.state});
+  /// Активна ли вкладка сейчас. Экран живёт в IndexedStack и не
+  /// размонтируется при переключении вкладок, поэтому опрос котировок
+  /// включаем/выключаем по этому флагу, а не по mount/dispose.
+  final bool active;
+
+  const MarketScreen({super.key, this.state, this.active = true});
 
   @override
   State<MarketScreen> createState() => _MarketScreenState();
@@ -37,7 +42,15 @@ class _MarketScreenState extends State<MarketScreen> {
     _state = widget.state ?? MarketState();
     _ownsState = widget.state == null;
     _state.init();
-    _state.setVisible(true);
+    _state.setVisible(widget.active);
+  }
+
+  @override
+  void didUpdateWidget(MarketScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Переключили вкладку (Shell перестроил с новым active) — гасим/запускаем
+    // опрос, иначе он крутился бы 24/7 в фоне поверх других вкладок.
+    if (widget.active != oldWidget.active) _state.setVisible(widget.active);
   }
 
   @override

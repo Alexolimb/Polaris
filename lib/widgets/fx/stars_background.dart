@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../theme/theme.dart';
+import 'motion.dart' show reduceMotion;
 
 // ------------------------------------------------------------------- модели
 
@@ -92,14 +93,28 @@ class _StarsBackgroundState extends State<StarsBackground>
     _ticker = createTicker((d) {
       setState(() => _t = d.inMicroseconds / 1e6);
     });
-    if (widget.animated) _ticker.start();
+    // Старт — в didChangeDependencies (там доступен reduce-motion).
+  }
+
+  void _syncAnim() {
+    final on = widget.animated && !reduceMotion(context);
+    if (on && !_ticker.isActive) {
+      _ticker.start();
+    } else if (!on && _ticker.isActive) {
+      _ticker.stop();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnim();
   }
 
   @override
   void didUpdateWidget(covariant StarsBackground old) {
     super.didUpdateWidget(old);
-    if (widget.animated && !_ticker.isActive) _ticker.start();
-    if (!widget.animated && _ticker.isActive) _ticker.stop();
+    _syncAnim();
   }
 
   @override
