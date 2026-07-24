@@ -41,10 +41,12 @@ class PolarisApiConfig {
     this.timeout = const Duration(seconds: 6),
   });
 
-  // ВАЖНО: Polaris — публичный продукт, НЕ связан с личным сервером Алекса.
-  // Сюда встаёт URL Cloudflare Worker'а после первого деплоя (server/README.md).
-  // До деплоя сервер недоступен — приложение работает на встроенных фикстурах.
-  static const defaultBaseUrl = 'https://polaris-api.example.workers.dev';
+  // Боевой бэкенд Polaris. Развёрнут 24.07.2026 как воркфлоу n8n (вебхуки) на
+  // сервере Hetzner — эндпоинты v1 под этим базовым путём (рыночные данные +
+  // наставник Cosmo на бесплатной Groq). Node-версия сервера (server/) —
+  // резерв на случай переезда на SSH-хостинг; контракт идентичен.
+  // Если сервер недоступен — приложение падает на встроенные офлайн-фикстуры.
+  static const defaultBaseUrl = 'https://178-105-123-85.nip.io/webhook/polaris';
 }
 
 /// Что пошло не так — по kind репозиторий выбирает фолбэк.

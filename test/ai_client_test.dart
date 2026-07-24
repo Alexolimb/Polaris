@@ -48,7 +48,7 @@ void main() {
         lang: 'ru',
         portfolio: const {'cash_usd': '9000.00'},
       )) {}
-      expect(sentUri!.path, '/v1/ai/chat');
+      expect(sentUri!.path, endsWith('/v1/ai/chat'));
       final decoded = jsonDecode(sentBody!) as Map<String, dynamic>;
       expect(decoded['lang'], 'ru');
       expect(decoded['portfolio'], {'cash_usd': '9000.00'});
