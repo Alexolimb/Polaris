@@ -130,21 +130,31 @@ class SymbolBadge extends StatelessWidget {
 
 /// Плашка «EOD» — цена на конец дня, честная пометка не-реалтайма.
 class EodTag extends StatelessWidget {
-  const EodTag({super.key});
+  /// Свежесть цены. По умолчанию — «конец дня» (совместимость со старыми
+  /// вызовами без аргумента).
+  final QuoteFreshness freshness;
+
+  const EodTag({super.key, this.freshness = QuoteFreshness.endOfDay});
 
   @override
   Widget build(BuildContext context) {
+    // ВАЖНО (честность данных): цена из синтетического движка НЕ должна
+    // выглядеть как биржевая. Для demo рисуем заметный тёплый бейдж «ДЕМО»,
+    // а не блёклый серый «EOD».
+    final isDemo = freshness == QuoteFreshness.demo;
+    final color = isDemo ? PolarisColors.dividend : PolarisColors.textFaint;
+    final text = isDemo ? AppLocalizations.of(context).marketDemoTag : 'EOD';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-            color: PolarisColors.textFaint.withValues(alpha: 0.6)),
+        color: isDemo ? color.withValues(alpha: 0.12) : null,
+        border: Border.all(color: color.withValues(alpha: isDemo ? 0.75 : 0.6)),
       ),
-      child: const Text(
-        'EOD',
+      child: Text(
+        text,
         style: TextStyle(
-          color: PolarisColors.textFaint,
+          color: color,
           fontSize: 9,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.8,

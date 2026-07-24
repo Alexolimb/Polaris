@@ -5,11 +5,16 @@
          платформа молча блокирует — запрашивается в рантайме сервисом
          notifications.dart через requestNotificationsPermission(). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Сеть. КРИТИЧНО: без этого разрешения release-APK физически не может
+         ходить в интернет — Flutter добавляет INTERNET только в debug/profile
+         манифесты. Симптом был бы незаметен при разработке: цены молча
+         подменяются встроенными фикстурами, Cosmo не отвечает никогда. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Переставить запланированные повторяющиеся уведомления после
          перезагрузки устройства (иначе они пропадают при выключении). -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:label="polaris"
+        android:label="Polaris"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -988,6 +988,18 @@ abstract class AppLocalizations {
   /// **'demo data'**
   String get marketOfflineBadge;
 
+  /// No description provided for @marketDemoTag.
+  ///
+  /// In en, this message translates to:
+  /// **'DEMO'**
+  String get marketDemoTag;
+
+  /// No description provided for @marketDemoNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices are simulated for learning — they are not real market data.'**
+  String get marketDemoNotice;
+
   /// No description provided for @marketSearchHint.
   ///
   /// In en, this message translates to:

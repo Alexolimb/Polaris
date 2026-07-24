@@ -236,12 +236,24 @@ class _AssetScreenState extends State<AssetScreen> {
                 ),
               if (eod) ...[
                 const SizedBox(width: 10),
-                const EodTag(),
+                EodTag(freshness: asset.freshness),
                 const SizedBox(width: 6),
-                Text(
-                  l10n.assetPriceEndOfDay,
-                  style:
-                      const TextStyle(color: PolarisColors.textFaint, fontSize: 12),
+                // Для demo-цены поясняем прямо, что она смоделирована,
+                // а не «биржевая на конец дня».
+                Flexible(
+                  child: Text(
+                    asset.freshness == QuoteFreshness.demo
+                        ? l10n.marketDemoNotice
+                        : l10n.assetPriceEndOfDay,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: asset.freshness == QuoteFreshness.demo
+                          ? PolarisColors.dividend
+                          : PolarisColors.textFaint,
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -664,20 +676,35 @@ class _MetricTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Flexible обязателен: на испанском («Actualización del precio» +
+        // «Una vez al día (cierre de sesión)») и на русском («Диапазон за
+        // период» + «$12,345.67 – $23,456.78») два голых Text в Row со
+        // spaceBetween гарантированно срывались в жёлто-чёрный overflow
+        // на узких экранах (360 dp и меньше).
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              metric.label,
-              style: const TextStyle(
-                  color: PolarisColors.textSecondary, fontSize: 13),
+            Flexible(
+              flex: 4,
+              child: Text(
+                metric.label,
+                maxLines: 2,
+                style: const TextStyle(
+                    color: PolarisColors.textSecondary, fontSize: 13),
+              ),
             ),
-            Text(
-              metric.value,
-              style: const TextStyle(
-                color: PolarisColors.textPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
+            const SizedBox(width: 10),
+            Flexible(
+              flex: 5,
+              child: Text(
+                metric.value,
+                maxLines: 2,
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                  color: PolarisColors.textPrimary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

@@ -11,6 +11,7 @@ import 'screens/market/market_screen.dart';
 import 'screens/more/more_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/splash.dart';
+import 'widgets/fx/stars_background.dart';
 import 'services/lessons.dart';
 import 'services/notifications.dart';
 import 'services/storage.dart';
@@ -246,26 +247,93 @@ class _ShellState extends State<Shell> {
       const MoreScreen(),
     ];
 
+    final body = IndexedStack(index: _tab, children: tabs);
+
+    // Раскладка под ширину экрана. Раньше телефонная нижняя панель
+    // использовалась и на десктопе: на окне 1280+ логических пикселей контент
+    // растягивался во всю ширину (карточки со списками активов и пунктами
+    // «Ещё» превращались в километровые полосы с пустотой посередине).
+    // Порог 880 — как в Fluxo, чтобы приложения Алекса вели себя одинаково.
+    final wide = MediaQuery.sizeOf(context).width >= _wideBreakpoint;
+
+    if (wide) {
+      return Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              backgroundColor: PolarisColors.surface,
+              selectedIndex: _tab,
+              onDestinationSelected: (i) => setState(() => _tab = i),
+              labelType: NavigationRailLabelType.all,
+              indicatorColor: PolarisColors.polar.withValues(alpha: 0.18),
+              selectedIconTheme:
+                  const IconThemeData(color: PolarisColors.polar, size: 24),
+              unselectedIconTheme: const IconThemeData(
+                  color: PolarisColors.textSecondary, size: 24),
+              selectedLabelTextStyle: const TextStyle(
+                color: PolarisColors.polar,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+              ),
+              unselectedLabelTextStyle: const TextStyle(
+                color: PolarisColors.textSecondary,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w500,
+              ),
+              destinations: [
+                for (final d in _navItems(l10n))
+                  NavigationRailDestination(
+                    icon: Icon(d.$1),
+                    label: Text(d.$2),
+                  ),
+              ],
+            ),
+            Container(width: 1, color: PolarisColors.surfaceHigh),
+            // Небо рисуем один раз во всю ширину окна, а контент держим в
+            // колонке. Иначе сияние обрезалось бы прямоугольником по краям
+            // колонки — было видно на скриншотах.
+            Expanded(
+              child: StarsBackground.provide(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(maxWidth: _wideContentMaxWidth),
+                    child: body,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
-      body: IndexedStack(index: _tab, children: tabs),
+      body: body,
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
         onDestinationSelected: (i) => setState(() => _tab = i),
-        backgroundColor: PolarisColors.surface,
-        indicatorColor: PolarisColors.polar.withValues(alpha: 0.2),
         destinations: [
-          NavigationDestination(
-              icon: const Icon(Icons.auto_awesome), label: l10n.navPortfolio),
-          NavigationDestination(
-              icon: const Icon(Icons.travel_explore), label: l10n.navMarkets),
-          NavigationDestination(
-              icon: const Icon(Icons.chat_bubble_outline), label: l10n.navCosmo),
-          NavigationDestination(
-              icon: const Icon(Icons.school_outlined), label: l10n.navLearn),
-          NavigationDestination(
-              icon: const Icon(Icons.more_horiz), label: l10n.navMore),
+          for (final d in _navItems(l10n))
+            NavigationDestination(icon: Icon(d.$1), label: d.$2),
         ],
       ),
     );
   }
+
+  /// Пункты навигации — один список на обе раскладки, чтобы они не разъезжались.
+  List<(IconData, String)> _navItems(AppLocalizations l10n) => [
+        (Icons.auto_awesome, l10n.navPortfolio),
+        (Icons.travel_explore, l10n.navMarkets),
+        (Icons.chat_bubble_outline, l10n.navCosmo),
+        (Icons.school_outlined, l10n.navLearn),
+        (Icons.more_horiz, l10n.navMore),
+      ];
 }
+
+/// Ширина, с которой включается десктопная раскладка (боковая рельса).
+const double _wideBreakpoint = 880;
+
+/// Максимальная ширина колонки контента на широком экране — чтобы строки
+/// текста и карточки не растягивались через весь монитор.
+const double _wideContentMaxWidth = 840;

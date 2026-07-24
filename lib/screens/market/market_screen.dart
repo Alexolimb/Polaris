@@ -409,7 +409,7 @@ class _AssetRow extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (eod) ...[
-                          const EodTag(),
+                          EodTag(freshness: asset.freshness),
                           const SizedBox(width: 5),
                         ],
                         Text(

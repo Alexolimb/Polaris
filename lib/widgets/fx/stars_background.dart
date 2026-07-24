@@ -53,6 +53,19 @@ class StarsBackground extends StatefulWidget {
 
   @override
   State<StarsBackground> createState() => _StarsBackgroundState();
+
+  /// Рисует небо во всю переданную область и объявляет потомкам, что своё
+  /// небо им рисовать уже не нужно. Нужно для десктопной раскладки: фон
+  /// full-bleed на всё окно, а контент — в колонке ограниченной ширины.
+  static Widget provide({required Widget child, bool animated = true}) =>
+      StarsBackground(
+        animated: animated,
+        child: _SkyProvided(child: child),
+      );
+
+  /// Есть ли выше по дереву небо, нарисованное через [provide].
+  static bool isProvidedIn(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_SkyProvided>() != null;
 }
 
 class _StarsBackgroundState extends State<StarsBackground>
@@ -125,6 +138,11 @@ class _StarsBackgroundState extends State<StarsBackground>
 
   @override
   Widget build(BuildContext context) {
+    // Если небо уже нарисовано выше по дереву во всю ширину окна (десктопная
+    // раскладка каркаса), второй раз его рисовать нельзя: внутри колонки
+    // ограниченной ширины сияние обрезалось бы прямоугольником с жёсткими
+    // краями. Тогда просто пропускаем содержимое.
+    if (StarsBackground.isProvidedIn(context)) return widget.child;
     return Stack(
       children: [
         Positioned.fill(
@@ -142,6 +160,14 @@ class _StarsBackgroundState extends State<StarsBackground>
       ],
     );
   }
+}
+
+/// Маркер «небо уже нарисовано выше» — см. [StarsBackground.provide].
+class _SkyProvided extends InheritedWidget {
+  const _SkyProvided({required super.child});
+
+  @override
+  bool updateShouldNotify(_SkyProvided oldWidget) => false;
 }
 
 // ------------------------------------------------------------------ painter

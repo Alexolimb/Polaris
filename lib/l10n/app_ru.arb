@@ -162,6 +162,8 @@
 
   "marketScreenTitle": "Рынки",
   "marketOfflineBadge": "демо-данные",
+  "marketDemoTag": "ДЕМО",
+  "marketDemoNotice": "Цены смоделированы для обучения — это не реальные биржевые данные.",
   "marketSearchHint": "Поиск: тикер или название",
   "marketThemeAll": "Все",
   "marketSectionStocks": "АКЦИИ",

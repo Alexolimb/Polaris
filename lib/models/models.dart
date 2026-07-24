@@ -7,7 +7,12 @@ library;
 enum AssetType { stock, etf, bondEtf, crypto, fiat }
 
 /// Откуда цена и насколько она живая.
-enum QuoteFreshness { realtime, delayed, endOfDay }
+///
+/// `demo` — цена СМОДЕЛИРОВАНА (синтетический движок бэкенда, `freshness:"demo"`).
+/// Это не рыночные данные, и пользователю это должно быть видно: показывать
+/// такую цену как «конец дня» — обманывать. Неизвестное значение трактуем как
+/// `demo` (наименее достоверное), а не как биржевое.
+enum QuoteFreshness { realtime, delayed, endOfDay, demo }
 
 class Asset {
   final String symbol; // AAPL, BTC, EUR
@@ -36,7 +41,7 @@ class Asset {
         themeIds: ((j['themes'] as List?) ?? const []).cast<String>(),
         sector: j['sector'] as String?,
         freshness: QuoteFreshness.values.asNameMap()[j['freshness']] ??
-            QuoteFreshness.endOfDay,
+            QuoteFreshness.demo,
       );
 }
 

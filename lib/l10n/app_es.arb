@@ -162,6 +162,8 @@
 
   "marketScreenTitle": "Mercados",
   "marketOfflineBadge": "datos de demostración",
+  "marketDemoTag": "DEMO",
+  "marketDemoNotice": "Los precios están simulados con fines educativos: no son datos reales de mercado.",
   "marketSearchHint": "Buscar: ticker o nombre",
   "marketThemeAll": "Todos",
   "marketSectionStocks": "ACCIONES",

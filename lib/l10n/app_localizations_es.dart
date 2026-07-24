@@ -523,6 +523,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get marketOfflineBadge => 'datos de demostración';
 
   @override
+  String get marketDemoTag => 'DEMO';
+
+  @override
+  String get marketDemoNotice =>
+      'Los precios están simulados con fines educativos: no son datos reales de mercado.';
+
+  @override
   String get marketSearchHint => 'Buscar: ticker o nombre';
 
   @override

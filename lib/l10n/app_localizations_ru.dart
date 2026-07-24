@@ -520,6 +520,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get marketOfflineBadge => 'демо-данные';
 
   @override
+  String get marketDemoTag => 'ДЕМО';
+
+  @override
+  String get marketDemoNotice =>
+      'Цены смоделированы для обучения — это не реальные биржевые данные.';
+
+  @override
   String get marketSearchHint => 'Поиск: тикер или название';
 
   @override

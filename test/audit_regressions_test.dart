@@ -1,9 +1,10 @@
 // Регресс-тесты на баги, найденные аудитом 24.07.2026 (мульти-агентный).
 // Каждый тест ловит конкретный дефект, который был исправлен.
-import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:polaris/models/models.dart';
 import 'package:polaris/services/ai.dart';
 import 'package:polaris/services/sim_engine.dart';
 import 'package:polaris/services/storage.dart';
@@ -120,6 +121,47 @@ void main() {
         out.add(d);
       }
       expect(out.join(), 'Ответ');
+    });
+  });
+
+  // ---------------------------------------------------------------------
+  // Ночной аудит 24→25.07.2026 — три критичных дефекта.
+  // ---------------------------------------------------------------------
+  group('ночной аудит 25.07.2026', () {
+    test('в боевом AndroidManifest есть разрешение INTERNET', () {
+      // Без него release-APK физически не может ходить в сеть: живых котировок
+      // нет, Cosmo мёртв, и всё это молча падает в демо-фикстуры. В debug и
+      // profile манифестах INTERNET добавляет сам Flutter — поэтому при
+      // разработке баг незаметен.
+      final manifest =
+          File('android/app/src/main/AndroidManifest.xml').readAsStringSync();
+      expect(manifest.contains('android.permission.INTERNET'), isTrue,
+          reason: 'release-APK останется без сети');
+      // Заодно: имя приложения на устройстве — с большой буквы.
+      expect(manifest.contains('android:label="Polaris"'), isTrue);
+    });
+
+    test('freshness "demo" не превращается в "конец дня"', () {
+      // Сервер честно помечает синтетику freshness:"demo". Раньше в enum такого
+      // значения не было, срабатывал фолбэк endOfDay — и выдуманные цены
+      // показывались пользователю как биржевые «на конец дня».
+      final a = Asset.fromJson(const {
+        'symbol': 'AAPL',
+        'name': 'Apple Inc.',
+        'type': 'stock',
+        'freshness': 'demo',
+      });
+      expect(a.freshness, QuoteFreshness.demo);
+    });
+
+    test('неизвестная свежесть трактуется как demo, а не как биржевая', () {
+      final a = Asset.fromJson(const {
+        'symbol': 'AAPL',
+        'name': 'Apple Inc.',
+        'type': 'stock',
+        'freshness': 'что-то-новое',
+      });
+      expect(a.freshness, QuoteFreshness.demo);
     });
   });
 }

@@ -57,16 +57,23 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('AboutScreen содержит обязательные плашки-атрибуции источников',
+  // Аудит ночи 24→25.07.2026: раньше этот тест ТРЕБОВАЛ плашки «CoinGecko /
+  // open.er-api / Binance / Yahoo Finance». Ни один из этих источников в
+  // приложении не используется — все цены синтетические (бэкенд отдаёт
+  // freshness:"demo"). Публичный инвест-продукт не имеет права приписывать
+  // себе чужие фиды, поэтому тест перевёрнут: теперь он СТОРОЖИТ честность.
+  testWidgets('AboutScreen не приписывает чужие источники данных',
       (tester) async {
     _useTallSurface(tester);
     await tester.pumpWidget(_wrap(const AboutScreen()));
     await _settle(tester);
 
-    expect(find.textContaining('CoinGecko'), findsOneWidget);
-    expect(find.textContaining('open.er-api.com'), findsOneWidget);
-    expect(find.textContaining('Binance'), findsOneWidget);
-    expect(find.textContaining('Yahoo Finance'), findsOneWidget);
+    expect(find.textContaining('CoinGecko'), findsNothing);
+    expect(find.textContaining('open.er-api.com'), findsNothing);
+    expect(find.textContaining('Binance'), findsNothing);
+    expect(find.textContaining('Yahoo Finance'), findsNothing);
+    // ...и прямо говорит, что цены смоделированы.
+    expect(find.textContaining('смоделированы'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(const SizedBox());

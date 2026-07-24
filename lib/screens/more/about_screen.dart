@@ -89,15 +89,19 @@ class AboutScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            AttributionChip(text: l10n.aboutAttrCoinGecko),
-            AttributionChip(text: l10n.aboutAttrCurrency),
-            AttributionChip(text: l10n.aboutAttrCrypto),
-            AttributionChip(text: l10n.aboutAttrStocks),
-          ],
+        // ЧЕСТНОСТЬ: раньше здесь висели плашки «Powered by CoinGecko»,
+        // «Yahoo Finance», «Binance», «open.er-api» — ни один из этих
+        // источников в приложении не используется, все цены синтетические
+        // (бэкенд отдаёт freshness:"demo"). Приписывать себе чужие фиды в
+        // публичном инвест-продукте нельзя. Плашки вернуть можно будет только
+        // вместе с реально подключённым провайдером.
+        Text(
+          l10n.marketDemoNotice,
+          style: const TextStyle(
+            color: PolarisColors.textSecondary,
+            fontSize: 13,
+            height: 1.4,
+          ),
         ),
         const SizedBox(height: 20),
       ],

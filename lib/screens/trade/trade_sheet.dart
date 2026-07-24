@@ -245,16 +245,28 @@ class _TradeSheetState extends State<_TradeSheet> {
               ],
             ),
             const SizedBox(height: 14),
-            SizedBox(
-              height: 20,
-              child: Text(
-                _error ?? preview,
-                style: TextStyle(
-                    color: _error != null
-                        ? PolarisColors.loss
-                        : PolarisColors.textSecondary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
+            // Высота была жёстко 20 px, а тексты ошибок на ES/RU переносятся
+            // на 2 строки («El importe y el precio deben ser mayores que
+            // cero») → «BOTTOM OVERFLOWED» ровно в момент, когда пользователь
+            // и так ошибся. Теперь блок растёт, но не прыгает.
+            AnimatedSize(
+              duration: const Duration(milliseconds: 160),
+              curve: Curves.easeOut,
+              alignment: Alignment.topLeft,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    _error ?? preview,
+                    style: TextStyle(
+                        color: _error != null
+                            ? PolarisColors.loss
+                            : PolarisColors.textSecondary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 14),
