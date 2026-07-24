@@ -143,7 +143,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get aboutWhatIsItBody =>
-      'Polaris — бесплатный тренажёр инвестиций для тех, кто раньше никогда не покупал акции. Виртуальный портфель \$10 000, настоящие живые цены, честные дивиденды и AI-наставник Cosmo, который объясняет всё простыми словами — без спешки и без «казино».';
+      'Polaris — бесплатный тренажёр инвестиций для тех, кто раньше никогда не покупал акции. Виртуальный портфель \$10 000, смоделированные рыночные цены, дивиденды по настоящему календарю и AI-наставник Cosmo, который объясняет всё простыми словами — без спешки и без «казино».';
 
   @override
   String get aboutSimNoteTitle => 'Это обучение, не биржа';
@@ -164,7 +164,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get aboutDataBody =>
-      'Котировки, курсы и графики приходят через собственный сервер-кэш Polaris — приложение никогда не обращается к чужим API напрямую. Источники — ниже.';
+      'Цены и графики генерирует собственный сервер Polaris: они ведут себя как настоящий рынок, но они смоделированы и не являются биржевыми данными. Никакие чужие биржевые источники приложение не использует.';
 
   @override
   String get aboutThanksTitle => 'Благодарности';
@@ -521,6 +521,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get marketDemoTag => 'ДЕМО';
+
+  @override
+  String get homeEmptyCta => 'Открыть Рынки';
+
+  @override
+  String get homeSimulatedPrices => 'учебные цены';
 
   @override
   String get marketDemoNotice =>

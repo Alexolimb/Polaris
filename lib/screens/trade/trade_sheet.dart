@@ -76,14 +76,28 @@ class _TradeSheetState extends State<_TradeSheet> {
     super.dispose();
   }
 
+  /// Разбор числа из поля. Отдельный хелпер, потому что `double.tryParse`
+  /// на длинной строке цифр возвращает не null, а `Infinity` — и дальше
+  /// `(Infinity * 100).round()` бросает «Unsupported operation: Infinity or
+  /// NaN toInt» ПРЯМО В build(), то есть пользователь видел красный экран
+  /// ошибки вместо шторки. Нечисловое и бесконечное считаем нулём.
+  double get _amount {
+    final v = double.tryParse(_ctrl.text.replaceAll(',', '.'));
+    if (v == null || !v.isFinite || v < 0) return 0;
+    return v;
+  }
+
   // Сумма для покупки (в центах) из поля ввода — вводят доллары.
   int get _spendCents {
-    final v = double.tryParse(_ctrl.text.replaceAll(',', '.')) ?? 0;
-    return (v * 100).round();
+    final cents = _amount * 100;
+    // Верхняя граница — заведомо больше любого мыслимого портфеля, но
+    // безопасно влезает в int: движок всё равно откажет по нехватке кэша.
+    if (cents > 1e15) return 1000000000000000;
+    return cents.round();
   }
 
   // Количество для продажи из поля ввода (доли штук).
-  double get _sellQty => double.tryParse(_ctrl.text.replaceAll(',', '.')) ?? 0;
+  double get _sellQty => _amount;
 
   void _setBuyFraction(double f) {
     final cents = (widget.portfolio.cashCents * f).round();
@@ -212,6 +226,10 @@ class _TradeSheetState extends State<_TradeSheet> {
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+                // Ограничитель длины — вторая линия обороны против Infinity
+                // (первая — геттер _amount). 18 знаков хватает на любую
+                // мыслимую сумму и количество долей.
+                LengthLimitingTextInputFormatter(18),
               ],
               onChanged: (_) => setState(() {
         _error = null;

@@ -49,6 +49,16 @@ class MarketState extends ChangeNotifier {
   bool get offline => repo.offline;
   List<Asset> get assets => List.unmodifiable(_assets);
 
+  /// true — показанные цены СМОДЕЛИРОВАНЫ, а не пришли с биржи: либо мы
+  /// офлайн и рисуем фикстуры, либо сервер честно пометил данные
+  /// `freshness:"demo"` (сейчас его движок котировок синтетический).
+  /// Нужен, чтобы приложение не подписывало выдуманные числа как «живые цены»
+  /// — для обучающего инвест-продукта это принципиально.
+  bool get pricesAreSimulated =>
+      offline ||
+      _assets.isEmpty ||
+      _assets.any((a) => a.freshness == QuoteFreshness.demo);
+
   /// Темы, в которых есть хотя бы один актив (пустые чипы не показываем).
   List<MarketTheme> get themes => _themes
       .where((t) => _assets.any((a) => a.themeIds.contains(t.id)))

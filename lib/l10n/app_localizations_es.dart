@@ -144,7 +144,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get aboutWhatIsItBody =>
-      'Polaris es un simulador gratuito de inversión para quienes nunca antes compraron una acción. Una cartera virtual de \$10,000, precios reales en vivo, dividendos honestos y un mentor de IA, Cosmo, que explica todo con palabras simples — sin prisas ni presión de \"casino\".';
+      'Polaris es un simulador gratuito de inversión para quienes nunca antes compraron una acción. Una cartera virtual de \$10,000, precios de mercado simulados, dividendos con calendario real y un mentor de IA, Cosmo, que explica todo con palabras simples — sin prisas ni presión de \"casino\".';
 
   @override
   String get aboutSimNoteTitle => 'Esto es aprendizaje, no una bolsa';
@@ -165,7 +165,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get aboutDataBody =>
-      'Las cotizaciones, tipos de cambio y gráficos llegan a través del propio servidor de caché de Polaris — la app nunca contacta APIs de terceros directamente. Las fuentes están abajo.';
+      'Los precios y los gráficos los genera el propio servidor de Polaris: se comportan como un mercado real, pero están simulados y no son datos de bolsa. La app no utiliza ningún proveedor de mercado externo.';
 
   @override
   String get aboutThanksTitle => 'Agradecimientos';
@@ -524,6 +524,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get marketDemoTag => 'DEMO';
+
+  @override
+  String get homeEmptyCta => 'Abrir Mercados';
+
+  @override
+  String get homeSimulatedPrices => 'precios simulados';
 
   @override
   String get marketDemoNotice =>

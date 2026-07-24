@@ -200,17 +200,34 @@ class MarketRepo {
     );
   }
 
+  /// Якорь дивидендной сетки — фиксированная дата, а НЕ «сейчас».
+  /// Раньше офлайн-фикстуры (как и сервер) считали ex-date как `now + 5..40
+  /// дней`, поэтому отсечка вечно убегала вперёд и `applyDueDividends`
+  /// (там условие `exDate <= now`) не начислял НИ РАЗУ. Теперь сетка
+  /// квартальная и привязана к эпохе: даты не зависят от момента запроса.
+  static final DateTime _dividendEpoch = DateTime.utc(2026, 1, 1);
+  static const int _quarterDays = 91;
+
   List<DividendEvent> _fixtureDividends(String symbol) {
     final per = _fixtureDividendPerShare[symbol];
     if (per == null) return const [];
-    final ex = _now().add(Duration(days: 5 + _stableSeed(symbol) % 40));
-    return [
-      DividendEvent(
+    final offsetDays = _stableSeed(symbol) % _quarterDays;
+    final anchor = _dividendEpoch.add(Duration(days: offsetDays));
+    final step = const Duration(days: _quarterDays);
+    final k = _now().difference(anchor).inDays ~/ _quarterDays;
+    DividendEvent make(int i) {
+      final ex = anchor.add(step * i);
+      return DividendEvent(
         symbol: symbol,
         exDate: ex,
-        payDate: ex.add(const Duration(days: 14)),
+        payDate: ex.add(const Duration(days: 7)),
         perShareCents: per,
-      ),
+      );
+    }
+
+    return [
+      if (k >= 0) make(k), // последняя прошедшая — её и начислят
+      make(k + 1), // следующая — для календаря
     ];
   }
 

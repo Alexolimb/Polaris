@@ -235,8 +235,8 @@ class _ShellState extends State<Shell> {
     final scope = AppScope.of(context);
     final l10n = AppLocalizations.of(context);
     // IndexedStack — вкладки сохраняют состояние при переключении.
-    final tabs = <Widget>[
-      const HomeScreen(),
+    final rawTabs = <Widget>[
+      HomeScreen(onOpenMarkets: () => setState(() => _tab = 1)),
       MarketScreen(state: scope.market, active: _tab == 1),
       CosmoScreen(chatState: scope.chat),
       LearnScreen(
@@ -245,6 +245,13 @@ class _ShellState extends State<Shell> {
         lang: () => scope.settings.resolvedLanguageCode,
       ),
       const MoreScreen(),
+    ];
+    // IndexedStack держит все вкладки живыми, и без TickerMode звёзды,
+    // сияние и пульсирующие точки продолжают тикать на всех пяти сразу —
+    // это впустую жжёт батарею на телефоне.
+    final tabs = <Widget>[
+      for (var i = 0; i < rawTabs.length; i++)
+        TickerMode(enabled: i == _tab, child: rawTabs[i]),
     ];
 
     final body = IndexedStack(index: _tab, children: tabs);

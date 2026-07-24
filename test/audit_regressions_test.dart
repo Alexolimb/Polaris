@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polaris/models/models.dart';
 import 'package:polaris/services/ai.dart';
+import 'package:polaris/services/market_repo.dart';
 import 'package:polaris/services/sim_engine.dart';
 import 'package:polaris/services/storage.dart';
 import 'package:polaris/state/learn_state.dart';
@@ -162,6 +163,35 @@ void main() {
         'freshness': 'что-то-новое',
       });
       expect(a.freshness, QuoteFreshness.demo);
+    });
+  });
+
+  group('ночной аудит 25.07.2026 — дивиденды и шторка', () {
+    test('дивидендный календарь якорный: есть ПРОШЕДШАЯ выплата', () async {
+      // Раньше и сервер, и фикстуры считали ex-date как now + 5..40 дней при
+      // КАЖДОМ запросе — отсечка вечно убегала вперёд, а applyDueDividends
+      // начисляет только когда exDate <= now. Итог: дивиденды не начислялись
+      // НИ РАЗУ. Сетка должна быть привязана к эпохе, а не к «сейчас».
+      // .local — БЕЗ сети: иначе тест уходит на боевой бэкенд и проверяет
+      // не фикстуры, а прод (и падает/зеленеет по чужой причине).
+      final repo = MarketRepo.local(now: () => DateTime(2026, 7, 24));
+      final events = await repo.dividends('AAPL');
+      expect(events, isNotEmpty);
+      final now = DateTime(2026, 7, 24);
+      expect(
+        events.any((e) => e.exDate != null && !e.exDate!.isAfter(now)),
+        isTrue,
+        reason: 'ни одной прошедшей отсечки — начислять снова будет нечего',
+      );
+    });
+
+    test('календарь не зависит от момента запроса', () async {
+      final repoA = MarketRepo.local(now: () => DateTime(2026, 7, 24, 9));
+      final repoB = MarketRepo.local(now: () => DateTime(2026, 7, 24, 21));
+      final a = await repoA.dividends('AAPL');
+      final b = await repoB.dividends('AAPL');
+      expect(a.map((e) => e.exDate?.toIso8601String()).toList(),
+          b.map((e) => e.exDate?.toIso8601String()).toList());
     });
   });
 }

@@ -72,8 +72,9 @@ void main() {
     expect(find.textContaining('open.er-api.com'), findsNothing);
     expect(find.textContaining('Binance'), findsNothing);
     expect(find.textContaining('Yahoo Finance'), findsNothing);
-    // ...и прямо говорит, что цены смоделированы.
-    expect(find.textContaining('смоделированы'), findsOneWidget);
+    // ...и прямо говорит, что цены смоделированы (и в блоке «Откуда данные»,
+    // и отдельной строкой вместо убранных плашек).
+    expect(find.textContaining('смоделированы'), findsWidgets);
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(const SizedBox());

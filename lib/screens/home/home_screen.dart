@@ -22,30 +22,71 @@ import '../../widgets/fx/stars_background.dart';
 import '../market/asset_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  /// Переход на вкладку «Рынки» из пустого состояния портфеля.
+  /// null — кнопка не рисуется (например, в тестах экрана в отрыве от каркаса).
+  final VoidCallback? onOpenMarkets;
+
+  const HomeScreen({super.key, this.onOpenMarkets});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  bool _synced = false;
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  bool _wired = false;
+  PortfolioState? _watched;
+  // Состав позиций на момент последней сверки — чтобы не дёргать сеть на
+  // каждое изменение цены, а только когда бумаг реально стало больше/меньше.
+  String _lastHeldKey = '';
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_synced) {
-      _synced = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _syncHeldQuotes());
-    }
+    if (_wired) return;
+    _wired = true;
+    WidgetsBinding.instance.addObserver(this);
+    // Раньше сверка запускалась РОВНО ОДИН РАЗ за запуск приложения и первым
+    // делом выходила при пустом портфеле. У нового игрока порядок такой:
+    // заставка → онбординг → пустой портфель → сверка вышла → он покупает
+    // первую бумагу — и дивиденды с уведомлениями о движении не проверялись
+    // уже никогда, до полного перезапуска. Теперь слушаем состав портфеля и
+    // возврат приложения из фона.
+    _watched = AppScope.read(context).portfolio..addListener(_onPortfolioChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncHeldQuotes());
+  }
+
+  @override
+  void dispose() {
+    _watched?.removeListener(_onPortfolioChanged);
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Приложение может висеть открытым сутками — при возврате из фона
+    // пересверяемся, иначе дивиденды «за ночь» не начислятся.
+    if (state == AppLifecycleState.resumed) _syncHeldQuotes();
+  }
+
+  void _onPortfolioChanged() {
+    final key = (_watched?.positions.keys.toList()?..sort())?.join(',') ?? '';
+    if (key == _lastHeldKey) return; // изменились только цены/суммы
+    _lastHeldKey = key;
+    if (key.isEmpty) return;
+    _syncHeldQuotes();
   }
 
   Future<void> _syncHeldQuotes() async {
+    if (!mounted) return;
     final scope = AppScope.read(context);
     final held = scope.portfolio.positions.keys.toList();
     if (held.isEmpty) return;
+    _lastHeldKey = (held.toList()..sort()).join(',');
     await scope.market.ensureQuotesFor(held);
+    if (!mounted) return;
     await _creditDueDividends(scope, held);
+    if (!mounted) return;
     _notifyBigMoves(scope, held);
   }
 
@@ -152,9 +193,16 @@ class _HomeScreenState extends State<HomeScreen> {
           return SafeArea(
             child: RefreshIndicator(
               onRefresh: () async {
-                await market.ensureQuotesFor(
-                    portfolio.positions.keys.toList(),
-                    refresh: true);
+                final held = portfolio.positions.keys.toList();
+                // Scope берём ДО await — после асинхронного разрыва трогать
+                // context нельзя (виджет мог уйти с экрана).
+                final scope = AppScope.read(context);
+                await market.ensureQuotesFor(held, refresh: true);
+                // Свайп-обновление раньше тянуло только котировки и не
+                // трогало дивиденды — теперь это ещё и способ вручную
+                // «догнать» пропущенные выплаты.
+                if (held.isEmpty) return;
+                await _creditDueDividends(scope, held);
               },
               child: CustomScrollView(
                 slivers: [
@@ -190,6 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final l10n = AppLocalizations.of(context);
     final up = ret >= 0;
     final retColor = up ? PolarisColors.gain : PolarisColors.loss;
+    final simulated = AppScope.of(context).market.pricesAreSimulated;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 14),
       child: Column(
@@ -204,11 +253,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontSize: 14,
                       fontWeight: FontWeight.w600)),
               Row(children: [
-                const PulseDot(color: PolarisColors.aurora, size: 8),
+                // Честный статус данных. Раньше здесь безусловно горело
+                // «живые цены» — даже когда приложение рисовало встроенные
+                // фикстуры или синтетику сервера (freshness:"demo").
+                if (simulated)
+                  const Icon(Icons.science_outlined,
+                      color: PolarisColors.dividend, size: 13)
+                else
+                  const PulseDot(color: PolarisColors.aurora, size: 8),
                 const SizedBox(width: 6),
-                Text(l10n.homeLivePrices,
-                    style: const TextStyle(
-                        color: PolarisColors.textFaint, fontSize: 12)),
+                Text(simulated ? l10n.homeSimulatedPrices : l10n.homeLivePrices,
+                    style: TextStyle(
+                        color: simulated
+                            ? PolarisColors.dividend
+                            : PolarisColors.textFaint,
+                        fontSize: 12)),
                 IconButton(
                   icon: const Icon(Icons.restart_alt,
                       color: PolarisColors.textFaint, size: 20),
@@ -377,6 +436,27 @@ class _HomeScreenState extends State<HomeScreen> {
               textAlign: TextAlign.center,
               style: const TextStyle(color: PolarisColors.textSecondary, height: 1.4),
             ),
+            // Главный момент активации был тупиком: текст звал «загляни в
+            // Рынки», но выхода туда с экрана не было — приходилось искать
+            // вкладку внизу самому. Теперь из пустого портфеля есть кнопка.
+            if (widget.onOpenMarkets != null) ...[
+              const SizedBox(height: 22),
+              FilledButton.icon(
+                onPressed: widget.onOpenMarkets,
+                icon: const Icon(Icons.travel_explore, size: 20),
+                label: Text(l10n.homeEmptyCta),
+                style: FilledButton.styleFrom(
+                  backgroundColor: PolarisColors.polar,
+                  foregroundColor: PolarisColors.bg,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                  textStyle: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w700),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
+                ),
+              ),
+            ],
           ],
         ),
       ),
