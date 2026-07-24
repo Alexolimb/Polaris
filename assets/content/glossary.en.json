@@ -1,0 +1,155 @@
+{
+  "locale": "en",
+  "terms": [
+    {
+      "id": "stock",
+      "term": "Stock",
+      "definition": "A tiny slice of ownership in a company. Buy one share of Apple and you become a part-owner of Apple in a very small proportion — with a claim on a share of the company's future profits."
+    },
+    {
+      "id": "etf",
+      "term": "ETF (Exchange-Traded Fund)",
+      "definition": "A basket of dozens or hundreds of stocks that you buy in one click, just like a single share. Instead of picking one company, you instantly get a stake in everything inside the basket."
+    },
+    {
+      "id": "bond",
+      "term": "Bond",
+      "definition": "Essentially an IOU: you lend money to a government or a company, and they promise to repay the loan with interest by a certain date. Usually calmer and more predictable than stocks."
+    },
+    {
+      "id": "bond-etf",
+      "term": "Bond ETF",
+      "definition": "A basket of many bonds at once, packaged into a single security you can buy or sell as easily as a stock."
+    },
+    {
+      "id": "dividend",
+      "term": "Dividend",
+      "definition": "A portion of a company's profit that it periodically pays out to shareholders simply for holding the stock — no need to sell it."
+    },
+    {
+      "id": "diversification",
+      "term": "Diversification",
+      "definition": "The \"don't put all your eggs in one basket\" rule: spreading money across different assets so that the failure of one company or industry doesn't sink the whole portfolio."
+    },
+    {
+      "id": "volatility",
+      "term": "Volatility",
+      "definition": "How much and how often an asset's price swings up and down. High volatility means sharp swings; low volatility means smooth, calm movement."
+    },
+    {
+      "id": "portfolio",
+      "term": "Portfolio",
+      "definition": "All the assets a person owns, taken together: stocks, ETFs, crypto, cash — the full picture of where the money is invested."
+    },
+    {
+      "id": "liquidity",
+      "term": "Liquidity",
+      "definition": "How easily and quickly an asset can be turned back into cash without losing value. Shares of large companies are highly liquid; rare real estate is not."
+    },
+    {
+      "id": "market-cap",
+      "term": "Market Cap",
+      "definition": "The total value of an entire company on the exchange: the price of one share multiplied by all shares outstanding. It helps compare the size of different companies."
+    },
+    {
+      "id": "bear-market",
+      "term": "Bear Market",
+      "definition": "A period when prices across the market fall noticeably for a long stretch (usually 20% or more). Named after a bear, which swipes its paw downward."
+    },
+    {
+      "id": "bull-market",
+      "term": "Bull Market",
+      "definition": "A period when prices across the market are rising. Named after a bull, which thrusts its horns upward."
+    },
+    {
+      "id": "index",
+      "term": "Index",
+      "definition": "A list of companies used as a \"thermometer\" for the health of a market or industry — for example, the S&P 500 tracks the 500 largest U.S. companies."
+    },
+    {
+      "id": "ticker",
+      "term": "Ticker",
+      "definition": "A short letter code for a company or asset on the exchange — for example, AAPL for Apple or BTC for Bitcoin. A handy shorthand instead of the full name."
+    },
+    {
+      "id": "asset",
+      "term": "Asset",
+      "definition": "Anything you can put money into that has its own price: a stock, a bond, a cryptocurrency, a currency, real estate, and so on."
+    },
+    {
+      "id": "return",
+      "term": "Return",
+      "definition": "How much invested money has grown (or shrunk) over a period of time, usually expressed as a percentage. Past returns don't promise the same returns in the future."
+    },
+    {
+      "id": "risk",
+      "term": "Risk",
+      "definition": "The likelihood and size of an investment losing value rather than gaining it. Usually, the higher the potential upside, the more an asset can swing the other way too."
+    },
+    {
+      "id": "inflation",
+      "term": "Inflation",
+      "definition": "The gradual rise in the price of goods and services, which means the same amount of money buys less and less over time."
+    },
+    {
+      "id": "compound-interest",
+      "term": "Compound Interest",
+      "definition": "When the returns on an investment start earning returns of their own. Over time the effect builds up like a snowball rolling down a hill."
+    },
+    {
+      "id": "spread",
+      "term": "Spread",
+      "definition": "The small difference between the price at which you can buy an asset and the price at which you can sell it at that same moment. Part of the mechanics of any exchange."
+    },
+    {
+      "id": "rebalancing",
+      "term": "Rebalancing",
+      "definition": "Periodically adjusting a portfolio back to its originally chosen proportions — for example, when one part has grown a lot and now takes up too much space."
+    },
+    {
+      "id": "blue-chip",
+      "term": "Blue Chip",
+      "definition": "Large, well-known companies with a long track record — like Coca-Cola or Johnson & Johnson. The name comes from poker, where blue chips are the most valuable."
+    },
+    {
+      "id": "ipo",
+      "term": "IPO",
+      "definition": "Initial Public Offering — the moment a company first lists on the stock exchange and its shares become available for anyone to buy."
+    },
+    {
+      "id": "fractional-share",
+      "term": "Fractional Share",
+      "definition": "A piece of one share rather than a whole one — for example, 0.1 of an Amazon share. Lets you invest any amount, even if one full share costs a lot."
+    },
+    {
+      "id": "pe-ratio",
+      "term": "P/E Ratio (Price/Earnings)",
+      "definition": "A measure of how many times a stock's price is higher than the company's annual profit per share. It helps you gauge roughly whether a company looks \"expensive\" or \"cheap\" relative to its earnings."
+    },
+    {
+      "id": "exchange",
+      "term": "Exchange",
+      "definition": "A place (nowadays, mostly an electronic platform) where buyers and sellers of assets meet and make trades at the market price."
+    },
+    {
+      "id": "broker",
+      "term": "Broker",
+      "definition": "A middleman (a company or service) through which an individual buys and sells assets on the exchange, since private individuals usually don't have direct access."
+    },
+    {
+      "id": "fomo",
+      "term": "FOMO",
+      "definition": "\"Fear of missing out\" — the anxious urge to buy an asset right away simply because everyone is talking about it and its price is climbing fast."
+    },
+    {
+      "id": "drawdown",
+      "term": "Drawdown",
+      "definition": "A decline in the value of a portfolio or asset from its previous peak. For example, a 15% drawdown means the price is now 15% below its recent high."
+    },
+    {
+      "id": "stablecoin",
+      "term": "Stablecoin",
+      "definition": "A type of cryptocurrency whose value is designed to stay pegged to a regular currency (most often the US dollar), to avoid the sharp swings typical of the rest of crypto."
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "locale": "es",
+  "terms": [
+    {
+      "id": "stock",
+      "term": "Acción",
+      "definition": "Un pequeño pedazo de propiedad de una empresa. Al comprar una acción de Apple, te conviertes en copropietario de Apple en una proporción muy pequeña, con derecho a una parte de las ganancias futuras de la empresa."
+    },
+    {
+      "id": "etf",
+      "term": "ETF (fondo cotizado)",
+      "definition": "Una cesta de decenas o cientos de acciones que se compra con un solo clic, como si fuera un único valor. En lugar de elegir una sola empresa, obtienes de inmediato una participación en todas las que hay en la cesta."
+    },
+    {
+      "id": "bond",
+      "term": "Bono",
+      "definition": "En esencia, un comprobante de préstamo: le prestas dinero a un gobierno o a una empresa, y ellos se comprometen a devolver la deuda con intereses en una fecha determinada. Suele ser más tranquilo y predecible que las acciones."
+    },
+    {
+      "id": "bond-etf",
+      "term": "ETF de bonos",
+      "definition": "Una cesta con muchos bonos a la vez, empaquetada en un solo valor que se puede comprar o vender tan fácilmente como una acción."
+    },
+    {
+      "id": "dividend",
+      "term": "Dividendo",
+      "definition": "Una parte de las ganancias de la empresa que se paga periódicamente a los accionistas solo por mantener la acción, sin necesidad de venderla."
+    },
+    {
+      "id": "diversification",
+      "term": "Diversificación",
+      "definition": "La regla de \"no pongas todos los huevos en la misma canasta\": repartir el dinero entre distintos activos para que el fracaso de una empresa o de un sector no arrastre a toda la cartera."
+    },
+    {
+      "id": "volatility",
+      "term": "Volatilidad",
+      "definition": "Qué tan fuerte y con qué frecuencia sube y baja el precio de un activo. La volatilidad alta son subidas y bajadas bruscas; la baja es un movimiento suave y tranquilo."
+    },
+    {
+      "id": "portfolio",
+      "term": "Cartera",
+      "definition": "El conjunto de todos los activos que posee una persona: acciones, ETF, cripto, efectivo; el panorama completo de en qué está invertido el dinero."
+    },
+    {
+      "id": "liquidity",
+      "term": "Liquidez",
+      "definition": "Qué tan fácil y rápido se puede convertir un activo de nuevo en dinero sin perder valor. Las acciones de grandes empresas son muy líquidas; una propiedad inmobiliaria poco común, muy poco líquida."
+    },
+    {
+      "id": "market-cap",
+      "term": "Capitalización de mercado",
+      "definition": "El valor total de toda una empresa en la bolsa: el precio de una acción multiplicado por todas las acciones emitidas. Ayuda a comparar el tamaño de distintas empresas entre sí."
+    },
+    {
+      "id": "bear-market",
+      "term": "Mercado bajista",
+      "definition": "Un período en el que los precios del mercado en general caen de forma notable durante mucho tiempo (por lo general, un 20% o más). El nombre viene del oso, que golpea con la pata de arriba hacia abajo."
+    },
+    {
+      "id": "bull-market",
+      "term": "Mercado alcista",
+      "definition": "Un período en el que los precios del mercado en general están subiendo. El nombre viene del toro, que levanta los cuernos de abajo hacia arriba."
+    },
+    {
+      "id": "index",
+      "term": "Índice",
+      "definition": "Una lista de empresas que se usa como \"termómetro\" del estado de un mercado o un sector; por ejemplo, el S&P 500 sigue a las 500 empresas más grandes de Estados Unidos."
+    },
+    {
+      "id": "ticker",
+      "term": "Ticker",
+      "definition": "Un código corto de letras que identifica a una empresa o activo en la bolsa; por ejemplo, AAPL para Apple o BTC para bitcoin. Una forma práctica de abreviar el nombre completo."
+    },
+    {
+      "id": "asset",
+      "term": "Activo",
+      "definition": "Todo aquello en lo que se puede invertir dinero y que tiene su propio precio: una acción, un bono, una criptomoneda, una divisa, una propiedad inmobiliaria, etcétera."
+    },
+    {
+      "id": "return",
+      "term": "Rentabilidad",
+      "definition": "Cuánto creció (o cayó) el dinero invertido durante un período de tiempo, normalmente expresado en porcentaje. La rentabilidad pasada no promete la misma rentabilidad en el futuro."
+    },
+    {
+      "id": "risk",
+      "term": "Riesgo",
+      "definition": "La probabilidad y el tamaño de que una inversión pierda valor en lugar de ganarlo. Por lo general, cuanto mayor es el potencial de subida, más puede moverse el activo también hacia el otro lado."
+    },
+    {
+      "id": "inflation",
+      "term": "Inflación",
+      "definition": "El encarecimiento gradual de bienes y servicios, por el cual la misma cantidad de dinero compra cada vez menos con el paso del tiempo."
+    },
+    {
+      "id": "compound-interest",
+      "term": "Interés compuesto",
+      "definition": "Cuando el rendimiento de una inversión empieza a generar su propio rendimiento. Con el tiempo, el efecto crece como una bola de nieve que rueda montaña abajo."
+    },
+    {
+      "id": "spread",
+      "term": "Spread (diferencial)",
+      "definition": "La pequeña diferencia entre el precio al que se puede comprar un activo y el precio al que se puede vender en ese mismo momento. Forma parte del funcionamiento de cualquier bolsa."
+    },
+    {
+      "id": "rebalancing",
+      "term": "Reequilibrio",
+      "definition": "El ajuste periódico de una cartera para devolverla a las proporciones elegidas originalmente; por ejemplo, cuando una parte creció mucho y ahora ocupa demasiado espacio."
+    },
+    {
+      "id": "blue-chip",
+      "term": "Blue chip",
+      "definition": "Empresas grandes, conocidas y normalmente con una larga trayectoria, como Coca-Cola o Johnson & Johnson. El nombre viene del póker, donde las fichas azules son las más valiosas."
+    },
+    {
+      "id": "ipo",
+      "term": "OPI (IPO)",
+      "definition": "Oferta pública inicial: el momento en que una empresa sale a bolsa por primera vez y sus acciones quedan disponibles para que cualquiera pueda comprarlas."
+    },
+    {
+      "id": "fractional-share",
+      "term": "Acción fraccionada",
+      "definition": "Una parte de una acción, no la acción completa; por ejemplo, 0,1 de una acción de Amazon. Permite invertir cualquier cantidad, incluso si una acción completa cuesta mucho."
+    },
+    {
+      "id": "pe-ratio",
+      "term": "P/E (precio/beneficio)",
+      "definition": "Un indicador de cuántas veces el precio de la acción supera la ganancia anual por acción de la empresa. Ayuda a saber, de forma aproximada, si una empresa parece \"cara\" o \"barata\" en relación con lo que gana."
+    },
+    {
+      "id": "exchange",
+      "term": "Bolsa",
+      "definition": "Un lugar (hoy en día, casi siempre una plataforma electrónica) donde se encuentran compradores y vendedores de activos y se cierran operaciones al precio de mercado."
+    },
+    {
+      "id": "broker",
+      "term": "Bróker",
+      "definition": "Un intermediario (una empresa o un servicio) a través del cual una persona particular compra y vende activos en la bolsa, ya que normalmente los particulares no tienen acceso directo."
+    },
+    {
+      "id": "fomo",
+      "term": "FOMO",
+      "definition": "\"Miedo a quedarse fuera\": el deseo ansioso de comprar un activo de inmediato solo porque todo el mundo habla de él y su precio sube rápido."
+    },
+    {
+      "id": "drawdown",
+      "term": "Drawdown (caída)",
+      "definition": "La caída del valor de una cartera o un activo desde su máximo anterior. Por ejemplo, un drawdown del 15% significa que el precio está ahora un 15% por debajo de su pico reciente."
+    },
+    {
+      "id": "stablecoin",
+      "term": "Stablecoin",
+      "definition": "Un tipo de criptomoneda cuyo valor se intenta mantener vinculado a una moneda tradicional (casi siempre el dólar estadounidense), para evitar las oscilaciones bruscas típicas del resto de las criptomonedas."
+    }
+  ]
+}

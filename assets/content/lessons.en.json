@@ -1,0 +1,1275 @@
+{
+  "locale": "en",
+  "modules": [
+    { "id": "why-invest", "title": "Why Invest at All", "order": 1, "accent": "#6C8EFF", "emoji": "🌌" },
+    { "id": "market-basics", "title": "What the Market Is Made Of", "order": 2, "accent": "#4FD1C5", "emoji": "🪐" },
+    { "id": "reading-market", "title": "How to Read the Market Without Fear", "order": 3, "accent": "#F6AD55", "emoji": "☄️" },
+    { "id": "building-portfolio", "title": "How to Build a Portfolio", "order": 4, "accent": "#68D391", "emoji": "🛰️" },
+    { "id": "psychology-mistakes", "title": "Psychology and Beginner Mistakes", "order": 5, "accent": "#F687B3", "emoji": "🌠" }
+  ],
+  "lessons": [
+    {
+      "id": "welcome-to-polaris",
+      "module": "why-invest",
+      "order": 1,
+      "title": "Hi, I'm Cosmo",
+      "screens": [
+        {
+          "title": "Welcome Aboard",
+          "emoji": "🧑‍🚀",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Hi! I'm Cosmo, and I'll be your guide through the world of investing. Don't worry — you don't need to already know anything about stocks, exchanges, or charts. We'll take this journey in small steps.",
+            "Polaris is a simulator. You have a virtual portfolio, and the prices of the assets here are real, live prices. But the money isn't real. Think of it as a training ground: you can make as many mistakes as you like, and it won't cost you anything but time."
+          ]
+        },
+        {
+          "title": "How It All Works",
+          "emoji": "🚀",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "You start with $10,000 in virtual money. You can invest it in stocks, funds, and crypto, and watch your portfolio move along with the real market.",
+            "Learning and practice go hand in hand: after almost every lesson, I'll suggest peeking into the simulator to see what we just talked about — live, with real numbers."
+          ]
+        },
+        {
+          "title": "An Important Agreement",
+          "emoji": "📜",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Everything you see and hear in Polaris is education, not personal financial advice. I will never tell you 'buy this exact stock right now' — that's not my role, and it's not my place.",
+            "My job is to help you understand how money and markets work, so you can make calm, informed decisions on your own — here in the simulator, and one day, if you want, in real life too."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "The money in your Polaris portfolio is...",
+          "options": ["Real money you can withdraw", "Virtual money for practicing with real prices", "Gift points unrelated to the market"],
+          "correctIndex": 1,
+          "explanation": "The portfolio is virtual, but the asset prices are real and live. It's a safe place to learn how everything works before risking real money."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Check out the \"Markets\" tab — just look around, you don't have to buy anything yet" },
+      "disclaimer": "Polaris is an educational simulator. The content in the app is not personalized investment advice, and the virtual portfolio is not connected to real money."
+    },
+    {
+      "id": "what-is-inflation",
+      "module": "why-invest",
+      "order": 2,
+      "title": "Why Everything Gets More Expensive",
+      "screens": [
+        {
+          "title": "Ice Cream From Your Childhood",
+          "emoji": "🍦",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Think back: a few years ago, a lot of things cost less. Not because the products got better or harder to make — it's just that money gradually loses some of its power. That's inflation: the slow rise in the price of everything around us."
+          ]
+        },
+        {
+          "title": "How It's Measured",
+          "emoji": "🧺",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Economists put together a \"basket\" of everyday goods and services — bread, transportation, rent, electricity — and compare how much that basket costs each year.",
+            "If the basket got 4% more expensive over a year, that means inflation is roughly 4%. A small amount of inflation is normal in almost any developed economy."
+          ]
+        },
+        {
+          "title": "What This Means for You",
+          "emoji": "💶",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "If money just sits there doing nothing, the number in your account doesn't change, but in 10 years it will buy noticeably less than it does today. Slowly, but surely.",
+            "That's exactly why people look for ways to make their money at least keep pace with inflation, and ideally outpace it."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What is inflation, in simple terms?",
+          "options": ["A sharp drop in stock prices", "The gradual rise in the price of goods and services over time", "A fee the bank charges for a transfer"],
+          "correctIndex": 1,
+          "explanation": "Inflation is about everyday goods and services, not the stock market. The same amount of money buys less and less over time."
+        }
+      ]
+    },
+    {
+      "id": "money-under-mattress",
+      "module": "why-invest",
+      "order": 3,
+      "title": "Why Money Under the Mattress Melts Away",
+      "screens": [
+        {
+          "title": "Cash Stashed in a Drawer",
+          "emoji": "🛏️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Imagine you put $10,000 in a drawer and never touched it for 10 years. On paper, the amount is the same. But you'll be able to buy noticeably less with that money than on the day you put it away."
+          ]
+        },
+        {
+          "title": "A Quiet Process",
+          "emoji": "🕰️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "The thing is, inflation works slowly and quietly — not like a sudden blow, but like a slow leak. A little bit each year, but the result adds up noticeably over a decade.",
+            "Even an ordinary savings account with a low interest rate doesn't always help: if the rate is below inflation, the money still gradually loses purchasing power — just more slowly."
+          ]
+        },
+        {
+          "title": "Where the Idea of Investing Comes From",
+          "emoji": "🌱",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Investing is one attempt to make money grow faster than prices around it, instead of just keeping it still.",
+            "It's not about getting rich in a week. It's about keeping your savings from turning into melting ice."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Why does money that just sits around lose its power over time?",
+          "options": ["Because banknotes physically wear out", "Because of inflation — prices around it rise faster than the sitting amount", "Because the government keeps taxing it"],
+          "correctIndex": 1,
+          "explanation": "The amount itself doesn't change, but it buys less and less — because of inflation. That's exactly why people look for ways to put their money to work."
+        }
+      ]
+    },
+    {
+      "id": "what-is-passive-income",
+      "module": "why-invest",
+      "order": 4,
+      "title": "Income That Doesn't Need Your Time",
+      "screens": [
+        {
+          "title": "Two Kinds of Income",
+          "emoji": "⏳",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Active income is a salary for your time and effort — when you're not working, no money comes in. Passive income is money that arrives even while you're sleeping, out for a walk, or doing something else entirely."
+          ]
+        },
+        {
+          "title": "Where Passive Income Comes From",
+          "emoji": "🌊",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Examples: dividends from stocks, interest on bonds, income from renting out real estate. In all these cases, the money was already invested beforehand, and the income arrives on its own, on a regular basis."
+          ]
+        },
+        {
+          "title": "It's a Marathon, Not a Sprint",
+          "emoji": "🐢",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Passive income is rarely large right away — it usually grows gradually, along with the invested amount and time. It's not \"quick riches,\" it's a slow but reliable process."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Which of these is an example of passive income?",
+          "options": ["A salary for hours worked", "Dividends from stocks you own", "A bonus for working overtime on weekends"],
+          "correctIndex": 1,
+          "explanation": "Dividends arrive simply because you hold the asset — no extra hours of work required from you."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "dividend-giants", "text": "Check out the \"Dividend Giants\" theme — examples of companies that share their profits with shareholders" }
+    },
+    {
+      "id": "power-of-compound-interest",
+      "module": "why-invest",
+      "order": 5,
+      "title": "The Magic of Compound Interest",
+      "screens": [
+        {
+          "title": "The Snowball",
+          "emoji": "❄️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Picture a snowball rolling down a hill: at first it's small and grows slowly, but the further it rolls, the more snow sticks to it — and the faster it grows. Compound interest works in a similar way."
+          ]
+        },
+        {
+          "title": "Returns on Returns",
+          "emoji": "🔁",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "If invested money earns a return, and that return isn't withdrawn but stays invested, next time the return is calculated on the now-larger amount. The return starts earning its own return.",
+            "For example, $1,000 invested at a hypothetical 8% a year turns into roughly $2,160 after 10 years — without adding a single extra dollar. Just from the passage of time."
+          ]
+        },
+        {
+          "title": "The Main Secret Is Time",
+          "emoji": "⏱️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "The earlier you start, the more time the snowball has to grow. That's exactly why starting with a small amount today is often better than waiting to \"save up more\" and starting a few years later."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What has the biggest impact on the compound interest effect?",
+          "options": ["Only the size of the initial amount", "The amount of time the money stays invested", "A catchy company name"],
+          "correctIndex": 1,
+          "explanation": "Compound interest is a time effect: the longer the return stays invested and keeps earning its own return, the more noticeable the growth becomes."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Open any broad-market ETF and look at its chart over 5-10 years — that's what growth over time looks like in practice" }
+    },
+    {
+      "id": "why-invest-recap",
+      "module": "why-invest",
+      "order": 6,
+      "title": "Recap: Why Invest at All",
+      "screens": [
+        {
+          "title": "What We Already Know",
+          "emoji": "📋",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Inflation slowly eats away at the purchasing power of money that just sits still. Passive income is money that works for you. And compound interest makes time your biggest ally."
+          ]
+        },
+        {
+          "title": "Why It All Matters Together",
+          "emoji": "🧩",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Investing is an attempt to make money grow faster than the prices around it, using time and compound interest as the main tools — not luck or fast trading."
+          ]
+        },
+        {
+          "title": "What's Next",
+          "emoji": "➡️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "In the next module, we'll break down what the market is actually made of: what a stock, an ETF, a bond, crypto, and a currency are — in simple terms, no formulas."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Inflation and compound interest are...",
+          "options": ["The same phenomenon", "Inflation reduces purchasing power, while compound interest helps money grow", "Neither phenomenon is related to money at all"],
+          "correctIndex": 1,
+          "explanation": "These are two different processes: one slowly reduces the power of money, the other — with a sensible approach — helps it grow over time."
+        },
+        {
+          "question": "Which of these best describes passive income?",
+          "options": ["Money that arrives without ongoing personal work", "A one-time large bonus at work", "Winning the lottery"],
+          "correctIndex": 0,
+          "explanation": "Passive income is regular income from investments already made, not a one-time stroke of luck or extra work."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Browse through the market catalog — just get familiar with what's out there" }
+    },
+
+    {
+      "id": "what-is-a-stock",
+      "module": "market-basics",
+      "order": 1,
+      "title": "What Is a Stock",
+      "screens": [
+        {
+          "title": "You're a Co-Owner",
+          "emoji": "🏢",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "A stock is a small piece of a company. Buy one share of Apple, and you become a tiny-fraction co-owner of Apple — with a claim to a share of the company's future profits."
+          ]
+        },
+        {
+          "title": "Where the Price Comes From",
+          "emoji": "⚖️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "A stock's price is the result of buyers and sellers meeting. If there are more buyers, the price rises; if there are more sellers, it falls.",
+            "Many factors play into this: the company's performance, news, investor sentiment, and the overall state of the economy."
+          ]
+        },
+        {
+          "title": "Risk and Reward Go Together",
+          "emoji": "🎢",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "A stock's price can rise or fall — sometimes noticeably. That's the difference from an ordinary savings account: the potential upside is bigger, but so are the swings."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "By buying a company's stock, you become...",
+          "options": ["An employee of that company", "A co-owner of a small share of that company", "A creditor owed a debt by a certain date"],
+          "correctIndex": 1,
+          "explanation": "A stock is an ownership stake, not an IOU and not an employment contract."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "big-tech", "text": "Check out the \"Big Tech\" theme — companies whose stock you can try managing in the simulator" }
+    },
+    {
+      "id": "what-is-an-etf",
+      "module": "market-basics",
+      "order": 2,
+      "title": "What Is an ETF",
+      "screens": [
+        {
+          "title": "A Basket Instead of a Single Apple",
+          "emoji": "🧺",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "An ETF (exchange-traded fund) is a ready-made basket of dozens or hundreds of different companies' stocks, packaged into a single security. Buy one \"unit\" of an ETF, and you instantly get a small stake in every company inside the basket."
+          ]
+        },
+        {
+          "title": "Why This Matters for Beginners",
+          "emoji": "🎯",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "You don't have to guess which single company will turn out to be the best — an ETF instantly spreads your investment across many. If one company in the basket does poorly, the others can help smooth that out."
+          ]
+        },
+        {
+          "title": "Familiar Examples",
+          "emoji": "🗂️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "For example, SPY and VOO track the 500 largest US companies, while QQQ tracks the 100 largest non-financial companies on the Nasdaq exchange. One purchase — instant broad market coverage."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What's the main difference between an ETF and a single stock?",
+          "options": ["An ETF always grows faster than a single stock", "An ETF is a ready-made basket of many companies in one security", "An ETF can't be bought or sold on an exchange"],
+          "correctIndex": 1,
+          "explanation": "The key idea behind an ETF is instantly spreading your investment across a whole basket of assets — not a guarantee of higher growth."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "broad-market", "text": "Check out the \"Broad Market\" theme — that's exactly where these basket funds are gathered" }
+    },
+    {
+      "id": "what-are-bonds",
+      "module": "market-basics",
+      "order": 3,
+      "title": "What Bonds Are",
+      "screens": [
+        {
+          "title": "You're Lending Money",
+          "emoji": "🧾",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "A bond is, in essence, an IOU. By buying a bond, you're lending money to a government or a company, and they promise to repay the debt with interest by a certain date."
+          ]
+        },
+        {
+          "title": "Who's Borrowing",
+          "emoji": "🏛️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Most often it's governments (for example, US Treasury bonds) or large companies that need money for growth. In exchange, they regularly pay interest to bondholders."
+          ]
+        },
+        {
+          "title": "Why Bonds Are Calmer Than Stocks",
+          "emoji": "🧘",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Bond prices usually swing less than stock prices, and the interest payments are known in advance under the terms. That's why bonds are often called the \"calmer\" part of a portfolio — though the risk isn't zero."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "By buying a bond, you...",
+          "options": ["Become a co-owner of the company", "Lend money to a government or a company for interest", "Buy a basket of hundreds of different assets"],
+          "correctIndex": 1,
+          "explanation": "A bond is a debt instrument: you're a creditor, not a co-owner like with a stock."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "bonds-safety", "text": "Check out the \"Bonds & Safety\" theme — examples of these kinds of funds" }
+    },
+    {
+      "id": "what-is-crypto",
+      "module": "market-basics",
+      "order": 4,
+      "title": "What Cryptocurrency Is",
+      "screens": [
+        {
+          "title": "Money Without a Central Bank",
+          "emoji": "🪙",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Cryptocurrency is digital money that exists and moves directly between people, without a bank or government acting as a middleman."
+          ]
+        },
+        {
+          "title": "Blockchain in Simple Terms",
+          "emoji": "📒",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "At the core of most cryptocurrencies is the blockchain — a shared \"ledger\" of every transfer, kept simultaneously by thousands of computers worldwide, which makes it hard to fake or alter after the fact."
+          ]
+        },
+        {
+          "title": "Sharp Swings",
+          "emoji": "🎢",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Crypto prices can move by tens of percent in just a few days — noticeably sharper than most stocks. It's an interesting but the most unpredictable asset class available in Polaris."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What mainly sets cryptocurrency apart from an ordinary stock?",
+          "options": ["Crypto has no price at all", "Crypto isn't issued by a company and isn't tied to a central bank", "Crypto can't be bought or sold"],
+          "correctIndex": 1,
+          "explanation": "Cryptocurrency is an independent kind of digital asset, not tied to a specific company or government, unlike stocks."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "crypto-leaders", "text": "Check out the \"Crypto Leaders\" theme — the largest cryptocurrencies by market size" }
+    },
+    {
+      "id": "what-are-currencies-fx",
+      "module": "market-basics",
+      "order": 5,
+      "title": "Currencies Are Assets Too",
+      "screens": [
+        {
+          "title": "One Country's Money Is Worth Different Amounts Elsewhere",
+          "emoji": "💱",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "An exchange rate is how many units of one currency you need to give up to get one unit of another. It's constantly changing, which is why a currency can also be thought of as its own type of asset."
+          ]
+        },
+        {
+          "title": "Why the Rate Jumps Around",
+          "emoji": "📉",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Exchange rates are affected by a country's economic health, central bank decisions on interest rates, trade between countries, and overall investor expectations."
+          ]
+        },
+        {
+          "title": "Currencies in Polaris",
+          "emoji": "🌍",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "The catalog includes dozens of currencies — you can watch their rates just out of curiosity and to understand how one economy connects to another."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What mainly affects a currency's exchange rate?",
+          "options": ["Only the weather in the country", "The state of the economy, central bank rates, and the overall trade situation", "The design of the banknote"],
+          "correctIndex": 1,
+          "explanation": "An exchange rate is shaped by a country's economic factors, not by external or random traits."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Find the currency section and see how the euro-to-dollar rate has moved over the past year" }
+    },
+    {
+      "id": "what-is-an-exchange-and-price",
+      "module": "market-basics",
+      "order": 6,
+      "title": "What an Exchange Is and Where Prices Come From",
+      "screens": [
+        {
+          "title": "An Exchange Is a Big Marketplace",
+          "emoji": "🏛️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "An exchange is a place (nowadays almost always electronic) where everyone who wants to buy or sell an asset meets, and trades happen at the current market price."
+          ]
+        },
+        {
+          "title": "Who Sets the Price",
+          "emoji": "🤝",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "No single company or person sets the price. It arises the moment the price a buyer is willing to pay matches the price a seller is willing to accept."
+          ]
+        },
+        {
+          "title": "Module Recap",
+          "emoji": "🧭",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Now you know the market's basic \"building blocks\": stocks, ETFs, bonds, crypto, and currencies — and you understand where an exchange price actually comes from. In the next module, we'll cover how to read those prices without panicking over their movement."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "An asset's price on an exchange is determined by...",
+          "options": ["The government, once a year", "The meeting of buyer demand and seller supply", "A random number generator"],
+          "correctIndex": 1,
+          "explanation": "Price is born from the live interaction of buyers and sellers in the moment — it isn't handed down from above."
+        },
+        {
+          "question": "Which of these is true about ETFs?",
+          "options": ["It's a basket of many assets in one security", "It's the same thing as a bond", "You can only buy an ETF once in your life"],
+          "correctIndex": 0,
+          "explanation": "An ETF is exactly that — a ready-made basket of assets, not a type of debt instrument."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Open the market catalog and find at least one example of each type: a stock, an ETF, a bond fund, crypto, and a currency" }
+    },
+
+    {
+      "id": "price-up-down-what-it-means",
+      "module": "reading-market",
+      "order": 1,
+      "title": "What It Means When a Price Rises or Falls",
+      "screens": [
+        {
+          "title": "More People Want to Buy",
+          "emoji": "📈",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "When an asset's price rises, it usually means more people want to buy it than sell it at that moment. When the price falls, it's the opposite — sellers outnumber buyers."
+          ]
+        },
+        {
+          "title": "It's Not a Verdict on the Company",
+          "emoji": "🔍",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "A one-day price drop doesn't mean the company is \"bad\" — it could be a reaction to news, overall market mood, or something not directly related to the business at all."
+          ]
+        },
+        {
+          "title": "Look at Different Timeframes",
+          "emoji": "🗓️",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "The same asset can look very different on a chart over one day versus over five years. Short-term price moves are noise; the long view tells a fuller story."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "A stock's price falling in a single day most often means that...",
+          "options": ["The company is definitely about to go bankrupt", "At that moment there were more sellers than buyers — the reasons vary", "The company has stopped existing"],
+          "correctIndex": 1,
+          "explanation": "A short-term price move is a balance of supply and demand in the moment — not a verdict on the company's entire future."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Open any stock and compare its chart over one day and over a year" }
+    },
+    {
+      "id": "what-are-dividends-explained",
+      "module": "reading-market",
+      "order": 2,
+      "title": "Dividends in More Detail",
+      "screens": [
+        {
+          "title": "A Reminder",
+          "emoji": "💸",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "A dividend is a portion of a company's profit that it periodically pays to shareholders simply for holding the stock, with no need to sell it."
+          ]
+        },
+        {
+          "title": "Dividend Yield",
+          "emoji": "📐",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Dividend yield shows how much a company pays out per year relative to the current stock price, as a percentage. It helps you compare different companies with each other."
+          ]
+        },
+        {
+          "title": "Not Everyone Pays Them",
+          "emoji": "🌱",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Young, fast-growing companies often don't pay dividends at all — they prefer to reinvest all their profit back into growing the business. That's not better or worse, just a different strategy."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Why do some companies not pay dividends?",
+          "options": ["Because it's against the law", "Because they prefer to reinvest profit into their own growth", "Because they have no profit and never have"],
+          "correctIndex": 1,
+          "explanation": "Not paying dividends is often a deliberate choice by the company to put money toward growth, not automatically a sign of trouble."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "dividend-giants", "text": "Compare the dividend yield of a few companies from the \"Dividend Giants\" theme" }
+    },
+    {
+      "id": "what-is-volatility",
+      "module": "reading-market",
+      "order": 3,
+      "title": "What Volatility Is",
+      "screens": [
+        {
+          "title": "A Swing, Not an Elevator",
+          "emoji": "🎡",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Volatility is how much and how often an asset's price swings. High volatility means sharp swings up and down; low volatility means smooth, calm movement."
+          ]
+        },
+        {
+          "title": "Volatility Isn't Always Bad",
+          "emoji": "⚖️",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "More volatile assets can rise more sharply, but they can also fall more sharply. Less volatile ones usually move more calmly in both directions. It's not \"good\" or \"bad\" on its own — it's a trait worth taking into account."
+          ]
+        },
+        {
+          "title": "Compare at a Glance",
+          "emoji": "🔬",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Crypto is usually noticeably more volatile than bond funds. Large, stable-company stocks usually sit somewhere between those two extremes."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "High volatility in an asset means that...",
+          "options": ["Its price moves sharply and noticeably in both directions", "It can't be sold at all", "It's guaranteed to bring a high return"],
+          "correctIndex": 0,
+          "explanation": "Volatility describes how wide the price swings are — it doesn't guarantee any outcome."
+        }
+      ]
+    },
+    {
+      "id": "why-not-panic-on-dips",
+      "module": "reading-market",
+      "order": 4,
+      "title": "Why Not to Panic on a Dip",
+      "screens": [
+        {
+          "title": "A Dip Is a Normal Part of the Journey",
+          "emoji": "🌊",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "A drawdown is a drop in the value of an asset or portfolio from a recent high. It's not rare and not a catastrophe by itself — it's a normal part of how markets behave over time."
+          ]
+        },
+        {
+          "title": "Selling in a Panic Locks In the Loss",
+          "emoji": "😰",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "As long as the asset isn't sold, a price drop is just a number on a screen. Selling exactly during a dip turns a temporary decline into a final, locked-in loss."
+          ]
+        },
+        {
+          "title": "What to Do Instead of Panicking",
+          "emoji": "🧘",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "It helps to ask yourself in advance: has the plan or the reason you bought the asset actually changed? If not, a short-term price move doesn't necessarily call for immediate action. Market history shows that declines have often been followed by recoveries, though that's never guaranteed for the future."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What happens if you sell an asset right during a temporary dip?",
+          "options": ["The loss becomes final and locked in", "The loss automatically disappears", "The asset automatically returns to its previous price"],
+          "correctIndex": 0,
+          "explanation": "As long as the asset isn't sold, the decline remains temporary on paper. Selling right during the dip locks in the loss."
+        }
+      ]
+    },
+    {
+      "id": "reading-a-chart",
+      "module": "reading-market",
+      "order": 5,
+      "title": "How to Read a Chart",
+      "screens": [
+        {
+          "title": "A Simple Line and Area",
+          "emoji": "📉",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "The simplest chart is a line showing the closing price for each period of time. In Polaris it's often filled with a gradient below the line, to make the overall direction easier to spot."
+          ]
+        },
+        {
+          "title": "Candles: A Bit More Detail",
+          "emoji": "🕯️",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "A candlestick chart shows four prices for each period at once: open, close, high, and low. The candle's body spans between the opening and closing price; the thin \"wicks\" above and below mark the extreme points for that period."
+          ]
+        },
+        {
+          "title": "Change the Timeframe",
+          "emoji": "🔎",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "The same asset looks different on a chart over a day, a month, or a year. It's helpful to look at several timeframes at once rather than drawing conclusions from a single short snapshot."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What does a single candle on a candlestick chart show?",
+          "options": ["Only the closing price", "The opening price, closing price, high, and low for the period", "The total number of trades in the asset's entire history"],
+          "correctIndex": 1,
+          "explanation": "A candle is a compact way to show four key prices for a chosen period all at once."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Open any stock's chart and try switching the period from one day to a year" }
+    },
+    {
+      "id": "metrics-explained",
+      "module": "reading-market",
+      "order": 6,
+      "title": "What the Numbers Next to an Asset Mean",
+      "screens": [
+        {
+          "title": "Market Cap: The Size of a Company",
+          "emoji": "📏",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Market cap is the price of one share multiplied by all the shares a company has issued. It shows how much the market values the entire company, and it helps compare the size of different companies."
+          ]
+        },
+        {
+          "title": "P/E: Expensive or Cheap Relative to Profit",
+          "emoji": "🧮",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "The P/E ratio shows how many times a stock's price is higher than the company's annual profit per share. A high P/E can mean the market expects fast future growth; a low one means more modest expectations. The number itself isn't \"good\" or \"bad.\""
+          ]
+        },
+        {
+          "title": "Module Recap",
+          "emoji": "🧭",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Now you can look at price movement more calmly, and you understand dividends, volatility, and basic metrics. In the next module, we'll talk about how to build a portfolio out of all of this."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "A company's market cap is calculated as...",
+          "options": ["The price of one share × the number of all shares issued", "Annual profit minus all expenses", "Number of employees × average salary"],
+          "correctIndex": 0,
+          "explanation": "It's a simple multiplication that shows the total market value of the entire company, unrelated directly to headcount or profit."
+        },
+        {
+          "question": "What does the P/E ratio show?",
+          "options": ["How many times the stock's price exceeds its earnings per share", "The company's exchange rate", "The total dividends paid throughout its history"],
+          "correctIndex": 0,
+          "explanation": "P/E is a ratio of price to profit, one way to roughly gauge whether a stock is \"expensive\" relative to how much the company earns."
+        }
+      ]
+    },
+
+    {
+      "id": "what-is-diversification",
+      "module": "building-portfolio",
+      "order": 1,
+      "title": "Don't Put All Your Eggs in One Basket",
+      "screens": [
+        {
+          "title": "A Simple Rule",
+          "emoji": "🧺",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Diversification means spreading money across different assets so that the failure of one company or industry doesn't sink the whole portfolio."
+          ]
+        },
+        {
+          "title": "One Stock vs. Many",
+          "emoji": "⚠️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "If your entire portfolio is one stock, any bad news about that company hits your whole portfolio at once. If you hold 10 stocks from different industries, the impact of one company's problems is usually much softer.",
+            "An ETF, in that sense, is already ready-made diversification in a single security: it's instantly spread across dozens or hundreds of companies."
+          ]
+        },
+        {
+          "title": "Diversification Doesn't Remove Risk Entirely",
+          "emoji": "🛡️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "It softens the blow from individual companies, but it doesn't protect against the whole market falling. It's a risk-management tool, not a guarantee against swings."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What is diversification for?",
+          "options": ["To guarantee you never lose money", "So the failure of one company or industry doesn't sink the whole portfolio", "To pay less in taxes"],
+          "correctIndex": 1,
+          "explanation": "Diversification spreads risk across different assets — it softens the consequences, but doesn't eliminate risk entirely."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Try adding assets from two or three different themes to your portfolio instead of focusing on a single ticker" }
+    },
+    {
+      "id": "risk-and-horizon",
+      "module": "building-portfolio",
+      "order": 2,
+      "title": "Risk and Time Horizon",
+      "screens": [
+        {
+          "title": "Horizon Is About Time",
+          "emoji": "🗓️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "A time horizon is how soon someone might need the money they've invested. For some it's a year, for others it's twenty years. That has a big effect on how calmly you can treat price swings."
+          ]
+        },
+        {
+          "title": "A Long Horizon Gives Time to Recover",
+          "emoji": "🌅",
+          "accent": "#68D391",
+          "paragraphs": [
+            "The further away the moment when the money is actually needed, the more time the portfolio has to weather temporary dips and recover. That's not a guarantee, but it's a real difference from a situation where the money is needed tomorrow."
+          ]
+        },
+        {
+          "title": "A Short Horizon Calls for Caution",
+          "emoji": "🎯",
+          "accent": "#68D391",
+          "paragraphs": [
+            "If the money will be needed soon, it makes sense to be more careful with assets that swing sharply in price — a dip right before the money is needed is especially unpleasant."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "How is an investment horizon usually related to how you handle price swings?",
+          "options": ["The longer the horizon, the calmer you can be about temporary dips", "The horizon has no connection to price swings at all", "The shorter the horizon, the less the price matters"],
+          "correctIndex": 0,
+          "explanation": "A long horizon gives more time for a possible recovery after declines, so temporary swings usually feel less worrying."
+        }
+      ]
+    },
+    {
+      "id": "themes-not-tickers",
+      "module": "building-portfolio",
+      "order": 3,
+      "title": "Themes Instead of Guessing Tickers",
+      "screens": [
+        {
+          "title": "Why Guessing a Single Ticker Is Hard",
+          "emoji": "🎲",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Picking, ahead of time, the one company that will turn out to be the best in its industry is a hard task even for professionals. Too many factors affect the outcome of any single stock."
+          ]
+        },
+        {
+          "title": "A Theme Is a Ready-Made Collection by Interest",
+          "emoji": "🗃️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "In Polaris, themes like \"Green Energy\" or \"Health\" gather several related companies and funds together. It's a way to get to know a whole industry instead of betting everything on one company."
+          ]
+        },
+        {
+          "title": "How to Use This",
+          "emoji": "🧭",
+          "accent": "#68D391",
+          "paragraphs": [
+            "You can pick a theme that just resonates with you personally — by interest or values — and see what's inside before deciding what to explore further."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What's the point of themes in Polaris?",
+          "options": ["They're guaranteed to be the most profitable companies", "They're a ready-made collection of related companies and funds by interest or industry", "They're a list of assets banned from purchase"],
+          "correctIndex": 1,
+          "explanation": "Themes are a way to get to know an industry or direction through several related assets at once — not a promise of any particular outcome."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Browse the list of themes in the \"Markets\" section and find one that speaks to you personally" }
+    },
+    {
+      "id": "regularity-vs-timing",
+      "module": "building-portfolio",
+      "order": 4,
+      "title": "Regularity Instead of Timing the Market",
+      "screens": [
+        {
+          "title": "Catching the Perfect Moment Is Nearly Impossible",
+          "emoji": "🎯",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Many beginners want to buy at exactly the lowest price and sell at exactly the highest. In practice, almost no one manages to predict those moments in advance, professionals included."
+          ]
+        },
+        {
+          "title": "Invest a Little, Regularly",
+          "emoji": "🔁",
+          "accent": "#68D391",
+          "paragraphs": [
+            "One calm approach is to invest small amounts at regular intervals, regardless of what's happening with the price in the moment. That way, purchases naturally get spread across both high and low prices."
+          ]
+        },
+        {
+          "title": "An Example",
+          "emoji": "🧮",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Investing $1,200 all at once on a random day is a bet on hitting a good moment. Investing $100 every month for a year is a way to not depend on whether you guessed the moment right."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What's the point of investing regularly in small amounts?",
+          "options": ["It guarantees a higher return", "It reduces how much the outcome depends on guessing the right moment", "It's the only legal way to invest"],
+          "correctIndex": 1,
+          "explanation": "Regularity doesn't guarantee an outcome, but it removes the need to try to catch the perfect moment — something almost no one manages to do consistently."
+        }
+      ]
+    },
+    {
+      "id": "building-your-first-portfolio",
+      "module": "building-portfolio",
+      "order": 5,
+      "title": "How to Build Your First Portfolio",
+      "screens": [
+        {
+          "title": "Where to Start",
+          "emoji": "🧱",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Before choosing assets, it helps to understand two things: how long this money will sit aside (horizon), and how calmly you handle price swings (risk tolerance)."
+          ]
+        },
+        {
+          "title": "An Example Structure, Not Advice",
+          "emoji": "🗺️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "This is just an illustration of an approach, not a recommendation: someone might hold part of their portfolio in broad market ETFs, part in bond funds for calm, and part in themes that interest them personally. The proportions differ for everyone and depend on personal circumstances."
+          ]
+        },
+        {
+          "title": "It's Not Set in Stone",
+          "emoji": "🔧",
+          "accent": "#68D391",
+          "paragraphs": [
+            "A portfolio can and should gradually change as experience and understanding grow. The first version of a portfolio is a starting point, not a final decision forever."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What's worth figuring out before building a portfolio?",
+          "options": ["Your investment horizon and how you handle price swings", "The exact exchange rate for next year", "The name of the company that built the exchange"],
+          "correctIndex": 0,
+          "explanation": "Horizon and risk tolerance are the foundation any portfolio structure builds from."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Try putting together your first combination in the simulator — for example, a bit of a broad ETF, a bit of a bond fund, and something from a theme you find interesting" }
+    },
+    {
+      "id": "rebalancing-simple",
+      "module": "building-portfolio",
+      "order": 6,
+      "title": "Rebalancing and Module Recap",
+      "screens": [
+        {
+          "title": "What Rebalancing Is",
+          "emoji": "⚖️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Rebalancing is periodically adjusting a portfolio back to its originally chosen proportions. If one part of the portfolio has grown a lot and now takes up much more space than intended, some of it can be redistributed."
+          ]
+        },
+        {
+          "title": "Why It's Needed",
+          "emoji": "🎯",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Over time, different assets grow at different rates, and a portfolio gradually \"drifts\" away from the original plan. Rebalancing brings the risk balance back to what was originally comfortable."
+          ]
+        },
+        {
+          "title": "Module Recap",
+          "emoji": "🧭",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Now you have the fundamentals: diversification, horizon, themes instead of guessing tickers, regularity, and rebalancing. In the final module, we'll talk about psychology — arguably the hardest part of investing."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Rebalancing a portfolio is...",
+          "options": ["Selling all assets completely and leaving the market", "Bringing the portfolio's proportions back to what was originally intended", "Buying new stocks every day"],
+          "correctIndex": 1,
+          "explanation": "Rebalancing is an adjustment, not a full exit or daily active trading."
+        },
+        {
+          "question": "Which of these helps reduce the impact of one unlucky company on the whole portfolio?",
+          "options": ["Diversification", "Buying only one stock", "Tracking news about it every single day"],
+          "correctIndex": 0,
+          "explanation": "It's diversification that spreads risk across different assets, softening the effect of one company's problems."
+        }
+      ]
+    },
+
+    {
+      "id": "what-is-fomo",
+      "module": "psychology-mistakes",
+      "order": 1,
+      "title": "What FOMO Is",
+      "screens": [
+        {
+          "title": "Everyone's Buying and I'm Not?",
+          "emoji": "😬",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "FOMO — the \"fear of missing out\" — is the anxious feeling that everyone around you is already making money on something while you're left out. It pushes you toward quick decisions without calm thought."
+          ]
+        },
+        {
+          "title": "Where This Feeling Comes From",
+          "emoji": "📱",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Social media, news about a fast-rising price, stories from friends who \"got in at the right time\" — all of it amplifies the anxiety and creates a sense of urgency, even when there's no real urgency at all."
+          ]
+        },
+        {
+          "title": "How to Cool Off",
+          "emoji": "🧊",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "A useful rule: if a decision suddenly feels urgent and you want to act right now, pause first. A good plan rarely requires an immediate reaction without thinking it through."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What kind of decision does FOMO most often push you toward?",
+          "options": ["A calm, pre-planned decision", "A quick action driven by anxiety about missing the moment", "Giving up on any investing forever"],
+          "correctIndex": 1,
+          "explanation": "FOMO is about impulsiveness and the anxiety of missing a moment — not a well-considered decision."
+        }
+      ]
+    },
+    {
+      "id": "fear-and-greed",
+      "module": "psychology-mistakes",
+      "order": 2,
+      "title": "Greed and Fear",
+      "screens": [
+        {
+          "title": "Two Powerful Feelings",
+          "emoji": "😨",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Greed pushes you to keep buying more when the price is already rising fast and everyone around is talking about their success. Fear pushes you to sell in a panic when the price drops sharply. Both feelings get in the way of calmly following a plan."
+          ]
+        },
+        {
+          "title": "What This Looks Like on a Chart",
+          "emoji": "📊",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Sharp price surges often line up with widespread greed, and sharp crashes with widespread panic. Those are exactly the moments when decisions made on emotion tend to turn out the least well."
+          ]
+        },
+        {
+          "title": "What Helps",
+          "emoji": "📝",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "A well-thought-out plan made in advance, plus a bit of patience, is a simple but effective counterweight to in-the-moment emotions. A plan made in a calm state of mind is usually more reliable than a decision made on emotion in the moment."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "What most often gets in the way of sticking to a plan made in advance?",
+          "options": ["Strong emotions — greed and fear in the moment", "Overly detailed diversification", "Too long an investment horizon"],
+          "correctIndex": 0,
+          "explanation": "It's emotional reactions during sharp price moves that most often knock someone off a plan they made in advance."
+        }
+      ]
+    },
+    {
+      "id": "why-nobody-catches-the-bottom",
+      "module": "psychology-mistakes",
+      "order": 3,
+      "title": "Why Nobody Can Catch the Bottom",
+      "screens": [
+        {
+          "title": "The Bottom Is Only Visible Afterward",
+          "emoji": "🔎",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "The lowest point in a price only becomes clear in hindsight, once the price has already started to recover. In the middle of a decline, no one can be sure whether it will continue or has already ended."
+          ]
+        },
+        {
+          "title": "Even Professionals Get It Wrong",
+          "emoji": "🎓",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Experienced fund managers with teams of analysts and decades of practice also routinely miss the exact timing. That's not a lack of knowledge — it's just an extremely hard problem."
+          ]
+        },
+        {
+          "title": "A More Reliable Approach",
+          "emoji": "🧭",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Instead of trying to catch the perfect moment, many people rely on time spent in the market, regular investing, and a plan made in advance — things that don't require predicting the future."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Why is it so hard to catch the exact lowest point of a price?",
+          "options": ["Because it only becomes obvious after the price has already started rising", "Because exchanges hide this information", "Because there's no such thing as a bottom, really"],
+          "correctIndex": 0,
+          "explanation": "A bottom is only identified in hindsight — during a decline, there's no reliable way to know whether it will continue or has already stopped."
+        }
+      ]
+    },
+    {
+      "id": "what-not-to-believe",
+      "module": "psychology-mistakes",
+      "order": 4,
+      "title": "What Not to Believe",
+      "screens": [
+        {
+          "title": "\"Guaranteed Returns\"",
+          "emoji": "🚩",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "No honest source can guarantee a specific return in advance — the price of any market asset can rise or fall. A promise of a \"guaranteed\" return is a red flag."
+          ]
+        },
+        {
+          "title": "A \"Secret Signal\" or \"Inside Info\"",
+          "emoji": "🕵️",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Offers to \"buy right now based on a secret signal\" or promises of exclusive information no one else has access to most often turn out to be scams or attempts to sell a useless course."
+          ]
+        },
+        {
+          "title": "A Simple Sanity Check",
+          "emoji": "🧠",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "If an offer sounds too good to be true, it probably is. It's healthy to be skeptical of promises of fast, guaranteed results — in crypto and in stocks alike."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Which phrase should raise suspicion?",
+          "options": ["\"The price can rise or fall\"", "\"Guaranteed 30% monthly returns\"", "\"This is an educational simulator, not financial advice\""],
+          "correctIndex": 1,
+          "explanation": "Guaranteeing a specific high return is impossible in a real market — it's a classic sign of a scam or a bad-faith offer."
+        }
+      ]
+    },
+    {
+      "id": "what-is-long-term",
+      "module": "psychology-mistakes",
+      "order": 5,
+      "title": "What \"Long Term\" Really Means",
+      "screens": [
+        {
+          "title": "It Means Years, Not Days",
+          "emoji": "🗓️",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "\"Long term\" in investing usually means a horizon of several years or more, not a few days or weeks. It's a completely different rhythm of decision-making than trying to catch a short-term price move."
+          ]
+        },
+        {
+          "title": "Why It Reduces the Impact of the Swings",
+          "emoji": "🌊",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Over a long stretch of time, short-term rises and falls in price usually matter less than the overall direction over the years. A long horizon leaves more room to recover from temporary declines."
+          ]
+        },
+        {
+          "title": "An Important Distinction",
+          "emoji": "💡",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "\"Long term\" is a plan chosen from the start for years ahead — not an excuse to hold an asset \"for luck\" simply because it dropped and you don't want to admit it. The difference is exactly whether the horizon was planned in advance."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Which best describes a \"long-term\" approach?",
+          "options": ["An investment horizon chosen in advance, for years ahead", "Holding any asset forever no matter what, out of principle", "Selling everything every week and buying it all back"],
+          "correctIndex": 0,
+          "explanation": "A long-term approach is about a horizon planned from the start — not about blindly holding any asset with no plan at all."
+        }
+      ]
+    },
+    {
+      "id": "graduation-recap",
+      "module": "psychology-mistakes",
+      "order": 6,
+      "title": "You Made It Through the Whole Course",
+      "screens": [
+        {
+          "title": "Congratulations!",
+          "emoji": "🎉",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "You've made it through all five modules — from why to invest at all, to psychology and common beginner mistakes. That's already more than most people know when they first discover investing."
+          ]
+        },
+        {
+          "title": "A Quick Look Back at the Journey",
+          "emoji": "🛤️",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Inflation and compound interest explained why any of this matters. Stocks, ETFs, bonds, crypto, and currencies showed you what the market is made of. Reading charts and metrics helped you stop being afraid of the numbers. Diversification and horizon helped you build your first portfolio. And psychology — the most human part — helps you avoid the classic beginner mistakes."
+          ]
+        },
+        {
+          "title": "What's Next",
+          "emoji": "🔭",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "What's next is practice, at your own calm pace: try things, observe, come back to the lessons whenever you need to refresh your memory. Remember: Polaris is a simulator for learning, not personal financial advice, and your portfolio here is virtual — not real money."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Which of these best describes Polaris?",
+          "options": ["A tool for real trading with real money", "An educational simulator with live prices and a virtual portfolio", "A personal financial advisor giving advice on specific securities"],
+          "correctIndex": 1,
+          "explanation": "Polaris is learning and practice using real prices, but without real money and without personalized investment advice."
+        },
+        {
+          "question": "Which approach is closest to what the whole course teaches?",
+          "options": ["A calm plan, diversification, a long horizon, and patience", "Chasing a quick signal and trying to catch the perfect moment", "Putting all your money into one idea that's trendy right now"],
+          "correctIndex": 0,
+          "explanation": "The whole course consistently points toward a calm, well-thought-out approach — not toward trying to guess a lucky moment."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Wander through the market catalog — now you know what to look for" },
+      "disclaimer": "Polaris remains an educational simulator: nothing in the app is personalized investment advice, and the virtual portfolio isn't connected to real money."
+    }
+  ]
+}

@@ -1,0 +1,1275 @@
+{
+  "locale": "es",
+  "modules": [
+    { "id": "why-invest", "title": "Por qué invertir", "order": 1, "accent": "#6C8EFF", "emoji": "🌌" },
+    { "id": "market-basics", "title": "De qué está hecho el mercado", "order": 2, "accent": "#4FD1C5", "emoji": "🪐" },
+    { "id": "reading-market", "title": "Cómo leer el mercado sin miedo", "order": 3, "accent": "#F6AD55", "emoji": "☄️" },
+    { "id": "building-portfolio", "title": "Cómo armar una cartera", "order": 4, "accent": "#68D391", "emoji": "🛰️" },
+    { "id": "psychology-mistakes", "title": "Psicología y errores de principiante", "order": 5, "accent": "#F687B3", "emoji": "🌠" }
+  ],
+  "lessons": [
+    {
+      "id": "welcome-to-polaris",
+      "module": "why-invest",
+      "order": 1,
+      "title": "Hola, soy Cosmo",
+      "screens": [
+        {
+          "title": "Bienvenido a bordo",
+          "emoji": "🧑‍🚀",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "¡Hola! Soy Cosmo y seré tu guía en el mundo de las inversiones. No te preocupes: no necesitas saber nada todavía sobre acciones, bolsas o gráficos. Recorreremos este camino paso a paso.",
+            "Polaris es un simulador. Tienes una cartera virtual, y los precios de los activos aquí son reales, en vivo. Pero el dinero no es real. Es como un simulador de vuelo: puedes equivocarte todo lo que quieras y no te costará nada más que tiempo."
+          ]
+        },
+        {
+          "title": "Cómo funciona todo",
+          "emoji": "🚀",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Empiezas con un capital de 10.000 $ virtuales. Puedes invertirlos en acciones, fondos y cripto, y ver cómo tu cartera se mueve junto con el mercado real.",
+            "El aprendizaje y la práctica van de la mano: después de casi cada lección te propondré echar un vistazo al simulador para ver en vivo, con números reales, lo que acabamos de comentar."
+          ]
+        },
+        {
+          "title": "Un acuerdo importante",
+          "emoji": "📜",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Todo lo que veas y escuches en Polaris es contenido educativo, no una recomendación financiera personal. Nunca te diré \"compra esta acción en concreto ahora mismo\": ese no es mi papel ni mi lugar.",
+            "Mi trabajo es que entiendas cómo funcionan el dinero y el mercado, para que puedas tomar tus propias decisiones tranquilas e informadas, aquí en el simulador y, si algún día quieres, también en la vida real."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "El dinero de tu cartera en Polaris es...",
+          "options": ["Dinero real que se puede retirar", "Dinero virtual para practicar con precios reales", "Puntos de regalo sin relación con el mercado"],
+          "correctIndex": 1,
+          "explanation": "La cartera es virtual, pero los precios de los activos son reales, en vivo. Es un lugar seguro para entender cómo funciona todo antes de arriesgar dinero real."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Échale un vistazo a la pestaña «Mercados»: solo mira, todavía no hace falta comprar nada" },
+      "disclaimer": "Polaris es un simulador educativo. El contenido de la aplicación no constituye una recomendación de inversión personalizada, y la cartera virtual no está vinculada a dinero real."
+    },
+    {
+      "id": "what-is-inflation",
+      "module": "why-invest",
+      "order": 2,
+      "title": "Por qué todo se encarece",
+      "screens": [
+        {
+          "title": "El helado de tu infancia",
+          "emoji": "🍦",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Piensa en esto: hace unos años, muchas cosas costaban menos. No porque los productos hayan mejorado o sean más difíciles de fabricar, sino porque el dinero pierde poco a poco parte de su fuerza. Eso es la inflación: el encarecimiento lento de todo lo que nos rodea."
+          ]
+        },
+        {
+          "title": "Cómo se mide",
+          "emoji": "🧺",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Los economistas arman una \"cesta\" de bienes y servicios comunes —pan, transporte, alquiler, electricidad— y cada año comparan cuánto cuesta esa cesta.",
+            "Si la cesta se encareció un 4% en un año, la inflación es aproximadamente del 4%. Un poco de inflación es normal en casi cualquier economía desarrollada."
+          ]
+        },
+        {
+          "title": "Qué significa esto para ti",
+          "emoji": "💶",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Si el dinero simplemente se queda quieto, la cifra en tu cuenta no cambia, pero dentro de 10 años podrás comprar con ella bastante menos que hoy. De forma casi imperceptible, pero inevitable.",
+            "Por eso la gente busca formas de que su dinero, al menos, no se quede atrás respecto a la inflación y, si es posible, la supere."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué es la inflación, en pocas palabras?",
+          "options": ["Una caída brusca de los precios de las acciones", "El encarecimiento gradual de bienes y servicios con el tiempo", "Una comisión que cobra el banco por una transferencia"],
+          "correctIndex": 1,
+          "explanation": "La inflación tiene que ver con los bienes y servicios de la vida cotidiana, no con la bolsa. La misma cantidad de dinero compra cada vez menos con el tiempo."
+        }
+      ]
+    },
+    {
+      "id": "money-under-mattress",
+      "module": "why-invest",
+      "order": 3,
+      "title": "Por qué el dinero bajo el colchón se derrite",
+      "screens": [
+        {
+          "title": "Los ahorros en el cajón",
+          "emoji": "🛏️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Imagina que guardaste 10.000 en un cajón y no los tocaste durante 10 años. En papel, la cantidad sigue siendo la misma. Pero con ese dinero podrás comprar bastante menos que el día en que lo guardaste."
+          ]
+        },
+        {
+          "title": "Un proceso silencioso",
+          "emoji": "🕰️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Lo que pasa es que la inflación actúa despacio y en silencio, no como un golpe repentino, sino como una fuga lenta. Un poco cada año, pero el resultado se acumula de forma notable a lo largo de una década.",
+            "Ni siquiera un depósito bancario común con un interés bajo siempre te salva: si el interés del depósito es menor que la inflación, el dinero igual va perdiendo poder adquisitivo, solo que más despacio."
+          ]
+        },
+        {
+          "title": "De ahí nace la idea de invertir",
+          "emoji": "🌱",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Invertir es uno de los intentos de hacer que el dinero crezca más rápido que los precios a su alrededor, en lugar de simplemente guardarlo quieto.",
+            "No se trata de hacerse rico en una semana. Se trata de que los ahorros no se conviertan en hielo que se derrite."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Por qué el dinero que simplemente está guardado pierde fuerza con el tiempo?",
+          "options": ["Porque los billetes se desgastan físicamente", "Por la inflación: los precios suben más rápido que la cantidad guardada", "Porque el estado lo grava constantemente con impuestos"],
+          "correctIndex": 1,
+          "explanation": "La cantidad en sí no cambia, pero cada vez se puede comprar menos con ella, por la inflación. Esa es justamente la razón por la que la gente busca formas de poner su dinero a trabajar."
+        }
+      ]
+    },
+    {
+      "id": "what-is-passive-income",
+      "module": "why-invest",
+      "order": 4,
+      "title": "Ingresos que no necesitan tu tiempo",
+      "screens": [
+        {
+          "title": "Dos tipos de ingresos",
+          "emoji": "⏳",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "El ingreso activo es un sueldo por tu tiempo y esfuerzo: mientras no trabajas, no entra dinero. El ingreso pasivo es el dinero que llega incluso cuando duermes, sales a caminar o haces cualquier otra cosa."
+          ]
+        },
+        {
+          "title": "De dónde sale el ingreso pasivo",
+          "emoji": "🌊",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Ejemplos: dividendos de acciones, intereses de bonos, ingresos por alquilar una propiedad. En todos los casos, el dinero ya se invirtió antes, y el ingreso llega solo, de forma regular."
+          ]
+        },
+        {
+          "title": "Es una maratón, no una carrera corta",
+          "emoji": "🐢",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "El ingreso pasivo rara vez es grande de entrada; suele crecer poco a poco, junto con la cantidad invertida y el tiempo. No es \"riqueza rápida\", es un proceso lento pero confiable."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Cuál de estos es un ejemplo de ingreso pasivo?",
+          "options": ["Un sueldo por horas trabajadas", "Dividendos de acciones que posees", "Un bono por hacer horas extra el fin de semana"],
+          "correctIndex": 1,
+          "explanation": "Los dividendos llegan solo por mantener el activo, sin horas de trabajo adicionales de tu parte."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "dividend-giants", "text": "Échale un vistazo al tema «Gigantes de dividendos»: ejemplos de empresas que reparten sus ganancias con los accionistas" }
+    },
+    {
+      "id": "power-of-compound-interest",
+      "module": "why-invest",
+      "order": 5,
+      "title": "La magia del interés compuesto",
+      "screens": [
+        {
+          "title": "La bola de nieve",
+          "emoji": "❄️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Imagina una bola de nieve rodando cuesta abajo: al principio es pequeña y crece despacio, pero cuanto más rueda, más nieve se le pega, y más rápido crece. El interés compuesto funciona de forma parecida."
+          ]
+        },
+        {
+          "title": "Rendimiento sobre rendimiento",
+          "emoji": "🔁",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Si el dinero invertido genera un rendimiento, y ese rendimiento no se retira sino que se mantiene invertido, la próxima vez el rendimiento se calcula sobre una cantidad mayor. El rendimiento empieza a generar su propio rendimiento.",
+            "Por ejemplo, 1000 invertidos a un hipotético 8% anual se convierten en aproximadamente 2160 al cabo de 10 años, sin agregar ni un dólar más. Solo por el paso del tiempo."
+          ]
+        },
+        {
+          "title": "El gran secreto es el tiempo",
+          "emoji": "⏱️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Cuanto antes empieces, más tiempo tiene la bola de nieve para crecer. Por eso empezar hoy con una cantidad pequeña suele ser mejor que esperar a \"ahorrar más\" y empezar unos años después."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué es lo que más influye en el efecto del interés compuesto?",
+          "options": ["Solo el tamaño de la cantidad inicial", "El tiempo durante el cual el dinero permanece invertido", "Un nombre bonito de la empresa"],
+          "correctIndex": 1,
+          "explanation": "El interés compuesto es un efecto del tiempo: cuanto más tiempo permanece invertido el rendimiento y sigue generando su propio rendimiento, más notorio se vuelve el crecimiento."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Abre cualquier ETF de mercado amplio y mira su gráfico de los últimos 5 a 10 años: así se ve en la práctica el crecimiento con el tiempo" }
+    },
+    {
+      "id": "why-invest-recap",
+      "module": "why-invest",
+      "order": 6,
+      "title": "Resumen: por qué invertir",
+      "screens": [
+        {
+          "title": "Lo que ya sabemos",
+          "emoji": "📋",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "La inflación va comiéndose poco a poco el poder adquisitivo del dinero que simplemente está quieto. El ingreso pasivo es dinero que trabaja para ti. Y el interés compuesto convierte al tiempo en tu mejor aliado."
+          ]
+        },
+        {
+          "title": "Por qué todo esto importa junto",
+          "emoji": "🧩",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "Invertir es un intento de hacer que el dinero crezca más rápido que los precios a su alrededor, usando el tiempo y el interés compuesto como herramientas principales, no la suerte ni la velocidad de las operaciones."
+          ]
+        },
+        {
+          "title": "Qué sigue",
+          "emoji": "➡️",
+          "accent": "#6C8EFF",
+          "paragraphs": [
+            "En el próximo módulo veremos de qué está hecho el mercado: qué es una acción, un ETF, un bono, la cripta y una divisa, en palabras simples, sin fórmulas."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "La inflación y el interés compuesto son...",
+          "options": ["El mismo fenómeno", "La inflación reduce el poder adquisitivo, y el interés compuesto ayuda a que el dinero crezca", "Ninguno de los dos fenómenos tiene relación con el dinero"],
+          "correctIndex": 1,
+          "explanation": "Son dos procesos distintos: uno reduce poco a poco la fuerza del dinero, el otro, con un enfoque sensato, ayuda a que crezca con el tiempo."
+        },
+        {
+          "question": "¿Cuál de estas opciones describe mejor el ingreso pasivo?",
+          "options": ["Dinero que llega sin trabajo personal constante", "Un bono grande y puntual en el trabajo", "Ganar la lotería"],
+          "correctIndex": 0,
+          "explanation": "El ingreso pasivo son ingresos regulares provenientes de inversiones ya hechas, no un golpe de suerte puntual ni trabajo extra."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Recorre el catálogo del mercado: solo para familiarizarte con lo que hay ahí" }
+    },
+
+    {
+      "id": "what-is-a-stock",
+      "module": "market-basics",
+      "order": 1,
+      "title": "Qué es una acción",
+      "screens": [
+        {
+          "title": "Eres copropietario",
+          "emoji": "🏢",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Una acción es un pequeño pedazo de una empresa. Al comprar una acción de Apple, te conviertes en copropietario de Apple en una proporción minúscula, con derecho a una parte de las ganancias futuras de la empresa."
+          ]
+        },
+        {
+          "title": "De dónde sale el precio",
+          "emoji": "⚖️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "El precio de una acción es el resultado del encuentro entre quienes quieren comprar y quienes quieren vender. Si hay más compradores, el precio sube; si hay más vendedores, baja.",
+            "En esto influyen muchos factores: el desempeño de la empresa, las noticias, el estado de ánimo de los inversores y la situación general de la economía."
+          ]
+        },
+        {
+          "title": "El riesgo y la recompensa van juntos",
+          "emoji": "🎢",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "El precio de una acción puede tanto subir como bajar, a veces de forma notable. Ahí está la diferencia con un depósito común: el crecimiento potencial es mayor, pero las oscilaciones también."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Al comprar una acción de una empresa, te conviertes en...",
+          "options": ["Empleado de esa empresa", "Copropietario de una pequeña parte de esa empresa", "Acreedor al que deben devolver una deuda en una fecha determinada"],
+          "correctIndex": 1,
+          "explanation": "Una acción es una participación de propiedad, no un comprobante de deuda ni un contrato laboral."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "big-tech", "text": "Mira el tema «Grandes tecnológicas»: empresas cuyas acciones puedes intentar gestionar en el simulador" }
+    },
+    {
+      "id": "what-is-an-etf",
+      "module": "market-basics",
+      "order": 2,
+      "title": "Qué es un ETF",
+      "screens": [
+        {
+          "title": "Una cesta en lugar de una sola manzana",
+          "emoji": "🧺",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Un ETF (fondo cotizado) es una cesta ya armada de decenas o cientos de acciones de distintas empresas, empaquetada en un solo valor. Al comprar una \"unidad\" de ETF, obtienes de inmediato una pequeña participación en todas las empresas de la cesta."
+          ]
+        },
+        {
+          "title": "Por qué esto importa para un principiante",
+          "emoji": "🎯",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "No hace falta adivinar qué empresa en concreto será la mejor: un ETF reparte tu inversión de inmediato entre muchas. Si a una empresa de la cesta le va mal, las demás pueden compensarlo."
+          ]
+        },
+        {
+          "title": "Ejemplos conocidos",
+          "emoji": "🗂️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Por ejemplo, SPY y VOO siguen a las 500 empresas más grandes de Estados Unidos, mientras que QQQ sigue a las 100 mayores empresas no financieras del Nasdaq. Una sola compra te da cobertura amplia del mercado."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Cuál es la principal diferencia entre un ETF y una sola acción?",
+          "options": ["Un ETF siempre crece más rápido que una sola acción", "Un ETF es una cesta ya armada de muchas empresas en un solo valor", "Un ETF no se puede comprar ni vender en la bolsa"],
+          "correctIndex": 1,
+          "explanation": "La idea clave de un ETF es repartir de inmediato la inversión en toda una cesta de activos, no garantizar un crecimiento mayor."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "broad-market", "text": "Échale un vistazo al tema «Mercado amplio»: ahí es justo donde están reunidos este tipo de fondos-cesta" }
+    },
+    {
+      "id": "what-are-bonds",
+      "module": "market-basics",
+      "order": 3,
+      "title": "Qué son los bonos",
+      "screens": [
+        {
+          "title": "Le prestas dinero a alguien",
+          "emoji": "🧾",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Un bono es, en esencia, un comprobante de préstamo. Al comprar un bono, le prestas dinero a un gobierno o a una empresa, y ellos se comprometen a devolver la deuda con intereses en una fecha determinada."
+          ]
+        },
+        {
+          "title": "Quién pide prestado",
+          "emoji": "🏛️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Casi siempre son gobiernos (por ejemplo, los bonos del Tesoro de EE. UU.) o grandes empresas que necesitan dinero para crecer. A cambio, pagan intereses de forma regular a quienes tienen los bonos."
+          ]
+        },
+        {
+          "title": "Por qué los bonos son más tranquilos que las acciones",
+          "emoji": "🧘",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "El precio de los bonos suele fluctuar menos que el de las acciones, y los pagos de intereses se conocen de antemano según las condiciones. Por eso a los bonos se les suele llamar la parte más \"tranquila\" de una cartera, aunque el riesgo no es cero."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Al comprar un bono, tú...",
+          "options": ["Te conviertes en copropietario de la empresa", "Le prestas dinero a un gobierno o a una empresa a cambio de intereses", "Compras una cesta de cientos de activos distintos"],
+          "correctIndex": 1,
+          "explanation": "Un bono es un instrumento de deuda: eres acreedor, no copropietario como en el caso de una acción."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "bonds-safety", "text": "Mira el tema «Bonos y seguridad»: ejemplos de este tipo de fondos" }
+    },
+    {
+      "id": "what-is-crypto",
+      "module": "market-basics",
+      "order": 4,
+      "title": "Qué es una criptomoneda",
+      "screens": [
+        {
+          "title": "Dinero sin banco central",
+          "emoji": "🪙",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Una criptomoneda es dinero digital que existe y se transfiere directamente entre personas, sin que un banco o un gobierno actúe como intermediario."
+          ]
+        },
+        {
+          "title": "Blockchain en palabras simples",
+          "emoji": "📒",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "En la base de la mayoría de las criptomonedas está el blockchain: un \"cuaderno\" compartido de registros de todas las transferencias, que guardan al mismo tiempo miles de computadoras en todo el mundo, por lo que es difícil de falsificar o alterar después."
+          ]
+        },
+        {
+          "title": "Vaivenes bruscos",
+          "emoji": "🎢",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Los precios de las criptomonedas pueden cambiar decenas de puntos porcentuales en solo unos días, mucho más bruscamente que la mayoría de las acciones. Es la clase de activo más interesante, pero también la más impredecible, de las que hay en Polaris."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué distingue principalmente a una criptomoneda de una acción común?",
+          "options": ["La cripta no tiene precio en absoluto", "La cripta no la emite una empresa ni está ligada a un banco central", "La cripta no se puede comprar ni vender"],
+          "correctIndex": 1,
+          "explanation": "La criptomoneda es un tipo de activo digital independiente, no ligado a una empresa o gobierno concreto, a diferencia de las acciones."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "crypto-leaders", "text": "Mira el tema «Líderes cripto»: las criptomonedas más grandes por tamaño de mercado" }
+    },
+    {
+      "id": "what-are-currencies-fx",
+      "module": "market-basics",
+      "order": 5,
+      "title": "Las divisas también son un activo",
+      "screens": [
+        {
+          "title": "El dinero de un país vale distinto en otro",
+          "emoji": "💱",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "El tipo de cambio es cuántas unidades de una divisa hay que dar para obtener una unidad de otra. Cambia constantemente, por eso una divisa también se puede considerar un tipo de activo aparte."
+          ]
+        },
+        {
+          "title": "Por qué el tipo de cambio se mueve",
+          "emoji": "📉",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "El tipo de cambio está influido por el estado de la economía del país, las decisiones de los bancos centrales sobre las tasas de interés, el comercio entre países y las expectativas generales de los inversores."
+          ]
+        },
+        {
+          "title": "Las divisas en Polaris",
+          "emoji": "🌍",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "El catálogo incluye decenas de divisas: puedes ver sus tipos de cambio solo por curiosidad y para entender cómo se conecta una economía con otra."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué influye principalmente en el tipo de cambio de una divisa?",
+          "options": ["Solo el clima del país", "El estado de la economía, las tasas del banco central y la situación general del comercio", "El diseño del billete"],
+          "correctIndex": 1,
+          "explanation": "El tipo de cambio se forma a partir de factores económicos del país, no de rasgos externos o casuales."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Busca la sección de divisas y mira cómo se movió el tipo de cambio euro-dólar durante el último año" }
+    },
+    {
+      "id": "what-is-an-exchange-and-price",
+      "module": "market-basics",
+      "order": 6,
+      "title": "Qué es una bolsa y de dónde sale el precio",
+      "screens": [
+        {
+          "title": "La bolsa es un gran mercado",
+          "emoji": "🏛️",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Una bolsa es un lugar (hoy en día casi siempre electrónico) donde se encuentran todos los que quieren comprar o vender un activo, y las operaciones se cierran al precio de mercado actual."
+          ]
+        },
+        {
+          "title": "Quién determina el precio",
+          "emoji": "🤝",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "El precio no lo fija una sola empresa ni una sola persona. Surge en el momento en que el precio que un comprador está dispuesto a pagar coincide con el precio que un vendedor está dispuesto a aceptar."
+          ]
+        },
+        {
+          "title": "Resumen del módulo",
+          "emoji": "🧭",
+          "accent": "#4FD1C5",
+          "paragraphs": [
+            "Ahora conoces los \"ladrillos\" básicos del mercado: acciones, ETF, bonos, cripto y divisas, y entiendes de dónde sale realmente el precio en la bolsa. En el próximo módulo veremos cómo leer esos precios sin entrar en pánico por sus movimientos."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "El precio de un activo en la bolsa lo determina...",
+          "options": ["El gobierno, una vez al año", "El encuentro entre la demanda de los compradores y la oferta de los vendedores", "Un generador de números aleatorios"],
+          "correctIndex": 1,
+          "explanation": "El precio nace de la interacción en vivo entre quienes quieren comprar y quienes quieren vender en el momento, no lo asigna nadie desde arriba."
+        },
+        {
+          "question": "¿Qué es cierto sobre los ETF?",
+          "options": ["Es una cesta de muchos activos en un solo valor", "Es lo mismo que un bono", "Un ETF solo se puede comprar una vez en la vida"],
+          "correctIndex": 0,
+          "explanation": "Un ETF es justamente eso, una cesta ya armada de activos, no un tipo de instrumento de deuda."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Abre el catálogo del mercado y encuentra al menos un ejemplo de cada tipo: una acción, un ETF, un fondo de bonos, cripto y una divisa" }
+    },
+
+    {
+      "id": "price-up-down-what-it-means",
+      "module": "reading-market",
+      "order": 1,
+      "title": "Qué significa cuando un precio sube o baja",
+      "screens": [
+        {
+          "title": "Más gente quiere comprar",
+          "emoji": "📈",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Cuando el precio de un activo sube, por lo general significa que en ese momento hay más gente que quiere comprarlo que venderlo. Si el precio baja, es al revés: hay más vendedores."
+          ]
+        },
+        {
+          "title": "No es una condena para la empresa",
+          "emoji": "🔍",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Que el precio caiga en un solo día no significa que la empresa sea \"mala\": puede ser una reacción a una noticia, al ánimo general del mercado, o algo que ni siquiera está directamente relacionado con el negocio."
+          ]
+        },
+        {
+          "title": "Mira distintas escalas de tiempo",
+          "emoji": "🗓️",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Un mismo activo puede verse muy distinto en un gráfico de un día que en uno de cinco años. Los movimientos de precio a corto plazo son ruido; el panorama largo cuenta una historia más completa."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Que el precio de una acción caiga en un solo día casi siempre significa que...",
+          "options": ["La empresa seguro va a quebrar pronto", "En ese momento hubo más vendedores que compradores; las razones varían", "La empresa dejó de existir"],
+          "correctIndex": 1,
+          "explanation": "El movimiento de precio a corto plazo es un balance de oferta y demanda en el momento, no una condena sobre todo el futuro de la empresa."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Abre cualquier acción y compara su gráfico de un día con el de un año" }
+    },
+    {
+      "id": "what-are-dividends-explained",
+      "module": "reading-market",
+      "order": 2,
+      "title": "Los dividendos con más detalle",
+      "screens": [
+        {
+          "title": "Un recordatorio",
+          "emoji": "💸",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Un dividendo es una parte de las ganancias que la empresa paga periódicamente a los accionistas solo por mantener la acción, sin necesidad de venderla."
+          ]
+        },
+        {
+          "title": "La rentabilidad por dividendo",
+          "emoji": "📐",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "La rentabilidad por dividendo muestra cuánto paga la empresa al año en relación con el precio actual de la acción, en porcentaje. Ayuda a comparar distintas empresas entre sí."
+          ]
+        },
+        {
+          "title": "No todas pagan",
+          "emoji": "🌱",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Las empresas jóvenes y de crecimiento rápido a menudo no pagan dividendos en absoluto: prefieren reinvertir todas sus ganancias en hacer crecer el negocio. Eso no es ni mejor ni peor, solo una estrategia distinta."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Por qué algunas empresas no pagan dividendos?",
+          "options": ["Porque está prohibido por ley", "Porque prefieren reinvertir las ganancias en su propio crecimiento", "Porque no tienen ganancias y nunca las tuvieron"],
+          "correctIndex": 1,
+          "explanation": "La falta de dividendos suele ser una decisión consciente de la empresa de destinar el dinero al crecimiento, y no indica automáticamente problemas."
+        }
+      ],
+      "tryIt": { "action": "open_theme", "theme": "dividend-giants", "text": "Compara la rentabilidad por dividendo de varias empresas del tema «Gigantes de dividendos»" }
+    },
+    {
+      "id": "what-is-volatility",
+      "module": "reading-market",
+      "order": 3,
+      "title": "Qué es la volatilidad",
+      "screens": [
+        {
+          "title": "Un columpio, no un ascensor",
+          "emoji": "🎡",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "La volatilidad es cuánto y con qué frecuencia sube y baja el precio de un activo. Una volatilidad alta son subidas y bajadas bruscas; una volatilidad baja es un movimiento suave y tranquilo."
+          ]
+        },
+        {
+          "title": "La volatilidad no siempre es mala",
+          "emoji": "⚖️",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Los activos más volátiles pueden subir más, pero también pueden caer más. Los menos volátiles suelen moverse con más calma en ambas direcciones. No es \"bueno\" ni \"malo\" en sí mismo, es una característica que conviene tener en cuenta."
+          ]
+        },
+        {
+          "title": "Compáralo a simple vista",
+          "emoji": "🔬",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "La cripta suele ser notablemente más volátil que los fondos de bonos. Las acciones de grandes empresas estables suelen estar en algún punto entre esos dos extremos."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Que un activo tenga alta volatilidad significa que...",
+          "options": ["Su precio se mueve de forma brusca y notable en ambas direcciones", "No se puede vender en absoluto", "Tiene garantizado un alto rendimiento"],
+          "correctIndex": 0,
+          "explanation": "La volatilidad describe la amplitud de las oscilaciones del precio, no garantiza ningún resultado."
+        }
+      ]
+    },
+    {
+      "id": "why-not-panic-on-dips",
+      "module": "reading-market",
+      "order": 4,
+      "title": "Por qué no hay que entrar en pánico en una caída",
+      "screens": [
+        {
+          "title": "Una caída es parte normal del camino",
+          "emoji": "🌊",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Un drawdown es la caída del valor de un activo o una cartera desde un máximo reciente. No es algo raro ni una catástrofe en sí misma, sino una parte normal de cómo se comporta el mercado con el tiempo."
+          ]
+        },
+        {
+          "title": "Vender en pánico convierte la caída en pérdida",
+          "emoji": "😰",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Mientras el activo no se venda, la baja del precio es solo un número en la pantalla. Vender justo durante una caída convierte una baja temporal en una pérdida definitiva y consolidada."
+          ]
+        },
+        {
+          "title": "Qué hacer en lugar de entrar en pánico",
+          "emoji": "🧘",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Es útil preguntarte de antemano: ¿cambió realmente el plan o la razón por la que compraste el activo? Si no, un movimiento de precio a corto plazo no necesariamente exige actuar de inmediato. La historia del mercado muestra que después de las caídas suele venir una recuperación, aunque eso nunca está garantizado para el futuro."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué pasa si vendes un activo justo durante una caída temporal?",
+          "options": ["La pérdida se vuelve definitiva y consolidada", "La pérdida desaparece automáticamente", "El activo vuelve automáticamente a su precio anterior"],
+          "correctIndex": 0,
+          "explanation": "Mientras el activo no se venda, la baja sigue siendo temporal en el papel. Vender justo en la caída consolida la pérdida."
+        }
+      ]
+    },
+    {
+      "id": "reading-a-chart",
+      "module": "reading-market",
+      "order": 5,
+      "title": "Cómo leer un gráfico",
+      "screens": [
+        {
+          "title": "Una línea y un área simples",
+          "emoji": "📉",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "El gráfico más simple es una línea que muestra el precio de cierre de cada período de tiempo. En Polaris suele rellenarse con un degradado por debajo para que sea más fácil captar la dirección general."
+          ]
+        },
+        {
+          "title": "Velas: un poco más de detalle",
+          "emoji": "🕯️",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Un gráfico de velas muestra cuatro precios a la vez para cada período: apertura, cierre, máximo y mínimo. El cuerpo de la vela va entre el precio de apertura y el de cierre; las \"mechas\" finas de arriba y abajo marcan los puntos extremos del período."
+          ]
+        },
+        {
+          "title": "Cambia la escala de tiempo",
+          "emoji": "🔎",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Un mismo activo se ve distinto en un gráfico de un día, de un mes o de un año. Es útil mirar varias escalas a la vez, en lugar de sacar conclusiones a partir de una sola imagen corta."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué muestra una sola vela en un gráfico de velas?",
+          "options": ["Solo el precio de cierre", "Los precios de apertura, cierre, máximo y mínimo del período", "El número total de operaciones en toda la historia del activo"],
+          "correctIndex": 1,
+          "explanation": "Una vela es una forma compacta de mostrar cuatro precios clave de un período elegido, todos a la vez."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Abre el gráfico de cualquier acción e intenta cambiar el período de un día a un año" }
+    },
+    {
+      "id": "metrics-explained",
+      "module": "reading-market",
+      "order": 6,
+      "title": "Qué significan los números junto a un activo",
+      "screens": [
+        {
+          "title": "Capitalización: el tamaño de la empresa",
+          "emoji": "📏",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "La capitalización es el precio de una acción multiplicado por todas las acciones que la empresa ha emitido. Muestra en cuánto valora el mercado a la empresa entera, y ayuda a comparar el tamaño de distintas empresas."
+          ]
+        },
+        {
+          "title": "P/E: caro o barato en relación con las ganancias",
+          "emoji": "🧮",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "El P/E muestra cuántas veces el precio de la acción supera la ganancia anual por acción de la empresa. Un P/E alto puede significar que el mercado espera un crecimiento rápido en el futuro; uno bajo, que las expectativas son más modestas. El número en sí no es \"bueno\" ni \"malo\"."
+          ]
+        },
+        {
+          "title": "Resumen del módulo",
+          "emoji": "🧭",
+          "accent": "#F6AD55",
+          "paragraphs": [
+            "Ahora puedes mirar el movimiento de precios con más calma, y entiendes los dividendos, la volatilidad y las métricas básicas. En el próximo módulo hablaremos de cómo armar una cartera con todo esto."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "La capitalización de una empresa se calcula como...",
+          "options": ["El precio de una acción × la cantidad de todas las acciones emitidas", "La ganancia anual menos todos los gastos", "La cantidad de empleados × el salario promedio"],
+          "correctIndex": 0,
+          "explanation": "Es una simple multiplicación que muestra el valor total de mercado de toda la empresa, sin relación directa con el número de empleados o las ganancias."
+        },
+        {
+          "question": "¿Qué muestra el indicador P/E?",
+          "options": ["Cuántas veces el precio de la acción supera la ganancia por acción", "El tipo de cambio de la empresa", "La cantidad de dividendos pagados en toda su historia"],
+          "correctIndex": 0,
+          "explanation": "El P/E es una relación entre precio y ganancia, una forma de calcular de manera aproximada si una acción parece \"cara\" respecto a lo que gana la empresa."
+        }
+      ]
+    },
+
+    {
+      "id": "what-is-diversification",
+      "module": "building-portfolio",
+      "order": 1,
+      "title": "No pongas todos los huevos en la misma canasta",
+      "screens": [
+        {
+          "title": "Una regla simple",
+          "emoji": "🧺",
+          "accent": "#68D391",
+          "paragraphs": [
+            "La diversificación es repartir el dinero entre distintos activos para que el fracaso de una empresa o de un sector no arrastre a toda la cartera."
+          ]
+        },
+        {
+          "title": "Una acción contra muchas",
+          "emoji": "⚠️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Si toda tu cartera es una sola acción, cualquier mala noticia sobre esa empresa golpea a toda la cartera de golpe. Si tienes 10 acciones de sectores distintos, el efecto de los problemas de una sola empresa suele ser mucho más suave.",
+            "En ese sentido, un ETF ya es diversificación lista para usar en un solo valor: está repartido de inmediato entre decenas o cientos de empresas."
+          ]
+        },
+        {
+          "title": "La diversificación no elimina el riesgo por completo",
+          "emoji": "🛡️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Suaviza los golpes de empresas individuales, pero no protege de una caída de todo el mercado. Es una herramienta para gestionar el riesgo, no una garantía contra las oscilaciones."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Para qué sirve la diversificación?",
+          "options": ["Para garantizar que nunca pierdas dinero", "Para que el fracaso de una empresa o de un sector no arrastre a toda la cartera", "Para pagar menos impuestos"],
+          "correctIndex": 1,
+          "explanation": "La diversificación reparte el riesgo entre distintos activos: suaviza las consecuencias, pero no elimina el riesgo por completo."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Intenta agregar a tu cartera activos de dos o tres temas distintos, en lugar de concentrarte en un solo ticker" }
+    },
+    {
+      "id": "risk-and-horizon",
+      "module": "building-portfolio",
+      "order": 2,
+      "title": "El riesgo y el horizonte temporal",
+      "screens": [
+        {
+          "title": "El horizonte tiene que ver con el tiempo",
+          "emoji": "🗓️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "El horizonte es cuánto tiempo falta para que alguien pueda necesitar el dinero invertido. Para algunos es un año, para otros veinte. De eso depende mucho la tranquilidad con la que se pueden llevar las oscilaciones del precio."
+          ]
+        },
+        {
+          "title": "Un horizonte largo da tiempo para recuperarse",
+          "emoji": "🌅",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Cuanto más lejos esté el momento en que realmente se necesitará el dinero, más tiempo tiene la cartera para sobrellevar caídas temporales y recuperarse. No es una garantía, pero es una diferencia real respecto a una situación en la que el dinero se necesita mañana."
+          ]
+        },
+        {
+          "title": "Un horizonte corto exige más cautela",
+          "emoji": "🎯",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Si el dinero se va a necesitar pronto, tiene sentido ser más cuidadoso con los activos que fluctúan mucho de precio: una caída justo antes del momento en que se necesita el dinero es especialmente incómoda."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Cómo suele relacionarse el horizonte de inversión con la actitud ante las oscilaciones de precio?",
+          "options": ["Cuanto más largo el horizonte, con más calma se pueden llevar las caídas temporales", "El horizonte no tiene ninguna relación con las oscilaciones de precio", "Cuanto más corto el horizonte, menos importa el precio"],
+          "correctIndex": 0,
+          "explanation": "Un horizonte largo da más tiempo para una posible recuperación tras las caídas, por eso las oscilaciones temporales suelen preocupar menos."
+        }
+      ]
+    },
+    {
+      "id": "themes-not-tickers",
+      "module": "building-portfolio",
+      "order": 3,
+      "title": "Temas en lugar de adivinar tickers",
+      "screens": [
+        {
+          "title": "Por qué es difícil adivinar un solo ticker",
+          "emoji": "🎲",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Elegir de antemano una sola empresa que resultará ser la mejor de su sector es una tarea difícil incluso para los profesionales. Demasiados factores influyen en el resultado de una sola acción."
+          ]
+        },
+        {
+          "title": "Un tema es una selección lista según el interés",
+          "emoji": "🗃️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "En Polaris, temas como \"Energía verde\" o \"Salud\" reúnen varias empresas y fondos relacionados. Es una forma de conocer todo un sector en lugar de apostarlo todo a una sola empresa."
+          ]
+        },
+        {
+          "title": "Cómo aprovecharlo",
+          "emoji": "🧭",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Puedes elegir un tema que simplemente te resuene, por interés o por valores personales, y ver qué hay dentro antes de decidir con qué profundizar."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Cuál es el sentido de los temas en Polaris?",
+          "options": ["Son, garantizado, las empresas más rentables", "Es una selección lista de empresas y fondos relacionados por interés o sector", "Es una lista de activos prohibidos para comprar"],
+          "correctIndex": 1,
+          "explanation": "Los temas son una forma de conocer un sector o una dirección a través de varios activos relacionados a la vez, no una promesa de ningún resultado."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Recorre la lista de temas en la sección «Mercados» y encuentra uno que te resuene personalmente" }
+    },
+    {
+      "id": "regularity-vs-timing",
+      "module": "building-portfolio",
+      "order": 4,
+      "title": "La regularidad en lugar de intentar acertar el momento",
+      "screens": [
+        {
+          "title": "Casi imposible atrapar el momento perfecto",
+          "emoji": "🎯",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Muchos principiantes quieren comprar justo en el punto más bajo del precio y vender justo en el más alto. En la práctica, casi nadie logra adivinar esos momentos de antemano, ni siquiera los profesionales."
+          ]
+        },
+        {
+          "title": "Invertir poco a poco y con regularidad",
+          "emoji": "🔁",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Uno de los enfoques más tranquilos es invertir pequeñas cantidades a intervalos regulares, sin importar lo que esté pasando con el precio en ese momento. Así, las compras se reparten de forma natural entre precios altos y bajos."
+          ]
+        },
+        {
+          "title": "Un ejemplo",
+          "emoji": "🧮",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Invertir 1200 de una sola vez en un día al azar es apostar a acertar un buen momento. Invertir 100 cada mes durante un año es una forma de no depender de si acertaste el momento o no."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Cuál es el sentido de invertir con regularidad en pequeñas partes?",
+          "options": ["Garantiza una rentabilidad más alta", "Reduce cuánto depende el resultado de adivinar el momento adecuado", "Es la única forma legal de invertir"],
+          "correctIndex": 1,
+          "explanation": "La regularidad no garantiza un resultado, pero elimina la necesidad de intentar atrapar el momento perfecto, algo que casi nadie logra hacer de forma constante."
+        }
+      ]
+    },
+    {
+      "id": "building-your-first-portfolio",
+      "module": "building-portfolio",
+      "order": 5,
+      "title": "Cómo armar tu primera cartera",
+      "screens": [
+        {
+          "title": "Por dónde empezar",
+          "emoji": "🧱",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Antes de elegir activos, es útil entender dos cosas: por cuánto tiempo se va a apartar este dinero (el horizonte) y qué tan tranquilo te sientes frente a las oscilaciones de precio (tu tolerancia al riesgo)."
+          ]
+        },
+        {
+          "title": "Un ejemplo de estructura, no un consejo",
+          "emoji": "🗺️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Esto es solo una ilustración de un enfoque, no una recomendación: alguien podría mantener parte de su cartera en ETF de mercado amplio, parte en fondos de bonos para más tranquilidad, y parte en temas que le interesan personalmente. Las proporciones son distintas para cada persona y dependen de su situación."
+          ]
+        },
+        {
+          "title": "No está tallado en piedra",
+          "emoji": "🔧",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Una cartera se puede y se debe ir cambiando poco a poco a medida que crecen la experiencia y la comprensión. La primera versión de la cartera es un punto de partida, no una decisión final para siempre."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué conviene definir antes de armar una cartera?",
+          "options": ["El horizonte de inversión y tu propia actitud ante las oscilaciones de precio", "El tipo de cambio exacto del próximo año", "El nombre de la empresa que desarrolló la bolsa"],
+          "correctIndex": 0,
+          "explanation": "El horizonte y la tolerancia al riesgo son la base de la que parte cualquier estructura de cartera."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Intenta armar tu primera combinación en el simulador: por ejemplo, un poco de ETF amplio, un poco de fondo de bonos y algo de un tema que te interese" }
+    },
+    {
+      "id": "rebalancing-simple",
+      "module": "building-portfolio",
+      "order": 6,
+      "title": "Reequilibrio y resumen del módulo",
+      "screens": [
+        {
+          "title": "Qué es el reequilibrio",
+          "emoji": "⚖️",
+          "accent": "#68D391",
+          "paragraphs": [
+            "El reequilibrio es el ajuste periódico de la cartera para devolverla a las proporciones elegidas originalmente. Si una parte de la cartera creció mucho y ahora ocupa mucho más espacio del previsto, se puede redistribuir parte de ella."
+          ]
+        },
+        {
+          "title": "Para qué sirve",
+          "emoji": "🎯",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Con el tiempo, los distintos activos crecen a ritmos diferentes, y la cartera se va \"desviando\" poco a poco del plan original. El reequilibrio devuelve el balance de riesgo a lo que resultaba cómodo al principio."
+          ]
+        },
+        {
+          "title": "Resumen del módulo",
+          "emoji": "🧭",
+          "accent": "#68D391",
+          "paragraphs": [
+            "Ahora tienes la base: diversificación, horizonte, temas en lugar de adivinar tickers, regularidad y reequilibrio. En el último módulo hablaremos de psicología, probablemente la parte más difícil de invertir."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "Reequilibrar una cartera es...",
+          "options": ["Vender todos los activos por completo y salir del mercado", "Devolver las proporciones de la cartera a lo planeado originalmente", "Comprar acciones nuevas todos los días"],
+          "correctIndex": 1,
+          "explanation": "El reequilibrio es un ajuste, no una salida total ni una operativa diaria activa."
+        },
+        {
+          "question": "¿Cuál de estas opciones ayuda a reducir el efecto de una empresa con mal desempeño sobre toda la cartera?",
+          "options": ["La diversificación", "Comprar solo una acción", "Seguir sus noticias todos los días"],
+          "correctIndex": 0,
+          "explanation": "Es justamente la diversificación la que reparte el riesgo entre distintos activos, suavizando el efecto de los problemas de una sola empresa."
+        }
+      ]
+    },
+
+    {
+      "id": "what-is-fomo",
+      "module": "psychology-mistakes",
+      "order": 1,
+      "title": "Qué es el FOMO",
+      "screens": [
+        {
+          "title": "¿Todos compran y yo no?",
+          "emoji": "😬",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "El FOMO, el \"miedo a quedarse fuera\", es la sensación ansiosa de que todos a tu alrededor ya están ganando dinero con algo mientras tú te quedas afuera. Empuja a tomar decisiones rápidas sin una reflexión tranquila."
+          ]
+        },
+        {
+          "title": "De dónde viene esta sensación",
+          "emoji": "📱",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Las redes sociales, las noticias sobre precios que suben rápido, las historias de conocidos que \"llegaron a tiempo\": todo eso aumenta la ansiedad y crea una sensación de urgencia, incluso cuando no hay una urgencia real."
+          ]
+        },
+        {
+          "title": "Cómo enfriarte",
+          "emoji": "🧊",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Una regla útil: si una decisión surge de repente y sientes que quieres actuar ya mismo, primero haz una pausa. Un buen plan rara vez exige una reacción inmediata sin pensarlo."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Hacia qué tipo de decisión suele empujar más el FOMO?",
+          "options": ["Hacia un plan tranquilo y pensado de antemano", "Hacia una acción rápida por la ansiedad de perderse el momento", "Hacia dejar de invertir por completo, para siempre"],
+          "correctIndex": 1,
+          "explanation": "El FOMO tiene que ver con la impulsividad y la ansiedad de perderse el momento, no con una decisión bien pensada."
+        }
+      ]
+    },
+    {
+      "id": "fear-and-greed",
+      "module": "psychology-mistakes",
+      "order": 2,
+      "title": "Codicia y miedo",
+      "screens": [
+        {
+          "title": "Dos sentimientos poderosos",
+          "emoji": "😨",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "La codicia empuja a comprar cada vez más cuando el precio ya está subiendo rápido y todos a tu alrededor hablan de su éxito. El miedo empuja a vender en pánico cuando el precio cae de golpe. Ambos sentimientos estorban a la hora de seguir un plan con calma."
+          ]
+        },
+        {
+          "title": "Cómo se ve esto en un gráfico",
+          "emoji": "📊",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Las subidas bruscas del precio suelen coincidir con la codicia generalizada, y los desplomes bruscos, con el pánico generalizado. Justo en esos momentos, las decisiones tomadas por emociones suelen resultar las menos acertadas."
+          ]
+        },
+        {
+          "title": "Qué ayuda",
+          "emoji": "📝",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Un plan pensado de antemano, más un poco de paciencia, es un contrapeso sencillo pero eficaz frente a las emociones del momento. Un plan hecho con la cabeza fría suele ser más confiable que una decisión tomada por emoción en el instante."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué es lo que más suele impedir seguir un plan pensado de antemano?",
+          "options": ["Emociones fuertes: codicia y miedo en el momento", "Una diversificación demasiado detallada", "Un horizonte de inversión demasiado largo"],
+          "correctIndex": 0,
+          "explanation": "Son justamente las reacciones emocionales durante los movimientos bruscos de precio las que más suelen desviar a una persona de un plan pensado de antemano."
+        }
+      ]
+    },
+    {
+      "id": "why-nobody-catches-the-bottom",
+      "module": "psychology-mistakes",
+      "order": 3,
+      "title": "Por qué nadie puede atrapar el fondo",
+      "screens": [
+        {
+          "title": "El fondo solo se ve después",
+          "emoji": "🔎",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "El punto más bajo de un precio solo se vuelve evidente en retrospectiva, cuando el precio ya empezó a subir. En medio de una caída, nadie puede estar seguro de si va a continuar o si ya se detuvo."
+          ]
+        },
+        {
+          "title": "Hasta los profesionales se equivocan",
+          "emoji": "🎓",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Los gestores experimentados, con equipos de analistas y décadas de práctica, también se equivocan regularmente con el momento exacto. Eso no es falta de conocimiento, simplemente es un problema extremadamente difícil."
+          ]
+        },
+        {
+          "title": "Un enfoque más confiable",
+          "emoji": "🧭",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "En lugar de intentar atrapar el momento perfecto, mucha gente confía en el tiempo que pasa en el mercado, en invertir con regularidad y en un plan hecho de antemano: cosas que no requieren predecir el futuro."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Por qué es tan difícil atrapar exactamente el punto más bajo de un precio?",
+          "options": ["Porque solo se vuelve evidente después de que el precio ya empezó a subir", "Porque las bolsas ocultan esa información", "Porque en realidad el fondo no existe"],
+          "correctIndex": 0,
+          "explanation": "El fondo solo se identifica en retrospectiva; en medio de una caída es imposible saber con certeza si va a continuar o si ya se detuvo."
+        }
+      ]
+    },
+    {
+      "id": "what-not-to-believe",
+      "module": "psychology-mistakes",
+      "order": 4,
+      "title": "En qué no conviene creer",
+      "screens": [
+        {
+          "title": "\"Rentabilidad garantizada\"",
+          "emoji": "🚩",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Ninguna fuente honesta puede garantizar una rentabilidad concreta de antemano: el precio de cualquier activo de mercado puede tanto subir como bajar. Una promesa de rentabilidad \"garantizada\" es una señal de alerta."
+          ]
+        },
+        {
+          "title": "\"Señal secreta\" o \"información privilegiada\"",
+          "emoji": "🕵️",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Las ofertas de \"compra ahora mismo según una señal secreta\" o las promesas de información exclusiva a la que nadie más tiene acceso casi siempre terminan siendo estafas o intentos de vender un curso inútil."
+          ]
+        },
+        {
+          "title": "Una regla simple para desconfiar",
+          "emoji": "🧠",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Si una oferta suena demasiado buena para ser verdad, probablemente lo sea. Conviene ser escéptico ante promesas de resultados rápidos y garantizados, tanto en cripto como en acciones."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué frase debería despertar sospechas?",
+          "options": ["\"El precio puede tanto subir como bajar\"", "\"Rentabilidad garantizada del 30% al mes\"", "\"Esto es un simulador educativo, no un consejo financiero\""],
+          "correctIndex": 1,
+          "explanation": "Garantizar una rentabilidad alta y concreta es imposible en un mercado real: es una señal clásica de engaño o de una oferta de mala fe."
+        }
+      ]
+    },
+    {
+      "id": "what-is-long-term",
+      "module": "psychology-mistakes",
+      "order": 5,
+      "title": "Qué significa realmente el «largo plazo»",
+      "screens": [
+        {
+          "title": "Se trata de años, no de días",
+          "emoji": "🗓️",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "El \"largo plazo\" en inversiones normalmente significa un horizonte de varios años o más, no unos días o semanas. Es un ritmo de toma de decisiones completamente distinto al de intentar atrapar un movimiento de precio a corto plazo."
+          ]
+        },
+        {
+          "title": "Por qué esto reduce el efecto de los vaivenes",
+          "emoji": "🌊",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "En un tramo largo de tiempo, las subidas y bajadas de precio a corto plazo suelen importar menos que la dirección general a lo largo de los años. Un horizonte largo deja más margen para recuperarse de caídas temporales."
+          ]
+        },
+        {
+          "title": "Una aclaración importante",
+          "emoji": "💡",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "El largo plazo es un plan elegido desde el principio para varios años, no una excusa para mantener un activo \"a ver si suena la flauta\" simplemente porque cayó y no quieres admitirlo. La diferencia está justo en si el horizonte se planeó de antemano."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Qué describe mejor el enfoque de «largo plazo»?",
+          "options": ["Un horizonte de inversión elegido de antemano, para varios años", "Mantener cualquier activo para siempre, pase lo que pase, por principio", "Vender todo cada semana y volver a comprar"],
+          "correctIndex": 0,
+          "explanation": "El enfoque a largo plazo tiene que ver con un horizonte planeado desde el principio, no con mantener a ciegas cualquier activo sin ningún plan."
+        }
+      ]
+    },
+    {
+      "id": "graduation-recap",
+      "module": "psychology-mistakes",
+      "order": 6,
+      "title": "Completaste todo el curso",
+      "screens": [
+        {
+          "title": "¡Felicidades!",
+          "emoji": "🎉",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Completaste los cinco módulos: desde por qué invertir, hasta la psicología y los errores comunes de un principiante. Eso ya es más de lo que sabe la mayoría de la gente cuando descubre el tema de las inversiones por primera vez."
+          ]
+        },
+        {
+          "title": "Un breve repaso del camino",
+          "emoji": "🛤️",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "La inflación y el interés compuesto explicaron para qué sirve todo esto. Las acciones, los ETF, los bonos, la cripta y las divisas mostraron de qué está hecho el mercado. Leer gráficos y métricas te ayudó a no tenerle miedo a los números. La diversificación y el horizonte te ayudaron a armar tu primera cartera. Y la psicología, la parte más humana, ayuda a no cometer los errores típicos de un principiante."
+          ]
+        },
+        {
+          "title": "Qué sigue",
+          "emoji": "🔭",
+          "accent": "#F687B3",
+          "paragraphs": [
+            "Lo que sigue es práctica, a tu propio ritmo tranquilo: prueba, observa, vuelve a las lecciones cuando necesites refrescar la memoria. Recuerda: Polaris es un simulador para aprender, no un consejo financiero personal, y tu cartera aquí es virtual, no dinero real."
+          ]
+        }
+      ],
+      "quiz": [
+        {
+          "question": "¿Cuál de estas es la descripción más precisa de Polaris?",
+          "options": ["Una herramienta para operar de verdad con dinero real", "Un simulador educativo con precios reales en vivo y una cartera virtual", "Un asesor financiero personal que da consejos sobre valores concretos"],
+          "correctIndex": 1,
+          "explanation": "Polaris es aprendizaje y práctica con precios reales, pero sin dinero real y sin recomendaciones de inversión personalizadas."
+        },
+        {
+          "question": "¿Cuál de estos enfoques está más cerca de lo que enseña todo el curso?",
+          "options": ["Un plan tranquilo, diversificación, horizonte largo y paciencia", "Perseguir una señal rápida e intentar atrapar el momento perfecto", "Poner todo el dinero en una sola idea que está de moda ahora"],
+          "correctIndex": 0,
+          "explanation": "Todo el curso apunta de forma constante hacia un enfoque tranquilo y bien pensado, no hacia intentar adivinar un momento de suerte."
+        }
+      ],
+      "tryIt": { "action": "open_market", "text": "Recorre el catálogo del mercado: ahora ya sabes qué buscar ahí" },
+      "disclaimer": "Polaris sigue siendo un simulador educativo: nada en la aplicación constituye una recomendación de inversión personalizada, y la cartera virtual no está vinculada a dinero real."
+    }
+  ]
+}

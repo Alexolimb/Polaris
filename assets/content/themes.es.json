@@ -1,0 +1,110 @@
+{
+  "locale": "es",
+  "themes": [
+    {
+      "id": "ai",
+      "title": "Inteligencia artificial",
+      "emoji": "🤖",
+      "accent": "#8B7CFF",
+      "description": "Empresas que fabrican el \"cerebro\" de las máquinas: chips, modelos de entrenamiento, servicios en la nube. Aquí entran gigantes como Nvidia y Microsoft, además del fondo ARKK, que reúne varias de estas empresas en una sola cesta. El tema lleva años en boca de todos, y por eso mismo es fácil dejarse llevar por el entusiasmo en lugar de los datos."
+    },
+    {
+      "id": "dividend-giants",
+      "title": "Gigantes de dividendos",
+      "emoji": "💰",
+      "accent": "#F6C453",
+      "description": "Empresas maduras y estables —desde Johnson & Johnson hasta Coca-Cola— que llevan mucho tiempo repartiendo parte de sus ganancias con los accionistas de forma regular. La gente mantiene estas acciones no por un crecimiento rápido, sino por la previsibilidad: algo parecido a un piso que alquilas y del que cobras una renta. Que haya sido estable en el pasado no garantiza que los dividendos se sigan pagando mañana."
+    },
+    {
+      "id": "green-energy",
+      "title": "Energía verde",
+      "emoji": "🌱",
+      "accent": "#4ADE80",
+      "description": "Empresas de energía solar y renovable: fabricantes de paneles, inversores y fondos que cubren todo el sector. El tema está ligado a la transición a largo plazo del mundo hacia la energía limpia, así que puede moverse a saltos, siguiendo la política y los subsidios de distintos países, no solo la demanda."
+    },
+    {
+      "id": "big-tech",
+      "title": "Grandes tecnológicas",
+      "emoji": "💻",
+      "accent": "#5EC8F8",
+      "description": "Las empresas tecnológicas más reconocibles del planeta: Apple, Microsoft, Amazon, Google, Meta, Nvidia. Cada una tiene su propio negocio —teléfonos, nube, publicidad, redes sociales, chips—, pero lo que las une es su enorme escala y que sus productos los usa la gente todos los días."
+    },
+    {
+      "id": "health",
+      "title": "Salud",
+      "emoji": "🩺",
+      "accent": "#F87171",
+      "description": "Farmacéuticas, seguros médicos y biotecnología: empresas que fabrican medicamentos, vacunas y servicios médicos. La demanda de salud no desaparece en las crisis, así que el sector suele considerarse más \"tranquilo\", aunque algunas empresas puedan tener subidas y bajadas bruscas por noticias sobre investigaciones."
+    },
+    {
+      "id": "finance",
+      "title": "Finanzas",
+      "emoji": "🏦",
+      "accent": "#38BDF8",
+      "description": "Bancos, sistemas de pago y bancos de inversión: JPMorgan, Visa, Mastercard, Goldman Sachs y otros. Estas empresas ganan dinero con el movimiento del dinero en la economía en general, así que su desempeño suele reflejar el estado general del mercado más que el de un sector concreto."
+    },
+    {
+      "id": "consumer",
+      "title": "Consumo",
+      "emoji": "🛒",
+      "accent": "#FBBF24",
+      "description": "Empresas cuyos productos están en la casa o el refrigerador de la mayoría: Walmart, Procter & Gamble, Coca-Cola, McDonald's, Nike. La gente compra estas cosas tanto en buenos tiempos como en tiempos difíciles, por eso el tema suele llamarse \"defensivo\", aunque eso no significa que sus precios nunca cambien."
+    },
+    {
+      "id": "semiconductors",
+      "title": "Semiconductores",
+      "emoji": "🔬",
+      "accent": "#A78BFA",
+      "description": "Empresas que fabrican chips, el \"corazón\" de cualquier computadora, teléfono o automóvil. Nvidia, AMD, Intel, Broadcom y fondos especializados forman parte de este grupo. La demanda de chips es cíclica: se dispara con las nuevas tecnologías y se enfría cuando los almacenes de las fábricas se saturan."
+    },
+    {
+      "id": "ev",
+      "title": "Vehículos eléctricos",
+      "emoji": "🔋",
+      "accent": "#34D399",
+      "description": "Fabricantes de vehículos eléctricos y automotrices tradicionales que también están dando el salto a la tracción eléctrica: Tesla, GM, Ford, Rivian, Lucid. Es una industria joven y de cambio rápido: algunas empresas ya son rentables, otras apenas están llegando a la producción en serie, y la diferencia de estabilidad entre ellas es grande."
+    },
+    {
+      "id": "space",
+      "title": "Espacio",
+      "emoji": "🚀",
+      "accent": "#818CF8",
+      "description": "Grandes contratistas de defensa y aeroespacial: Boeing, Lockheed Martin, RTX, Northrop Grumman. Sus ingresos están muy ligados a contratos gubernamentales (programas militares y espaciales), no solo a los proyectos espaciales privados de los que más se habla en las noticias."
+    },
+    {
+      "id": "cybersecurity",
+      "title": "Ciberseguridad",
+      "emoji": "🛡️",
+      "accent": "#22D3EE",
+      "description": "Empresas que protegen datos y redes contra ataques: CrowdStrike, Palo Alto Networks, Fortinet, Zscaler y fondos temáticos. La demanda de ciberseguridad crece junto con la dependencia del mundo hacia internet, pero el sector todavía cambia muy rápido a nivel tecnológico."
+    },
+    {
+      "id": "crypto-leaders",
+      "title": "Líderes cripto",
+      "emoji": "🪙",
+      "accent": "#FB923C",
+      "description": "Las criptomonedas más grandes por tamaño de mercado: Bitcoin, Ethereum, Solana, BNB, XRP, Cardano. Es una clase de activo independiente, muy joven y notablemente más volátil que las acciones: aquí los precios pueden cambiar decenas de puntos porcentuales en solo unos días."
+    },
+    {
+      "id": "broad-market",
+      "title": "Mercado amplio (ETF indexados)",
+      "emoji": "🌐",
+      "accent": "#60A5FA",
+      "description": "Fondos que, con una sola compra, te dan una participación en cientos de empresas a la vez: SPY, VOO, VTI, QQQ, DIA, IWM. Es una forma de no tener que elegir un \"ganador\" entre acciones individuales, sino comprar directamente un pedazo de toda la economía o de un índice importante como el S&P 500."
+    },
+    {
+      "id": "bonds-safety",
+      "title": "Bonos y seguridad",
+      "emoji": "🧱",
+      "accent": "#94A3B8",
+      "description": "Fondos de bonos —en esencia, préstamos a gobiernos o grandes empresas que pagan intereses—: BND, AGG, TLT, IEF, SHY, LQD. Suelen fluctuar menos en precio que las acciones, por lo que a menudo se mantienen como la parte más tranquila de una cartera, no para buscar un crecimiento rápido."
+    },
+    {
+      "id": "real-estate",
+      "title": "Bienes raíces",
+      "emoji": "🏢",
+      "accent": "#FCA5A5",
+      "description": "Fondos inmobiliarios, como VNQ, que invierten en acciones de empresas dueñas de centros comerciales, almacenes y viviendas. Es una forma de tener exposición al sector inmobiliario sin comprar una propiedad real, con la misma sensibilidad a las tasas de interés y al estado de la economía."
+    }
+  ]
+}

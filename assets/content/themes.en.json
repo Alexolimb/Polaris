@@ -1,0 +1,110 @@
+{
+  "locale": "en",
+  "themes": [
+    {
+      "id": "ai",
+      "title": "Artificial Intelligence",
+      "emoji": "🤖",
+      "accent": "#8B7CFF",
+      "description": "Companies that build the \"brains\" for machines: chips, training models, cloud services. This includes giants like Nvidia and Microsoft, as well as the ARKK fund, which bundles several of these companies into one basket. The theme has been buzzing for years — which is exactly why it's so easy to get swept up in the hype instead of the facts."
+    },
+    {
+      "id": "dividend-giants",
+      "title": "Dividend Giants",
+      "emoji": "💰",
+      "accent": "#F6C453",
+      "description": "Mature, stable companies — from Johnson & Johnson to Coca-Cola — that have long and regularly shared part of their profits with shareholders. People hold these stocks not for fast growth but for predictability: a bit like an apartment you rent out for steady income. Stability in the past doesn't guarantee dividends will keep being paid tomorrow."
+    },
+    {
+      "id": "green-energy",
+      "title": "Green Energy",
+      "emoji": "🌱",
+      "accent": "#4ADE80",
+      "description": "Solar and renewable energy companies — panel and inverter makers, plus whole sector funds. The theme is tied to the world's long-term shift toward clean energy, so it can move in fits and starts, following policy and subsidies in different countries rather than demand alone."
+    },
+    {
+      "id": "big-tech",
+      "title": "Big Tech",
+      "emoji": "💻",
+      "accent": "#5EC8F8",
+      "description": "The most recognizable tech companies on the planet — Apple, Microsoft, Amazon, Google, Meta, Nvidia. Each has its own business: phones, cloud, ads, social media, chips — but what unites them is enormous scale and products people use every single day."
+    },
+    {
+      "id": "health",
+      "title": "Health",
+      "emoji": "🩺",
+      "accent": "#F87171",
+      "description": "Pharmaceuticals, health insurance, and biotech — companies that make medicines, vaccines, and medical services. Demand for health doesn't disappear during a downturn, so the sector is often seen as more \"calm,\" though individual companies can still swing sharply on research news."
+    },
+    {
+      "id": "finance",
+      "title": "Finance",
+      "emoji": "🏦",
+      "accent": "#38BDF8",
+      "description": "Banks, payment systems, and investment banks — JPMorgan, Visa, Mastercard, Goldman Sachs, and others. These companies earn money from how cash moves through the economy as a whole, so their fortunes often reflect the overall state of the market more than any single industry."
+    },
+    {
+      "id": "consumer",
+      "title": "Consumer",
+      "emoji": "🛒",
+      "accent": "#FBBF24",
+      "description": "Companies whose products sit in most people's homes or fridges: Walmart, Procter & Gamble, Coca-Cola, McDonald's, Nike. People buy these things in good times and hard times alike, which is why the theme is often called \"defensive\" — though that doesn't mean their prices never move."
+    },
+    {
+      "id": "semiconductors",
+      "title": "Semiconductors",
+      "emoji": "🔬",
+      "accent": "#A78BFA",
+      "description": "Companies that make chips — the \"heart\" of every computer, phone, and car. Nvidia, AMD, Intel, Broadcom, and specialized funds all belong here. Demand for chips is cyclical: it surges with new technology, then cools off when factory warehouses fill up."
+    },
+    {
+      "id": "ev",
+      "title": "Electric Vehicles",
+      "emoji": "🔋",
+      "accent": "#34D399",
+      "description": "Electric vehicle makers and traditional automakers switching to electric power — Tesla, GM, Ford, Rivian, Lucid. It's a young, fast-changing industry: some companies are already profitable, others are just reaching mass production, and the gap in stability between them is wide."
+    },
+    {
+      "id": "space",
+      "title": "Space",
+      "emoji": "🚀",
+      "accent": "#818CF8",
+      "description": "Large defense and aerospace contractors — Boeing, Lockheed Martin, RTX, Northrop Grumman. Their revenue is closely tied to government contracts (military and space programs), not just the private space projects that tend to make the news."
+    },
+    {
+      "id": "cybersecurity",
+      "title": "Cybersecurity",
+      "emoji": "🛡️",
+      "accent": "#22D3EE",
+      "description": "Companies that protect data and networks from breaches — CrowdStrike, Palo Alto Networks, Fortinet, Zscaler, and themed funds. Demand for cybersecurity grows along with the world's dependence on the internet, but the sector still changes technologically at a fast pace."
+    },
+    {
+      "id": "crypto-leaders",
+      "title": "Crypto Leaders",
+      "emoji": "🪙",
+      "accent": "#FB923C",
+      "description": "The largest cryptocurrencies by market size — Bitcoin, Ethereum, Solana, BNB, XRP, Cardano. This is an independent, very young, and noticeably more volatile asset class compared to stocks — prices here can swing by tens of percent in just a few days."
+    },
+    {
+      "id": "broad-market",
+      "title": "Broad Market (Index ETFs)",
+      "emoji": "🌐",
+      "accent": "#60A5FA",
+      "description": "Funds that give you a stake in hundreds of companies with a single purchase — SPY, VOO, VTI, QQQ, DIA, IWM. It's a way to skip picking a \"winner\" among individual stocks and instead buy a slice of the whole economy or a major index like the S&P 500."
+    },
+    {
+      "id": "bonds-safety",
+      "title": "Bonds & Safety",
+      "emoji": "🧱",
+      "accent": "#94A3B8",
+      "description": "Bond funds — essentially loans to governments or large companies that pay interest: BND, AGG, TLT, IEF, SHY, LQD. They usually swing less in price than stocks, so people often hold them as the calmer part of a portfolio rather than for fast growth."
+    },
+    {
+      "id": "real-estate",
+      "title": "Real Estate",
+      "emoji": "🏢",
+      "accent": "#FCA5A5",
+      "description": "Real estate funds, like VNQ, that invest in the stocks of companies that own shopping malls, warehouses, and housing. It's a way to get exposure to real estate without buying an actual property — with the same sensitivity to interest rates and the state of the economy."
+    }
+  ]
+}
