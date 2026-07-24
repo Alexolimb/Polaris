@@ -1,17 +1,48 @@
-# polaris
+# Polaris
 
-A new Flutter project.
+**Симулятор инвестиций + академия для новичков.** Учись инвестировать без риска: виртуальные
+$10 000, (по возможности) реальные котировки, AI-наставник Cosmo и 30 уроков. Flutter, Windows + Android.
 
-## Getting Started
+> Публичный продукт. Тема оформления — «Полярная звезда»: звёздный фон, маскот Cosmo. Языки: en / ru / es.
 
-This project is a starting point for a Flutter application.
+## Вкладки
+1. **Портфель** — позиции, стоимость, динамика.
+2. **Рынок** — каталог активов, темы-подборки, карточка актива (график 1Д/1Н/1М/1Г, дивиденды).
+3. **Cosmo** — AI-наставник (чат со стримингом ответов).
+4. **Учёба** — 30 уроков + глоссарий + «попробуй на своём портфеле».
+5. **Ещё** — настройки (язык, уведомления), брокеры, о приложении, приватность, легалка.
 
-A few resources to get you started if this is your first Flutter project:
+## Архитектура
+- **Ядро-симулятор** `lib/services/sim_engine.dart` — чистый Dart. Все суммы в **центах (int)**,
+  количества бумаг до 1e-8; операция проходит целиком или бросает `SimError`. Старт: $10 000.
+- **Состояние** `lib/state/` (`Portfolio/Market/Chat/Learn/AppSettings`) раздаётся через `AppScope`.
+  Персист — `shared_preferences` (`lib/services/storage.dart`).
+- **Сеть** `lib/services/api.dart` (REST) + `ai.dart` (SSE-стрим Cosmo). Контракт `v1` — см. шапки этих файлов.
+  Транспорты подменяемы → тесты идут без сети.
+- **Контент** `assets/content/*.json` (уроки/темы/глоссарий ×3 языка), загрузка — `lib/services/lessons.dart`.
+- **Локализация** `lib/l10n/app_*.arb` → генерится при `flutter pub get` / `build`.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### Работа без сервера
+Без заданного `baseUrl` приложение работает **офлайн на встроенных фикстурах** (рынок), а Cosmo
+показывает понятное сообщение об отсутствии связи. Вшитых ключей/секретов в приложении нет.
+Бэкенд (Cloudflare Worker: прокси котировок + AI) — отдельный компонент, см. `server/` (в разработке).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Запуск и сборка
+```bash
+flutter pub get              # зависимости
+flutter run -d windows       # запуск на Windows
+flutter build windows        # релиз-сборка Windows  → build/windows/x64/runner/Release/polaris.exe
+flutter build apk            # релиз-сборка Android
+flutter analyze              # статический анализ (ожидается: 0 issues)
+flutter test                 # тесты (ожидается: все зелёные, 236 шт.)
+```
+
+## Резервные копии (правило «ни одна вещь в одном экземпляре»)
+- **git** — этот репозиторий (история версий).
+- **Диск F:** — `F:\BACKUP_CODE\<дата>\polaris`.
+- **GitHub** — приватный репо `Polaris` *(TODO: настроить remote)*.
+- Паспорт: `Brain\obsidian\Projects\Polaris — инвест-симулятор.md`.
+
+## Требования
+- Flutter SDK (на этой машине — `C:\dev\flutter\bin`), Dart ^3.12.
+- Держать проект в ASCII-пути (`C:\dev\...`): кириллица в пути ломает Flutter/Gradle.
