@@ -333,11 +333,21 @@ class PolarisApi {
   }
 
   /// Время терпимо к формату: epoch-миллисекунды или ISO-строка.
+  ///
+  /// Обязательно приводим к ЛОКАЛЬНОМУ времени. Раньше момент оставался в UTC,
+  /// и подписи на графике врали на величину часового пояса: в Мадриде (UTC+2)
+  /// при скраббинге показывалось «17:00» там, где по часам пользователя 19:00,
+  /// а поздним вечером — ещё и вчерашняя ДАТА.
+  ///
+  /// На датах-без-времени (`"2026-08-27"` у дивидендов) это ничего не меняет:
+  /// `DateTime.tryParse` для строки без «Z» и без смещения уже возвращает
+  /// локальную полночь, и `toLocal()` для неё — тождество.
   static DateTime? _asTime(Object? v) {
     if (v is num) {
-      return DateTime.fromMillisecondsSinceEpoch(v.toInt(), isUtc: true);
+      return DateTime.fromMillisecondsSinceEpoch(v.toInt(), isUtc: true)
+          .toLocal();
     }
-    if (v is String) return DateTime.tryParse(v);
+    if (v is String) return DateTime.tryParse(v)?.toLocal();
     return null;
   }
 }

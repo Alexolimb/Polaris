@@ -4,6 +4,19 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Реквизиты подписи release читаем из android/key.properties (файл НЕ в git).
+// Если его нет — падать нельзя (иначе CI и чужая машина не соберут вообще),
+// поэтому мягкий фолбэк на debug с явным предупреждением в лог сборки.
+val keystoreProperties = java.util.Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
+} else {
+    logger.warn("key.properties не найден — release будет подписан DEBUG-ключом. " +
+        "Такой APK нельзя публиковать и он не встанет поверх подписанной версии.")
+}
+val hasReleaseKey = keystoreProperties.getProperty("storeFile") != null
+
 android {
     namespace = "com.alexolimb.polaris"
     compileSdk = flutter.compileSdkVersion
@@ -27,11 +40,27 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (hasReleaseKey) {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Постоянный release-ключ (см. key.properties). Раньше здесь стоял
+            // debug-ключ: такой APK нельзя публиковать в сторе, и он не
+            // встаёт поверх версии, подписанной другим ключом.
+            signingConfig = if (hasReleaseKey) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }
