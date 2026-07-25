@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../state/app_settings.dart';
 import '../../theme/theme.dart';
+import '../../widgets/cosmo/cosmo_mascot.dart';
 import '../../widgets/fx/glow.dart';
 import '../../widgets/fx/motion.dart';
 import '../../widgets/fx/stars_background.dart';
@@ -144,17 +145,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 // ------------------------------------------------------------ общий каркас
 
-/// Общая раскладка слайда: крупный эмодзи-«иллюстрация», заголовок сиянием,
-/// текст, опциональный доп.контент (выбор цели). Каскадное появление —
+/// Общая раскладка слайда: иллюстрация, заголовок сиянием, текст,
+/// опциональный доп.контент (выбор цели). Каскадное появление —
 /// [StaggerIn], без таймеров (безопасно для тестов).
+///
+/// Раньше иллюстрацией был эмодзи 68 px (🧑‍🚀 💫 📚 🎯). Эмодзи рисует
+/// шрифт операционной системы: на разных Windows/Android они выглядят
+/// по-разному, не связаны с палитрой и делают дорогое приложение детским.
+/// Теперь это наши собственные виджеты — маскот Cosmo и иконки в цветах
+/// «полярной звезды».
 class _SlideScaffold extends StatelessWidget {
-  final String emoji;
+  final Widget illustration;
   final Widget title;
   final String body;
   final Widget? extra;
 
   const _SlideScaffold({
-    required this.emoji,
+    required this.illustration,
     required this.title,
     required this.body,
     this.extra,
@@ -171,10 +178,7 @@ class _SlideScaffold extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            StaggerIn(
-              index: 0,
-              child: Text(emoji, style: const TextStyle(fontSize: 68)),
-            ),
+            StaggerIn(index: 0, child: illustration),
             const SizedBox(height: 24),
             StaggerIn(index: 1, child: title),
             const SizedBox(height: 16),
@@ -220,7 +224,10 @@ class _WelcomeSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _SlideScaffold(
-        emoji: '🧑‍🚀',
+        // Наш собственный астронавт вместо системного эмодзи — заодно
+        // маскот наконец появляется в живом приложении, а не только в
+        // demo-файле.
+        illustration: CosmoMascot(size: 132, animated: animated),
         title: _slideTitle(l10n.onboardingWelcomeTitle, animated: animated),
         body: l10n.onboardingWelcomeBody,
       );
@@ -235,7 +242,8 @@ class _VirtualMoneySlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _SlideScaffold(
-        emoji: '💫',
+        illustration: const _SlideIcon(
+            icon: Icons.savings_outlined, color: PolarisColors.aurora),
         title: _slideTitle(l10n.onboardingMoneyTitle, animated: animated),
         body: l10n.onboardingMoneyBody,
       );
@@ -250,7 +258,8 @@ class _LearnStepByStepSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _SlideScaffold(
-        emoji: '📚',
+        illustration: const _SlideIcon(
+            icon: Icons.school_outlined, color: PolarisColors.polar),
         title: _slideTitle(l10n.onboardingLearnTitle, animated: animated),
         body: l10n.onboardingLearnBody,
       );
@@ -271,15 +280,33 @@ class _GoalSlide extends StatelessWidget {
     required this.l10n,
   });
 
-  List<({UserGoal goal, String emoji, String label})> _options(AppLocalizations l10n) => [
-        (goal: UserGoal.saveForFuture, emoji: '🌱', label: l10n.onboardingGoalSave),
-        (goal: UserGoal.learnInvesting, emoji: '📚', label: l10n.onboardingGoalLearn),
-        (goal: UserGoal.curious, emoji: '✨', label: l10n.onboardingGoalCurious),
+  List<({UserGoal goal, IconData icon, Color color, String label})> _options(
+          AppLocalizations l10n) =>
+      [
+        (
+          goal: UserGoal.saveForFuture,
+          icon: Icons.eco_outlined,
+          color: PolarisColors.gain,
+          label: l10n.onboardingGoalSave
+        ),
+        (
+          goal: UserGoal.learnInvesting,
+          icon: Icons.school_outlined,
+          color: PolarisColors.polar,
+          label: l10n.onboardingGoalLearn
+        ),
+        (
+          goal: UserGoal.curious,
+          icon: Icons.auto_awesome_outlined,
+          color: PolarisColors.violet,
+          label: l10n.onboardingGoalCurious
+        ),
       ];
 
   @override
   Widget build(BuildContext context) => _SlideScaffold(
-        emoji: '🎯',
+        illustration: const _SlideIcon(
+            icon: Icons.flag_outlined, color: PolarisColors.violet),
         title: _slideTitle(l10n.onboardingGoalTitle, animated: animated),
         body: l10n.onboardingGoalBody,
         extra: Column(
@@ -288,7 +315,8 @@ class _GoalSlide extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _GoalCard(
-                  emoji: o.emoji,
+                  icon: o.icon,
+                  iconColor: o.color,
                   label: o.label,
                   selected: selected == o.goal,
                   onTap: () => onSelect(o.goal),
@@ -300,13 +328,15 @@ class _GoalSlide extends StatelessWidget {
 }
 
 class _GoalCard extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
+  final Color iconColor;
   final String label;
   final bool selected;
   final VoidCallback onTap;
 
   const _GoalCard({
-    required this.emoji,
+    required this.icon,
+    required this.iconColor,
     required this.label,
     required this.selected,
     required this.onTap,
@@ -335,7 +365,7 @@ class _GoalCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 22)),
+            Icon(icon, color: iconColor, size: 24),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
@@ -368,7 +398,8 @@ class _DisclaimerSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _SlideScaffold(
-        emoji: '⚠️',
+        illustration: const _SlideIcon(
+            icon: Icons.gavel_outlined, color: PolarisColors.dividend),
         title: _slideTitle(l10n.onboardingDisclaimerTitle, animated: animated),
         body: l10n.onboardingDisclaimerBody,
       );
@@ -462,6 +493,33 @@ class _BottomBar extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Иллюстрация слайда: иконка в круге с мягким сиянием фирменного цвета.
+/// Пришла на смену эмодзи 68 px — в отличие от них, выглядит одинаково на
+/// всех системах и живёт в палитре «полярной звезды».
+class _SlideIcon extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+
+  const _SlideIcon({required this.icon, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 118,
+      height: 118,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [
+          color.withValues(alpha: 0.20),
+          color.withValues(alpha: 0.04),
+        ]),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Icon(icon, size: 52, color: color),
     );
   }
 }

@@ -14,6 +14,7 @@ import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/market_state.dart';
 import '../../theme/theme.dart';
+import '../../widgets/fx/stars_background.dart';
 import 'asset_screen.dart';
 import 'market_style.dart';
 
@@ -62,12 +63,20 @@ class _MarketScreenState extends State<MarketScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Звёздное небо было только на Портфеле/Cosmo/Учёбе/Ещё — при переходе
+    // на «Рынки» фон пропадал в плоский чёрный, и приложение «разваливалось»
+    // на два разных вида. На широком экране небо уже нарисовано каркасом во
+    // всю ширину окна, и этот виджет там сам становится прозрачным.
     return Scaffold(
       backgroundColor: PolarisColors.bg,
-      body: SafeArea(
-        child: AnimatedBuilder(
-          animation: _state,
-          builder: (context, _) => _buildBody(context),
+      body: StarsBackground(
+        starCount: 70,
+        intensity: 0.55,
+        child: SafeArea(
+          child: AnimatedBuilder(
+            animation: _state,
+            builder: (context, _) => _buildBody(context),
+          ),
         ),
       ),
     );

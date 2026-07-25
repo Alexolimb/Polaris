@@ -18,9 +18,11 @@ Widget _wrap(Widget child) => MaterialApp(
       home: child,
     );
 
-/// Фиксированный «отстой» кадров вместо pumpAndSettle: карточка актива
-/// живого тикера (marketOpen == true) рисует PulseDot с бесконечным
-/// repeat() — pumpAndSettle с ним никогда не осядет.
+/// Фиксированный «отстой» кадров вместо pumpAndSettle. Причин две:
+/// (1) карточка актива живого тикера (marketOpen == true) рисует PulseDot с
+/// бесконечным repeat(); (2) с 25.07.2026 экран «Рынки» и карточка актива
+/// рисуют звёздное небо (StarsBackground) — у него свой вечный Ticker.
+/// pumpAndSettle с ними не осядет никогда.
 Future<void> _settle(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 400));
@@ -32,7 +34,7 @@ void main() {
   testWidgets('список рендерится на оффлайн-фикстурах', (tester) async {
     final state = MarketState(repo: MarketRepo.local(), autoPoll: false);
     await tester.pumpWidget(_wrap(MarketScreen(state: state)));
-    await tester.pumpAndSettle();
+    await _settle(tester);
 
     expect(find.text('Рынки'), findsOneWidget);
     // Хотя бы несколько фикстурных активов на экране.
@@ -53,7 +55,7 @@ void main() {
   testWidgets('офлайн честно показывает бейдж «демо-данные»', (tester) async {
     final state = MarketState(repo: MarketRepo.local(), autoPoll: false);
     await tester.pumpWidget(_wrap(MarketScreen(state: state)));
-    await tester.pumpAndSettle();
+    await _settle(tester);
 
     expect(state.offline, isTrue);
     expect(find.text('демо-данные'), findsOneWidget);
@@ -65,23 +67,23 @@ void main() {
   testWidgets('поиск фильтрует список по тикеру и по имени', (tester) async {
     final state = MarketState(repo: MarketRepo.local(), autoPoll: false);
     await tester.pumpWidget(_wrap(MarketScreen(state: state)));
-    await tester.pumpAndSettle();
+    await _settle(tester);
 
     await tester.enterText(find.byType(TextField), 'AAPL');
-    await tester.pumpAndSettle();
+    await _settle(tester);
     expect(find.text('Apple Inc.'), findsOneWidget);
     expect(find.text('Bitcoin'), findsNothing);
     expect(find.text('Microsoft'), findsNothing);
 
     // Поиск по имени (не только по тикеру).
     await tester.enterText(find.byType(TextField), 'bitcoin');
-    await tester.pumpAndSettle();
+    await _settle(tester);
     expect(find.text('Bitcoin'), findsOneWidget);
     expect(find.text('Apple Inc.'), findsNothing);
 
     // Ничего не найдено — честная подпись, без краша.
     await tester.enterText(find.byType(TextField), 'zzz_nonexistent');
-    await tester.pumpAndSettle();
+    await _settle(tester);
     expect(find.text('Ничего не нашлось'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
@@ -91,7 +93,7 @@ void main() {
   testWidgets('тап по активу открывает карточку AssetScreen', (tester) async {
     final state = MarketState(repo: MarketRepo.local(), autoPoll: false);
     await tester.pumpWidget(_wrap(MarketScreen(state: state)));
-    await tester.pumpAndSettle();
+    await _settle(tester);
 
     await tester.tap(find.text('Apple Inc.'));
     await _settle(tester);
@@ -112,10 +114,10 @@ void main() {
   testWidgets('чип темы фильтрует список без краша', (tester) async {
     final state = MarketState(repo: MarketRepo.local(), autoPoll: false);
     await tester.pumpWidget(_wrap(MarketScreen(state: state)));
-    await tester.pumpAndSettle();
+    await _settle(tester);
 
     await tester.tap(find.text('Дивидендные гиганты'));
-    await tester.pumpAndSettle();
+    await _settle(tester);
     expect(find.text('Johnson & Johnson'), findsOneWidget);
     expect(find.text('Bitcoin'), findsNothing);
     expect(tester.takeException(), isNull);

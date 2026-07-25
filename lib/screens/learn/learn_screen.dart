@@ -218,7 +218,10 @@ class _LearnScreenState extends State<LearnScreen> {
         glowColor: PolarisColors.dividend,
         child: Row(
           children: [
-            const Text('🔥', style: TextStyle(fontSize: 30)),
+            // Была эмодзи-«свечка» 🔥 30 px — рисуется шрифтом системы и
+            // выбивается из палитры. Своя иконка в цвет «дивиденда».
+            const Icon(Icons.local_fire_department_rounded,
+                size: 30, color: PolarisColors.dividend),
             const SizedBox(width: 14),
             Expanded(
               child: Column(

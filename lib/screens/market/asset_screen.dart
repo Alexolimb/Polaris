@@ -15,6 +15,7 @@ import '../../widgets/chart/chart_models.dart' as cm;
 import '../../widgets/chart/polaris_chart.dart';
 import '../../widgets/fx/glow.dart';
 import '../../widgets/fx/motion.dart';
+import '../../widgets/fx/stars_background.dart';
 import '../trade/trade_sheet.dart';
 import 'market_style.dart';
 
@@ -83,7 +84,10 @@ class _AssetScreenState extends State<AssetScreen> {
     final asset = widget.asset;
     return Scaffold(
       backgroundColor: PolarisColors.bg,
-      body: SafeArea(
+      body: StarsBackground(
+        starCount: 70,
+        intensity: 0.55,
+        child: SafeArea(
         child: AnimatedBuilder(
           animation: widget.state,
           builder: (context, _) {
@@ -118,6 +122,7 @@ class _AssetScreenState extends State<AssetScreen> {
               ],
             );
           },
+        ),
         ),
       ),
       bottomNavigationBar: _tradeBar(context, asset),
