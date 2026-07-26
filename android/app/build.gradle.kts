@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -7,10 +10,10 @@ plugins {
 // Реквизиты подписи release читаем из android/key.properties (файл НЕ в git).
 // Если его нет — падать нельзя (иначе CI и чужая машина не соберут вообще),
 // поэтому мягкий фолбэк на debug с явным предупреждением в лог сборки.
-val keystoreProperties = java.util.Properties()
+val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 } else {
     logger.warn("key.properties не найден — release будет подписан DEBUG-ключом. " +
         "Такой APK нельзя публиковать и он не встанет поверх подписанной версии.")

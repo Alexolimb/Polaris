@@ -72,6 +72,11 @@ abstract class NotificationsGateway {
 
   Future<void> cancel(int id);
   Future<void> cancelAll();
+
+  /// Перечитать часовую зону устройства. true — зона изменилась (перелёт,
+  /// перевод часов), значит повторяющиеся уведомления надо перепланировать.
+  /// Зовётся при возврате приложения из фона.
+  bool refreshTimezone();
 }
 
 // --------------------------------------------------------- боевая реализация
@@ -200,19 +205,85 @@ class LocalNotificationsPluginGateway implements NotificationsGateway {
     _tzReady = true;
   }
 
-  /// Без пакета flutter_timezone честного имени зоны не узнать — подбираем
-  /// локацию из базы timezone по текущему смещению устройства (тот же
-  /// UTC-офсет прямо сейчас). Если совпадения нет (редкий кейс) — падаем на
-  /// UTC: расписание всё равно сработает, просто по UTC-времени.
+  /// Перечитать зону устройства и вернуть true, если она изменилась.
+  ///
+  /// Зовётся при возврате приложения из фона ([NotificationsController.
+  /// onAppResumed]): человек мог прилететь в другой часовой пояс или просто
+  /// пережить перевод часов, пока приложение висело в фоне.
+  @override
+  bool refreshTimezone() {
+    if (!_tzReady) {
+      _ensureTimezone();
+      return true;
+    }
+    try {
+      final fresh = _deviceLocation();
+      if (fresh.name == tz.local.name) return false;
+      tz.setLocalLocation(fresh);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Точки, в которых сверяем смещение кандидата с системным: примерно раз в
+  // 40 дней на год вперёд. Одной проверки «сейчас» мало — именно из-за неё
+  // напоминания уезжали на час (см. комментарий к _deviceLocation).
+  static const _probeStepDays = 40;
+  static const _probeCount = 10;
+
+  /// Часовая зона устройства. Без пакета flutter_timezone точного IANA-имени
+  /// не получить, поэтому подбираем локацию из базы timezone — но подбираем
+  /// ЧЕСТНО, по правилам перехода на летнее время.
+  ///
+  /// Как было: бралась ПЕРВАЯ локация с тем же смещением прямо сейчас. Летом
+  /// под «UTC+2» одинаково подходят и Europe/Madrid (переводит часы), и
+  /// Africa/Cairo с иным правилом перехода, и зоны вовсе без DST — какая
+  /// попадётся первой в базе, та и назначалась, НАВСЕГДА (результат кэшировался
+  /// вместе с _tzReady). После осеннего перевода часов расписание разъезжалось
+  /// с реальным временем пользователя на час.
+  ///
+  /// Как стало: кандидат обязан совпасть с системным смещением не только
+  /// сейчас, но и в десятке точек на год вперёд — то есть иметь те же самые
+  /// правила DST. Совпадение по имени зоны проверяем первым: если платформа
+  /// отдала настоящее IANA-имя («Europe/Madrid»), поиск на этом и кончается.
+  /// Ничего не подошло — UTC: расписание всё равно сработает, просто по UTC.
   tz.Location _deviceLocation() {
     try {
-      // timezone 0.9: TimeZone.offset — миллисекунды (int).
-      final offsetMs = DateTime.now().timeZoneOffset.inMilliseconds;
+      final now = DateTime.now();
+
+      // 1) Платформа отдала IANA-имя — самый надёжный путь.
+      final byName = tz.timeZoneDatabase.locations[now.timeZoneName];
+      if (byName != null && _rulesMatch(byName, now)) return byName;
+
+      // 2) Полный перебор с проверкой правил перехода.
+      for (final loc in tz.timeZoneDatabase.locations.values) {
+        if (_rulesMatch(loc, now)) return loc;
+      }
+
+      // 3) Ничего не совпало по правилам DST (устройство с экзотическими
+      // настройками) — берём хотя бы верное смещение на сегодня: ошибиться
+      // на час когда-нибудь потом лучше, чем ошибаться прямо сейчас.
+      final offsetMs = now.timeZoneOffset.inMilliseconds;
       for (final loc in tz.timeZoneDatabase.locations.values) {
         if (loc.currentTimeZone.offset == offsetMs) return loc;
       }
     } catch (_) {}
     return tz.UTC;
+  }
+
+  /// Совпадают ли смещения локации и системы в контрольных точках года.
+  static bool _rulesMatch(tz.Location loc, DateTime now) {
+    for (var i = 0; i < _probeCount; i++) {
+      final moment = now.add(Duration(days: i * _probeStepDays));
+      // Системное смещение в этот момент (Dart берёт его из ОС, вместе с
+      // будущими переводами часов) против смещения кандидата в тот же миг.
+      if (tz.TZDateTime.from(moment, loc).timeZoneOffset !=
+          moment.timeZoneOffset) {
+        return false;
+      }
+    }
+    return true;
   }
 
   tz.TZDateTime _nextInstanceOfTime(TimeOfDay time) {
@@ -246,9 +317,20 @@ class FakeNotificationsGateway implements NotificationsGateway {
   final List<({int id, String title, String body})> shown = [];
   final Set<int> cancelled = {};
 
+  /// Сколько раз перечитывали зону и что отвечать (тест выставляет true,
+  /// чтобы проверить перепланирование после смены пояса).
+  int refreshTimezoneCalls = 0;
+  bool timezoneChanged = false;
+
   @override
   Future<void> init() async {
     initCalled = true;
+  }
+
+  @override
+  bool refreshTimezone() {
+    refreshTimezoneCalls++;
+    return timezoneChanged;
   }
 
   @override
@@ -336,6 +418,15 @@ class NotificationsController {
     // Настройки меняются редко (экран «Ещё») — фоновая асинхронность ок,
     // ошибку внутри applyAll гасит сам gateway.
     unawaited(_applyAll());
+  }
+
+  /// Приложение вернулось из фона. Пока оно висело свёрнутым, могли перевести
+  /// часы или человек мог прилететь в другой пояс — тогда уже поставленные
+  /// повторяющиеся уведомления сработают не в то время. Перечитываем зону и,
+  /// если она сменилась, переставляем расписание заново.
+  Future<void> onAppResumed() async {
+    if (!gateway.refreshTimezone()) return;
+    await _applyAll();
   }
 
   Future<void> _applyAll() async {

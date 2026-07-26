@@ -50,7 +50,12 @@ class PolarisApiConfig {
 }
 
 /// Что пошло не так — по kind репозиторий выбирает фолбэк.
-enum ApiErrorKind { offline, timeout, badResponse, http }
+///
+/// [notFound] стоит особняком: это ответ 404, то есть сервер жив и здоров,
+/// просто такого тикера у него нет. Раньше 404 приходил как [http] и
+/// репозиторий поднимал флаг «офлайн» — приложение показывало бейдж
+/// «нет сети», хотя сеть была в порядке. Теперь эти случаи различимы.
+enum ApiErrorKind { offline, timeout, badResponse, http, notFound }
 
 class ApiException implements Exception {
   final ApiErrorKind kind;
@@ -87,6 +92,11 @@ class ApiException implements Exception {
             'ru' => 'Сервер временно недоступен',
             'es' => 'El servidor no está disponible por el momento',
             _ => 'The server is temporarily unavailable',
+          },
+        ApiErrorKind.notFound => switch (lang) {
+            'ru' => 'Такого актива нет в каталоге',
+            'es' => 'Este activo no está en el catálogo',
+            _ => 'This asset is not in the catalog',
           },
       };
 
@@ -172,8 +182,14 @@ Future<String> _ioGet(Uri uri, Duration timeout) async {
     final response = await request.close().timeout(timeout);
     final body = await utf8.decodeStream(response).timeout(timeout);
     if (response.statusCode != 200) {
+      // 404 = «сервер на связи, но такого символа не знает». Отделяем его от
+      // прочих HTTP-бед, чтобы репозиторий не объявлял приложение офлайном
+      // из-за одного неизвестного тикера.
       throw ApiException(
-          ApiErrorKind.http, 'Сервер ответил ${response.statusCode}');
+          response.statusCode == 404
+              ? ApiErrorKind.notFound
+              : ApiErrorKind.http,
+          'Сервер ответил ${response.statusCode}');
     }
     return body;
   } finally {

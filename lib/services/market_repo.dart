@@ -12,6 +12,13 @@ import 'dart:math' as math;
 
 import '../models/models.dart';
 import 'api.dart';
+// Каталог, цены и дивиденды офлайн-режима СГЕНЕРИРОВАНЫ из общего с сервером
+// канона (server/data/market_base.json). Руками их здесь больше не держим:
+// пока таблицы жили в двух местах, они разъехались и портфель прыгал при
+// переключении онлайн↔офлайн (см. шапку market_base.g.dart).
+export 'market_base.g.dart'
+    show fixtureAssets, fixtureThemes, fixturePrices, marketBaseVersion;
+import 'market_base.g.dart';
 
 class MarketRepo {
   final PolarisApi? _api; // null — локальный режим (тесты, сервер не задеплоен)
@@ -62,8 +69,8 @@ class MarketRepo {
           _catalogAt = _now();
           return _catalog!;
         }
-      } on ApiException {
-        _offline = true;
+      } on ApiException catch (e) {
+        _markOffline(e);
       }
     }
     // Сервер не ответил: старый кэш лучше фикстур, фикстуры лучше пустоты.
@@ -99,8 +106,8 @@ class MarketRepo {
             _quotesAt[q.symbol] = at;
           }
           if (fetched.isNotEmpty) _offline = false;
-        } on ApiException {
-          _offline = true;
+        } on ApiException catch (e) {
+          _markOffline(e);
         }
       }
       // Дыры затыкаем фикстурами (отметку времени НЕ ставим — при следующем
@@ -138,8 +145,8 @@ class MarketRepo {
           _candlesAt[key] = _now();
           return fetched;
         }
-      } on ApiException {
-        _offline = true;
+      } on ApiException catch (e) {
+        _markOffline(e);
       }
     }
     final generated = _generateCandles(symbol, range);
@@ -167,8 +174,8 @@ class MarketRepo {
         _dividends[symbol] = fetched;
         _dividendsAt[symbol] = _now();
         return fetched;
-      } on ApiException {
-        _offline = true;
+      } on ApiException catch (e) {
+        _markOffline(e);
       }
     }
     final fallback = _fixtureDividends(symbol);
@@ -180,13 +187,25 @@ class MarketRepo {
   bool _fresh(DateTime? at, Duration ttl) =>
       at != null && _now().difference(at) < ttl;
 
+  /// Поднять флаг «офлайн» — но ТОЛЬКО если это правда беда со связью.
+  ///
+  /// [ApiErrorKind.notFound] — это 404 на конкретный символ: сервер жив,
+  /// он просто не знает такого тикера (раньше сервер в этом случае выдумывал
+  /// цену $100, теперь честно отвечает 404). Считать это «нет сети» нельзя:
+  /// приложение бы повесило бейдж «демо-данные» на весь экран из-за одной
+  /// бумаги и перестало ходить на живой сервер за остальными.
+  void _markOffline(ApiException e) {
+    if (e.kind == ApiErrorKind.notFound) return;
+    _offline = true;
+  }
+
   // ==================== ФИКСТУРЫ ====================
   // Встроенный оффлайн-набор: экран живёт и в тестах, и пока сервер
   // не задеплоен. Цены — реалистичные для июля 2026, в центах.
   // Валюты котируем «за 100 единиц», иначе int-центы съедают точность.
 
   Quote? _fixtureQuote(String symbol) {
-    final p = _fixturePrices[symbol];
+    final p = fixturePrices[symbol];
     if (p == null) return null;
     final asset = fixtureAssetBySymbol(symbol);
     final realtime =
@@ -209,7 +228,7 @@ class MarketRepo {
   static const int _quarterDays = 91;
 
   List<DividendEvent> _fixtureDividends(String symbol) {
-    final per = _fixtureDividendPerShare[symbol];
+    final per = fixtureDividendPerShare[symbol];
     if (per == null) return const [];
     final offsetDays = _stableSeed(symbol) % _quarterDays;
     final anchor = _dividendEpoch.add(Duration(days: offsetDays));
@@ -234,7 +253,7 @@ class MarketRepo {
   /// Детерминированный псевдослучайный ряд свечей: сид из символа+диапазона,
   /// последняя цена закрытия сходится к текущей котировке до цента.
   List<Candle> _generateCandles(String symbol, CandleRange range) {
-    final price = _fixturePrices[symbol]?.price ??
+    final price = fixturePrices[symbol]?.price ??
         _quotes[symbol]?.priceCents ??
         10000;
     final type = fixtureAssetBySymbol(symbol)?.type ?? AssetType.stock;
@@ -311,119 +330,3 @@ class MarketRepo {
     return null;
   }
 }
-
-/// Темы-подборки (фолбэк, если сервер тем не прислал).
-const List<MarketTheme> fixtureThemes = [
-  MarketTheme(id: 'ai', title: 'ИИ'),
-  MarketTheme(id: 'bigtech', title: 'Большие технологии'),
-  MarketTheme(id: 'dividends', title: 'Дивидендные гиганты'),
-  MarketTheme(id: 'green', title: 'Зелёная энергия'),
-  MarketTheme(id: 'base', title: 'Надёжная база'),
-  MarketTheme(id: 'crypto-og', title: 'Крипто-старожилы'),
-];
-
-/// ~35 активов: акции США (риалтайм), мировые гиганты (EOD), ETF,
-/// облигационные ETF, крипта, валюты (за 100 единиц, EOD).
-const List<Asset> fixtureAssets = [
-  // --- акции США, реальное время ---
-  Asset(symbol: 'AAPL', name: 'Apple Inc.', type: AssetType.stock, sector: 'Technology', themeIds: ['bigtech']),
-  Asset(symbol: 'MSFT', name: 'Microsoft', type: AssetType.stock, sector: 'Technology', themeIds: ['ai', 'bigtech']),
-  Asset(symbol: 'GOOGL', name: 'Alphabet (Google)', type: AssetType.stock, sector: 'Communication Services', themeIds: ['ai', 'bigtech']),
-  Asset(symbol: 'AMZN', name: 'Amazon', type: AssetType.stock, sector: 'Consumer Cyclical', themeIds: ['bigtech']),
-  Asset(symbol: 'NVDA', name: 'NVIDIA', type: AssetType.stock, sector: 'Technology', themeIds: ['ai', 'bigtech']),
-  Asset(symbol: 'META', name: 'Meta Platforms', type: AssetType.stock, sector: 'Communication Services', themeIds: ['ai', 'bigtech']),
-  Asset(symbol: 'TSLA', name: 'Tesla', type: AssetType.stock, sector: 'Consumer Cyclical', themeIds: ['green']),
-  Asset(symbol: 'AMD', name: 'Advanced Micro Devices', type: AssetType.stock, sector: 'Technology', themeIds: ['ai']),
-  Asset(symbol: 'JPM', name: 'JPMorgan Chase', type: AssetType.stock, sector: 'Financial Services', themeIds: ['dividends']),
-  Asset(symbol: 'V', name: 'Visa', type: AssetType.stock, sector: 'Financial Services'),
-  Asset(symbol: 'JNJ', name: 'Johnson & Johnson', type: AssetType.stock, sector: 'Healthcare', themeIds: ['dividends']),
-  Asset(symbol: 'KO', name: 'Coca-Cola', type: AssetType.stock, sector: 'Consumer Defensive', themeIds: ['dividends']),
-  Asset(symbol: 'PG', name: 'Procter & Gamble', type: AssetType.stock, sector: 'Consumer Defensive', themeIds: ['dividends']),
-  Asset(symbol: 'XOM', name: 'Exxon Mobil', type: AssetType.stock, sector: 'Energy', themeIds: ['dividends']),
-  Asset(symbol: 'DIS', name: 'Walt Disney', type: AssetType.stock, sector: 'Communication Services'),
-  Asset(symbol: 'NFLX', name: 'Netflix', type: AssetType.stock, sector: 'Communication Services'),
-  Asset(symbol: 'NEE', name: 'NextEra Energy', type: AssetType.stock, sector: 'Utilities', themeIds: ['green', 'dividends']),
-  Asset(symbol: 'FSLR', name: 'First Solar', type: AssetType.stock, sector: 'Technology', themeIds: ['green']),
-  // --- мировые гиганты, конец дня ---
-  Asset(symbol: 'ASML', name: 'ASML Holding', type: AssetType.stock, sector: 'Technology', themeIds: ['ai'], freshness: QuoteFreshness.endOfDay),
-  Asset(symbol: 'TM', name: 'Toyota Motor', type: AssetType.stock, sector: 'Consumer Cyclical', freshness: QuoteFreshness.endOfDay),
-  // --- ETF ---
-  Asset(symbol: 'SPY', name: 'S&P 500 (SPDR)', type: AssetType.etf, themeIds: ['base']),
-  Asset(symbol: 'QQQ', name: 'Nasdaq 100 (Invesco)', type: AssetType.etf, themeIds: ['bigtech', 'base']),
-  Asset(symbol: 'VTI', name: 'Весь рынок США (Vanguard)', type: AssetType.etf, themeIds: ['base']),
-  Asset(symbol: 'SCHD', name: 'Дивидендные акции США (Schwab)', type: AssetType.etf, themeIds: ['dividends']),
-  Asset(symbol: 'ICLN', name: 'Чистая энергетика (iShares)', type: AssetType.etf, themeIds: ['green']),
-  // --- облигационные ETF ---
-  Asset(symbol: 'BND', name: 'Облигации США (Vanguard)', type: AssetType.bondEtf, themeIds: ['base']),
-  Asset(symbol: 'TLT', name: 'Долгие гособлигации США (iShares)', type: AssetType.bondEtf, themeIds: ['base']),
-  // --- крипта, реальное время ---
-  Asset(symbol: 'BTC', name: 'Bitcoin', type: AssetType.crypto, themeIds: ['crypto-og']),
-  Asset(symbol: 'ETH', name: 'Ethereum', type: AssetType.crypto, themeIds: ['crypto-og']),
-  Asset(symbol: 'SOL', name: 'Solana', type: AssetType.crypto),
-  Asset(symbol: 'ADA', name: 'Cardano', type: AssetType.crypto),
-  // --- валюты, цена за 100 единиц, конец дня ---
-  Asset(symbol: 'EUR', name: 'Евро (за 100 EUR)', type: AssetType.fiat, freshness: QuoteFreshness.endOfDay),
-  Asset(symbol: 'GBP', name: 'Британский фунт (за 100 GBP)', type: AssetType.fiat, freshness: QuoteFreshness.endOfDay),
-  Asset(symbol: 'CHF', name: 'Швейцарский франк (за 100 CHF)', type: AssetType.fiat, freshness: QuoteFreshness.endOfDay),
-  Asset(symbol: 'JPY', name: 'Японская иена (за 100 JPY)', type: AssetType.fiat, freshness: QuoteFreshness.endOfDay),
-];
-
-/// Цены фикстур: (текущая, вчерашнее закрытие), в центах.
-const Map<String, ({int price, int prev})> _fixturePrices = {
-  'AAPL': (price: 23412, prev: 23180),
-  'MSFT': (price: 51230, prev: 50890),
-  'GOOGL': (price: 20510, prev: 20690),
-  'AMZN': (price: 24380, prev: 24010),
-  'NVDA': (price: 17650, prev: 17210),
-  'META': (price: 71540, prev: 72110),
-  'TSLA': (price: 31220, prev: 32040),
-  'AMD': (price: 19840, prev: 19510),
-  'JPM': (price: 26150, prev: 26030),
-  'V': (price: 31890, prev: 31760),
-  'JNJ': (price: 16240, prev: 16190),
-  'KO': (price: 7210, prev: 7180),
-  'PG': (price: 17520, prev: 17580),
-  'XOM': (price: 12470, prev: 12310),
-  'DIS': (price: 11890, prev: 11750),
-  'NFLX': (price: 128740, prev: 127210),
-  'NEE': (price: 8460, prev: 8390),
-  'FSLR': (price: 27390, prev: 26840),
-  'ASML': (price: 112450, prev: 111200),
-  'TM': (price: 21230, prev: 21340),
-  'SPY': (price: 63840, prev: 63510),
-  'QQQ': (price: 56210, prev: 55840),
-  'VTI': (price: 31240, prev: 31090),
-  'SCHD': (price: 8940, prev: 8910),
-  'ICLN': (price: 3120, prev: 3060),
-  'BND': (price: 7480, prev: 7490),
-  'TLT': (price: 9210, prev: 9270),
-  'BTC': (price: 11842000, prev: 11731000),
-  'ETH': (price: 642000, prev: 631500),
-  'SOL': (price: 21400, prev: 22150),
-  'ADA': (price: 92, prev: 90),
-  'EUR': (price: 10923, prev: 10896),
-  'GBP': (price: 12704, prev: 12651),
-  'CHF': (price: 11215, prev: 11168),
-  'JPY': (price: 68, prev: 67),
-};
-
-/// Ближайший дивиденд на акцию, центы (фикстуры; сервер даст реальные).
-const Map<String, int> _fixtureDividendPerShare = {
-  'AAPL': 26,
-  'MSFT': 83,
-  'JNJ': 124,
-  'KO': 51,
-  'PG': 101,
-  'XOM': 99,
-  'JPM': 140,
-  'NEE': 57,
-  'V': 59,
-  'TM': 120,
-  'ASML': 160,
-  'SCHD': 74,
-  'SPY': 180,
-  'VTI': 95,
-  'QQQ': 68,
-  'BND': 18,
-  'TLT': 29,
-};

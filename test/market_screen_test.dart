@@ -112,6 +112,13 @@ void main() {
   });
 
   testWidgets('чип темы фильтрует список без краша', (tester) async {
+    // Экран шире стандартных 800 px: после сведения каталога с сервером тем
+    // стало 12 вместо 6, и на узком экране нужный чип уезжает за край
+    // горизонтальной ленты — tap по нему не проходит.
+    tester.view.physicalSize = const Size(2400, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     final state = MarketState(repo: MarketRepo.local(), autoPoll: false);
     await tester.pumpWidget(_wrap(MarketScreen(state: state)));
     await _settle(tester);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -112,7 +114,7 @@ class _Root extends StatefulWidget {
   State<_Root> createState() => _RootState();
 }
 
-class _RootState extends State<_Root> {
+class _RootState extends State<_Root> with WidgetsBindingObserver {
   late final PortfolioState _portfolio;
   late final MarketState _market;
   late final ChatState _chat;
@@ -126,6 +128,10 @@ class _RootState extends State<_Root> {
   @override
   void initState() {
     super.initState();
+    // Слушаем жизненный цикл: при возврате из фона надо перечитать часовую
+    // зону (перелёт/перевод часов) и переставить напоминания — иначе они
+    // будут срабатывать по старому поясу.
+    WidgetsBinding.instance.addObserver(this);
     final storage = widget.storage;
     _settings = widget.settings;
     _portfolio = PortfolioState(storage: storage);
@@ -158,7 +164,17 @@ class _RootState extends State<_Root> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Фоном: пользователю нечего ждать, а ошибки внутри гасит сам gateway.
+      unawaited(_notifications.onAppResumed());
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _portfolio.dispose();
     _market.dispose();
     _chat.dispose();
