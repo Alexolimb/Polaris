@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/theme.dart';
-import '../../widgets/fx/motion.dart';
 import 'more_style.dart';
 
 class PrivacyScreen extends StatelessWidget {
@@ -68,12 +67,13 @@ class _FullPolicyLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Springy(
-      // Полноценной страницы политики пока нет — появится вместе с
-      // публикацией в Google Play (интегратор/Алекс вставит реальный URL,
-      // например https://polaris-app.example/privacy). Тап сейчас безопасно
-      // ничего не делает, чтобы не вести на несуществующую страницу.
-      onTap: () {},
+    // Полноценной страницы политики пока нет — появится вместе с публикацией
+    // в Google Play (тогда сюда вернутся Springy с onTap и стрелка вправо, и
+    // блок снова станет ссылкой). До тех тех пор это просто справка: раньше
+    // здесь были нажимаемая карточка и стрелка «дальше», которые не вели
+    // никуда — вид кнопки без действия читается как поломка.
+    return Semantics(
+      container: true,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
@@ -107,8 +107,6 @@ class _FullPolicyLink extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded,
-                color: PolarisColors.textFaint),
           ],
         ),
       ),

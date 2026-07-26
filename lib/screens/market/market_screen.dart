@@ -6,12 +6,14 @@
 /// котировок в MarketState.
 library;
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
+import '../../services/lessons.dart';
 import '../../state/market_state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/fx/stars_background.dart';
@@ -27,7 +29,23 @@ class MarketScreen extends StatefulWidget {
   /// включаем/выключаем по этому флагу, а не по mount/dispose.
   final bool active;
 
-  const MarketScreen({super.key, this.state, this.active = true});
+  /// Язык контента тем (ru/en/es). Отдельный параметр, чтобы тесты могли
+  /// проверить любой язык, не поднимая локализацию всего приложения.
+  final String contentLang;
+
+  /// Откуда брать оформление тем. null — из ассетов приложения. В `flutter
+  /// test` ассеты проекта не собираются и `rootBundle` их не отдаёт, поэтому
+  /// тесты подставляют репозиторий с фейковым bundle (так же устроен
+  /// LearnScreen).
+  final LessonsRepo? themesRepo;
+
+  const MarketScreen({
+    super.key,
+    this.state,
+    this.active = true,
+    this.contentLang = 'ru',
+    this.themesRepo,
+  });
 
   @override
   State<MarketScreen> createState() => _MarketScreenState();
@@ -37,6 +55,12 @@ class _MarketScreenState extends State<MarketScreen> {
   late final MarketState _state;
   late final bool _ownsState;
 
+  /// Оформление тем (эмодзи, цвет) по id. Сервер присылает только id и
+  /// название, а красивое описание тем уже лежало в ассетах на трёх языках и
+  /// никуда не выводилось — берём его отсюда. Пусто = чипы просто останутся
+  /// такими, как были: экран от этого не зависит.
+  Map<String, ThemeInfo> _look = const {};
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +68,21 @@ class _MarketScreenState extends State<MarketScreen> {
     _ownsState = widget.state == null;
     _state.init();
     _state.setVisible(widget.active);
+    unawaited(_loadThemeLook());
+  }
+
+  Future<void> _loadThemeLook() async {
+    try {
+      final repo =
+          widget.themesRepo ?? LessonsRepo(lang: () => widget.contentLang);
+      final c = await repo.load();
+      if (!mounted || c.themes.isEmpty) return;
+      setState(() {
+        _look = {for (final t in c.themes) t.id: t};
+      });
+    } catch (_) {
+      // Оформление — украшение. Не смогли прочитать ассет — экран работает.
+    }
   }
 
   @override
@@ -229,7 +268,11 @@ class _MarketScreenState extends State<MarketScreen> {
           ),
           for (final t in themes)
             _ThemeChip(
-              label: t.title,
+              // Название с сервера первично: если тему добавят на бэкенде
+              // раньше, чем в ассеты, чип всё равно подпишется правильно.
+              label: t.title.isNotEmpty ? t.title : (_look[t.id]?.title ?? t.id),
+              emoji: _look[t.id]?.emoji,
+              accent: _look[t.id]?.accent,
               selected: s.selectedThemeId == t.id,
               onTap: () =>
                   s.selectTheme(s.selectedThemeId == t.id ? null : t.id),
@@ -279,14 +322,22 @@ class _ThemeChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
+  /// Эмодзи и цвет темы из ассетов. null — чип рисуется как раньше, в
+  /// «полярном» цвете: тема без оформления не должна выглядеть сломанной.
+  final String? emoji;
+  final Color? accent;
+
   const _ThemeChip({
     required this.label,
     required this.selected,
     required this.onTap,
+    this.emoji,
+    this.accent,
   });
 
   @override
   Widget build(BuildContext context) {
+    final hi = accent ?? PolarisColors.polar;
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: InkWell(
@@ -298,24 +349,28 @@ class _ThemeChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: selected
-                ? PolarisColors.polar.withValues(alpha: 0.18)
+                ? hi.withValues(alpha: 0.18)
                 : PolarisColors.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: selected
-                  ? PolarisColors.polar
-                  : PolarisColors.surfaceHigh,
+              color: selected ? hi : PolarisColors.surfaceHigh,
             ),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: selected
-                  ? PolarisColors.polar
-                  : PolarisColors.textSecondary,
-              fontSize: 13,
-              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-            ),
+          child: Row(
+            children: [
+              if (emoji != null && emoji!.isNotEmpty) ...[
+                Text(emoji!, style: const TextStyle(fontSize: 13)),
+                const SizedBox(width: 6),
+              ],
+              Text(
+                label,
+                style: TextStyle(
+                  color: selected ? hi : PolarisColors.textSecondary,
+                  fontSize: 13,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       ),

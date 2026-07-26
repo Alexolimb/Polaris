@@ -3,13 +3,41 @@
 /// autoPoll:false везде — таймер опроса котировок тестам не нужен.
 library;
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polaris/l10n/app_localizations.dart';
 import 'package:polaris/screens/market/asset_screen.dart';
 import 'package:polaris/screens/market/market_screen.dart';
+import 'package:polaris/services/lessons.dart';
 import 'package:polaris/services/market_repo.dart';
 import 'package:polaris/state/market_state.dart';
+
+/// Bundle, читающий настоящие файлы проекта с диска: в `flutter test` ассеты
+/// не собираются, а проверять хочется именно тот контент, который уедет в
+/// сборку, а не копию-фикстуру (иначе тест разойдётся с реальностью).
+class _AssetFileBundle extends CachingAssetBundle {
+  final Map<String, String> paths;
+  _AssetFileBundle(this.paths);
+
+  @override
+  Future<ByteData> load(String key) async {
+    final path = paths[key];
+    if (path == null) throw FlutterError('нет ассета: $key');
+    final bytes = File(path).readAsBytesSync();
+    return ByteData.view(Uint8List.fromList(bytes).buffer);
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async {
+    final path = paths[key];
+    if (path == null) throw FlutterError('нет ассета: $key');
+    return utf8.decode(File(path).readAsBytesSync());
+  }
+}
 
 Widget _wrap(Widget child) => MaterialApp(
       locale: const Locale('ru'),
@@ -127,6 +155,39 @@ void main() {
     await _settle(tester);
     expect(find.text('Johnson & Johnson'), findsOneWidget);
     expect(find.text('Bitcoin'), findsNothing);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('у чипов тем появляются эмодзи из ассетов', (tester) async {
+    // Регрессия 26.07.2026: файлы assets/content/themes*.json (RU/EN/ES) с
+    // эмодзи, цветами и описаниями лежали в сборке, парсились — и никуда не
+    // выводились. Сервер отдаёт только id и название, поэтому чипы были
+    // безликими. Тест держит связку «ассет → чип»: если её снова порвут,
+    // упадёт здесь, а не тихо обеднеет интерфейс.
+    tester.view.physicalSize = const Size(2400, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final state = MarketState(repo: MarketRepo.local(), autoPoll: false);
+    // Ассеты проекта в `flutter test` не собираются, rootBundle их не отдаёт —
+    // поэтому подсовываем настоящий themes.json через фейковый bundle.
+    final themesRepo = LessonsRepo(
+      bundle: _AssetFileBundle({
+        LessonsPaths.themesBase: 'assets/content/themes.json',
+      }),
+    );
+    await tester.pumpWidget(
+        _wrap(MarketScreen(state: state, themesRepo: themesRepo)));
+    await _settle(tester);
+
+    // skipOffstage:false — чипы лежат в горизонтальной ленте, часть уезжает
+    // за край viewport; нам важно, что эмодзи попало в дерево.
+    expect(find.text('🤖', skipOffstage: false), findsOneWidget); // ai
+    expect(find.text('💰', skipOffstage: false), findsWidgets); // dividend-giants
+    // Название по-прежнему приходит с сервера, эмодзи — из ассета.
+    expect(find.text('Дивидендные гиганты'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(const SizedBox());
