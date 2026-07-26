@@ -18,6 +18,7 @@ import '../../state/learn_state.dart';
 import '../../theme/theme.dart';
 import '../../widgets/fx/glow.dart';
 import '../../widgets/fx/motion.dart';
+import '../../widgets/fx/skeleton.dart';
 import '../../widgets/fx/stars_background.dart';
 import 'lesson_player.dart';
 
@@ -104,10 +105,9 @@ class _LearnScreenState extends State<LearnScreen> {
     final l10n = AppLocalizations.of(context);
     final content = _content;
     if (content == null || !_state.loaded) {
-      return const Center(
-        child: CircularProgressIndicator(
-            color: PolarisColors.polar, strokeWidth: 2.5),
-      );
+      // Скелетон, а не крутилка: сразу понятно, что грузится список уроков.
+      // trailing:false — у урока справа нет цены, только кружок и две строки.
+      return const SkeletonList(rows: 5, trailing: false);
     }
     // Пустой экран не только когда уроков нет, но и когда ни один модуль не
     // отрисовывается (битый/пустой modules при живых lessons) — иначе показали

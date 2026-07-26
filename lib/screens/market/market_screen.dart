@@ -16,6 +16,7 @@ import '../../models/models.dart';
 import '../../services/lessons.dart';
 import '../../state/market_state.dart';
 import '../../theme/theme.dart';
+import '../../widgets/fx/skeleton.dart';
 import '../../widgets/fx/stars_background.dart';
 import 'asset_screen.dart';
 import 'market_style.dart';
@@ -155,13 +156,10 @@ class _MarketScreenState extends State<MarketScreen> {
           ),
         ),
         if (booting)
-          const SliverFillRemaining(
-            hasScrollBody: false,
-            child: Center(
-              child: CircularProgressIndicator(
-                  color: PolarisColors.polar, strokeWidth: 2.5),
-            ),
-          )
+          // Скелетон вместо крутилки: человек сразу видит, что грузится
+          // именно список бумаг, и при появлении данных ничего не прыгает —
+          // заготовки той же высоты, что настоящие строки.
+          const SliverToBoxAdapter(child: SkeletonList(rows: 7))
         else if (nothingFound)
           SliverFillRemaining(
             hasScrollBody: false,
