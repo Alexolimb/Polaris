@@ -1,48 +1,59 @@
-# Polaris
+# Polaris — investment simulator & academy
 
-**Симулятор инвестиций + академия для новичков.** Учись инвестировать без риска: виртуальные
-$10 000, (по возможности) реальные котировки, AI-наставник Cosmo и 30 уроков. Flutter, Windows + Android.
+Learn to invest without risking money: a virtual $10,000 portfolio, an AI mentor ("Cosmo") and a
+30-lesson course. Built with **Flutter** for Windows and Android, in English / Russian / Spanish.
 
-> Публичный продукт. Тема оформления — «Полярная звезда»: звёздный фон, маскот Cosmo. Языки: en / ru / es.
+> Personal product, built solo — architecture, UI, content and tests.
 
-## Вкладки
-1. **Портфель** — позиции, стоимость, динамика.
-2. **Рынок** — каталог активов, темы-подборки, карточка актива (график 1Д/1Н/1М/1Г, дивиденды).
-3. **Cosmo** — AI-наставник (чат со стримингом ответов).
-4. **Учёба** — 30 уроков + глоссарий + «попробуй на своём портфеле».
-5. **Ещё** — настройки (язык, уведомления), брокеры, о приложении, приватность, легалка.
+## What it does
 
-## Архитектура
-- **Ядро-симулятор** `lib/services/sim_engine.dart` — чистый Dart. Все суммы в **центах (int)**,
-  количества бумаг до 1e-8; операция проходит целиком или бросает `SimError`. Старт: $10 000.
-- **Состояние** `lib/state/` (`Portfolio/Market/Chat/Learn/AppSettings`) раздаётся через `AppScope`.
-  Персист — `shared_preferences` (`lib/services/storage.dart`).
-- **Сеть** `lib/services/api.dart` (REST) + `ai.dart` (SSE-стрим Cosmo). Контракт `v1` — см. шапки этих файлов.
-  Транспорты подменяемы → тесты идут без сети.
-- **Контент** `assets/content/*.json` (уроки/темы/глоссарий ×3 языка), загрузка — `lib/services/lessons.dart`.
-- **Локализация** `lib/l10n/app_*.arb` → генерится при `flutter pub get` / `build`.
+| Tab | What's in it |
+|---|---|
+| **Portfolio** | Open positions, total value, performance over time |
+| **Market** | Asset catalogue, themed collections, asset card with 1D/1W/1M/1Y charts and dividends |
+| **Cosmo** | AI mentor — chat with streaming (SSE) responses |
+| **Learn** | 30 lessons + glossary + "try it on your own portfolio" exercises |
+| **More** | Settings (language, notifications), brokers, about, privacy, legal |
 
-### Работа без сервера
-Без заданного `baseUrl` приложение работает **офлайн на встроенных фикстурах** (рынок), а Cosmo
-показывает понятное сообщение об отсутствии связи. Вшитых ключей/секретов в приложении нет.
-Бэкенд (Cloudflare Worker: прокси котировок + AI) — отдельный компонент, см. `server/` (в разработке).
+## Architecture
 
-## Запуск и сборка
+- **Simulation core** — `lib/services/sim_engine.dart`, pure Dart, no Flutter imports.
+  All money is stored as **integer cents**, share quantities to 1e-8. A trade either fully
+  succeeds or throws `SimError` — no half-applied state. Starting balance: $10,000.
+- **State** — `lib/state/` (`Portfolio` / `Market` / `Chat` / `Learn` / `AppSettings`), distributed
+  through `AppScope`. Persistence via `shared_preferences` (`lib/services/storage.dart`).
+- **Networking** — `lib/services/api.dart` (REST) and `ai.dart` (SSE stream for Cosmo), both against
+  the `v1` contract. Transports are injectable, so **the test suite runs with no network**.
+- **Content** — `assets/content/*.json` (lessons, themes, glossary × 3 languages), loaded by
+  `lib/services/lessons.dart`.
+- **Localisation** — `lib/l10n/app_*.arb`, generated on `flutter pub get` / `build`.
+
+### Runs without a backend
+
+With no `baseUrl` configured the app runs **offline on built-in fixtures** for market data, and
+Cosmo shows a clear "no connection" state instead of failing. **No API keys or secrets ship in the
+app.** The backend is a separate component — see
+[Polaris-server](https://github.com/Alexolimb/Polaris-server).
+
+## Build and run
+
 ```bash
-flutter pub get              # зависимости
-flutter run -d windows       # запуск на Windows
-flutter build windows        # релиз-сборка Windows  → build/windows/x64/runner/Release/polaris.exe
-flutter build apk            # релиз-сборка Android
-flutter analyze              # статический анализ (ожидается: 0 issues)
-flutter test                 # тесты (ожидается: все зелёные, 236 шт.)
+flutter pub get              # dependencies
+flutter run -d windows       # run on Windows
+flutter build windows        # release build  -> build/windows/x64/runner/Release/polaris.exe
+flutter build apk            # release build for Android
+flutter analyze              # static analysis — expected: 0 issues
+flutter test                 # test suite — expected: 236 tests, all green
 ```
 
-## Резервные копии (правило «ни одна вещь в одном экземпляре»)
-- **git** — этот репозиторий (история версий).
-- **Диск F:** — `F:\BACKUP_CODE\<дата>\polaris`.
-- **GitHub** — приватный репо `Polaris` *(TODO: настроить remote)*.
-- Паспорт: `Brain\obsidian\Projects\Polaris — инвест-симулятор.md`.
+## Requirements
 
-## Требования
-- Flutter SDK (на этой машине — `C:\dev\flutter\bin`), Dart ^3.12.
-- Держать проект в ASCII-пути (`C:\dev\...`): кириллица в пути ломает Flutter/Gradle.
+- Flutter SDK, Dart ^3.12
+- Keep the project in an ASCII-only path — non-Latin characters in the path break Flutter/Gradle
+  tooling on Windows.
+
+## Notes
+
+Market data in the demo backend is synthetic and explicitly labelled `freshness: "demo"` — this is a
+teaching simulator, not a brokerage. Cosmo's system prompt forbids personalised investment advice
+and any promise of returns.
