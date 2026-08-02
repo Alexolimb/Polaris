@@ -15,6 +15,7 @@ import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/splash.dart';
 import 'widgets/fx/stars_background.dart';
 import 'services/lessons.dart';
+import 'services/orbita_beacon.dart';
 import 'services/notifications.dart';
 import 'services/storage.dart';
 import 'state/app_scope.dart';
@@ -27,6 +28,10 @@ import 'theme/theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Пульту «Орбита» — «я запустился». Фоном, без ожидания.
+  OrbitaBeacon.ping();
+
   runApp(const PolarisApp());
 }
 
