@@ -827,4 +827,23 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get lessonButtonReady => 'Готово';
+
+  @override
+  String get settingsQuotesKeyHelp =>
+      'Без ключа цены смоделированы и помечены «ДЕМО». С бесплатным ключом с finnhub.io акции и ETF США показывают настоящие биржевые цены. Ключ остаётся на этом устройстве. Крипта и валюты в бесплатный тариф не входят — у них бейдж «ДЕМО» сохранится.';
+
+  @override
+  String get settingsQuotesKeyHint => 'вставь ключ с finnhub.io';
+
+  @override
+  String get settingsQuotesKeyLabel => 'Ключ Finnhub';
+
+  @override
+  String get settingsQuotesOff => 'Цены смоделированы';
+
+  @override
+  String get settingsQuotesOn => 'Настоящие цены включены';
+
+  @override
+  String get settingsQuotesSection => 'Настоящие цены';
 }

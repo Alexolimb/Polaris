@@ -824,4 +824,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lessonButtonReady => 'Done';
+
+  @override
+  String get settingsQuotesKeyHelp =>
+      'Without a key, prices are simulated and marked DEMO. With a free key from finnhub.io, US stocks and ETFs show real exchange prices. The key stays on this device. Crypto and currencies are not covered by the free plan and keep the DEMO badge.';
+
+  @override
+  String get settingsQuotesKeyHint => 'paste the key from finnhub.io';
+
+  @override
+  String get settingsQuotesKeyLabel => 'Finnhub key';
+
+  @override
+  String get settingsQuotesOff => 'Prices are simulated';
+
+  @override
+  String get settingsQuotesOn => 'Real prices are on';
+
+  @override
+  String get settingsQuotesSection => 'Real prices';
 }

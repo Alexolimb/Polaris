@@ -280,5 +280,11 @@
   "lessonCompleteTitle": "Lesson complete!",
   "lessonScore": "{correct} of {total} correct",
   "@lessonScore": { "placeholders": { "correct": { "type": "int" }, "total": { "type": "int" } } },
-  "lessonButtonReady": "Done"
+  "lessonButtonReady": "Done",
+  "settingsQuotesKeyHelp": "Without a key, prices are simulated and marked DEMO. With a free key from finnhub.io, US stocks and ETFs show real exchange prices. The key stays on this device. Crypto and currencies are not covered by the free plan and keep the DEMO badge.",
+  "settingsQuotesKeyHint": "paste the key from finnhub.io",
+  "settingsQuotesKeyLabel": "Finnhub key",
+  "settingsQuotesOff": "Prices are simulated",
+  "settingsQuotesOn": "Real prices are on",
+  "settingsQuotesSection": "Real prices"
 }

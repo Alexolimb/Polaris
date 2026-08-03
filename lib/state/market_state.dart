@@ -54,6 +54,9 @@ class MarketState extends ChangeNotifier {
   /// `freshness:"demo"` (сейчас его движок котировок синтетический).
   /// Нужен, чтобы приложение не подписывало выдуманные числа как «живые цены»
   /// — для обучающего инвест-продукта это принципиально.
+  /// ⚠️ Бумагам с настоящей биржевой ценой (ключ Finnhub) свежесть поднимается
+  /// до `realtime` в [_upgradeRealAssets], поэтому проверка ниже автоматически
+  /// перестаёт считать их выдуманными.
   bool get pricesAreSimulated =>
       offline ||
       _assets.isEmpty ||
@@ -196,6 +199,25 @@ class MarketState extends ChangeNotifier {
       final existing = _quotes[sym];
       if (existing == null || !q.ts.isBefore(existing.ts)) _quotes[sym] = q;
     });
+    _upgradeRealAssets();
+  }
+
+  /// Бумаге, по которой пришла НАСТОЯЩАЯ биржевая цена, поднимаем свежесть
+  /// до `realtime`.
+  ///
+  /// Сделано здесь, а не в каждом месте интерфейса: бейдж «ДЕМО» и подписи
+  /// читают `asset.freshness` в семи местах на двух экранах. Поправить одну
+  /// точку надёжнее, чем семь — и новый экран получит правильный бейдж сам.
+  void _upgradeRealAssets() {
+    var changed = false;
+    for (var i = 0; i < _assets.length; i++) {
+      final a = _assets[i];
+      if (a.freshness != QuoteFreshness.realtime && repo.isRealQuote(a.symbol)) {
+        _assets[i] = a.withFreshness(QuoteFreshness.realtime);
+        changed = true;
+      }
+    }
+    if (changed) _assets = List.of(_assets);
   }
 
   void _notify() {

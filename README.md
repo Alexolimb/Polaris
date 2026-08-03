@@ -32,8 +32,23 @@ Learn to invest without risking money: a virtual $10,000 portfolio, an AI mentor
 
 With no `baseUrl` configured the app runs **offline on built-in fixtures** for market data, and
 Cosmo shows a clear "no connection" state instead of failing. **No API keys or secrets ship in the
-app.** The backend is a separate component — see
+app** — nothing is hardcoded and nothing is committed. The backend is a separate component — see
 [Polaris-server](https://github.com/Alexolimb/Polaris-server).
+
+### Real prices (optional)
+
+By default prices are **simulated** by the backend and are clearly badged `DEMO` — this is a
+learning product, so made-up numbers must never look like exchange data.
+
+Paste a free [finnhub.io](https://finnhub.io) key in **Settings → Real prices** and US stocks and
+ETFs switch to real exchange quotes; the `DEMO` badge disappears for exactly those instruments.
+The key is stored on the device only and is sent nowhere except Finnhub itself. Crypto and
+currencies are not covered by the free plan, so they keep simulated prices and keep the badge.
+
+Implementation: `lib/services/finnhub.dart`, wired in `MarketRepo.quotes` — real quotes first,
+everything else falls back to the previous source. A zero price from Finnhub (its way of saying
+"no data on the free plan") is discarded rather than treated as a price: accepting it would zero
+out the player's portfolio.
 
 ## Build and run
 

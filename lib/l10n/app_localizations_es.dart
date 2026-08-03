@@ -830,4 +830,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get lessonButtonReady => 'Listo';
+
+  @override
+  String get settingsQuotesKeyHelp =>
+      'Sin clave, los precios son simulados y llevan la etiqueta DEMO. Con una clave gratuita de finnhub.io, las acciones y ETF de EE. UU. muestran precios reales de bolsa. La clave se queda en este dispositivo. Las criptomonedas y divisas no entran en el plan gratuito y mantienen la etiqueta DEMO.';
+
+  @override
+  String get settingsQuotesKeyHint => 'pega la clave de finnhub.io';
+
+  @override
+  String get settingsQuotesKeyLabel => 'Clave de Finnhub';
+
+  @override
+  String get settingsQuotesOff => 'Precios simulados';
+
+  @override
+  String get settingsQuotesOn => 'Precios reales activados';
+
+  @override
+  String get settingsQuotesSection => 'Precios reales';
 }

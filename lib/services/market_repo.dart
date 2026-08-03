@@ -12,6 +12,7 @@ import 'dart:math' as math;
 
 import '../models/models.dart';
 import 'api.dart';
+import 'finnhub.dart';
 // Каталог, цены и дивиденды офлайн-режима СГЕНЕРИРОВАНЫ из общего с сервером
 // канона (server/data/market_base.json). Руками их здесь больше не держим:
 // пока таблицы жили в двух местах, они разъехались и портфель прыгал при
@@ -23,6 +24,35 @@ import 'market_base.g.dart';
 class MarketRepo {
   final PolarisApi? _api; // null — локальный режим (тесты, сервер не задеплоен)
   final DateTime Function() _now;
+
+  /// Источник настоящих котировок. null или без ключа — цены как раньше.
+  FinnhubApi? _finnhub;
+
+  /// Бумаги, по которым пришла НАСТОЯЩАЯ биржевая цена. По ним бейдж «ДЕМО»
+  /// снимается — а по остальным честно остаётся.
+  final Set<String> _realtime = {};
+
+  /// Есть ли хоть одна бумага с настоящей ценой.
+  bool get hasRealQuotes => _realtime.isNotEmpty;
+
+  /// Настоящая ли цена у этой бумаги.
+  bool isRealQuote(String symbol) => _realtime.contains(symbol);
+
+  /// Подключить/сменить источник настоящих котировок. Пустой ключ — отключить.
+  void useFinnhub(String? apiKey) {
+    final key = (apiKey ?? '').trim();
+    if (key.isEmpty) {
+      _finnhub = null;
+      _realtime.clear();
+      return;
+    }
+    if (_finnhub?.apiKey == key) return;
+    _finnhub = FinnhubApi(apiKey: key);
+    // Ключ сменили — прежние отметки «живое» больше ничего не значат, и кэш
+    // надо перечитать, иначе на экране останутся старые выдуманные цены.
+    _realtime.clear();
+    _quotesAt.clear();
+  }
 
   bool _offline = false;
 
@@ -96,8 +126,24 @@ class MarketRepo {
         .where((s) => refresh || !_fresh(_quotesAt[s], _quotesTtl))
         .toList();
     if (stale.isNotEmpty) {
+      // Сначала — настоящая биржа, если человек вставил ключ Finnhub.
+      // Что она отдала, помечаем как живое; остальное (крипта, валюты, не-США)
+      // добирается прежним путём и честно остаётся «ДЕМО».
+      final live = _finnhub;
+      if (live != null && live.configured) {
+        final real = await live.fetchQuotes(stale);
+        final at = _now();
+        for (final q in real) {
+          _quotes[q.symbol] = q;
+          _quotesAt[q.symbol] = at;
+          _realtime.add(q.symbol);
+        }
+        if (real.isNotEmpty) _offline = false;
+        stale.removeWhere((s) => _realtime.contains(s));
+      }
+
       final api = _api;
-      if (api != null) {
+      if (api != null && stale.isNotEmpty) {
         try {
           final fetched = await api.fetchQuotes(stale);
           final at = _now();

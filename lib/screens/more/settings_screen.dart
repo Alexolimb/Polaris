@@ -79,10 +79,92 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 8),
+            _SectionLabel(l10n.settingsQuotesSection),
+            _QuotesKeyCard(settings: settings, l10n: l10n),
+            const SizedBox(height: 8),
             _SectionLabel(l10n.settingsDataSection),
             _ResetPortfolioTile(l10n: l10n),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Ключ Finnhub — включатель настоящих биржевых цен.
+///
+/// Пишем в настройки не на каждую букву, а когда человек ушёл из поля или нажал
+/// «готово»: каждое сохранение дёргает перезапрос котировок, и посимвольная
+/// запись означала бы обстрел биржи запросами при наборе ключа.
+class _QuotesKeyCard extends StatefulWidget {
+  const _QuotesKeyCard({required this.settings, required this.l10n});
+  final AppSettings settings;
+  final AppLocalizations l10n;
+
+  @override
+  State<_QuotesKeyCard> createState() => _QuotesKeyCardState();
+}
+
+class _QuotesKeyCardState extends State<_QuotesKeyCard> {
+  late final TextEditingController _c =
+      TextEditingController(text: widget.settings.finnhubKey);
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  void _save() => widget.settings.setFinnhubKey(_c.text);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    final on = widget.settings.hasRealQuotesKey;
+    return GlowCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Focus(
+            onFocusChange: (has) {
+              if (!has) _save();
+            },
+            child: TextField(
+              controller: _c,
+              autocorrect: false,
+              enableSuggestions: false,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _save(),
+              decoration: InputDecoration(
+                labelText: l10n.settingsQuotesKeyLabel,
+                hintText: l10n.settingsQuotesKeyHint,
+                border: const OutlineInputBorder(),
+                isDense: true,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(on ? Icons.check_circle_outline : Icons.science_outlined,
+                  size: 16,
+                  color: on
+                      ? PolarisColors.gain
+                      : PolarisColors.textFaint),
+              const SizedBox(width: 6),
+              Text(on ? l10n.settingsQuotesOn : l10n.settingsQuotesOff,
+                  style: TextStyle(
+                      fontSize: 12.5,
+                      color: on
+                          ? PolarisColors.gain
+                          : PolarisColors.textFaint)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(l10n.settingsQuotesKeyHelp,
+              style: const TextStyle(
+                  fontSize: 12, height: 1.35, color: PolarisColors.textFaint)),
+        ],
       ),
     );
   }

@@ -150,6 +150,11 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
       settings: _settings,
     );
 
+    // Ключ настоящих котировок: подхватываем при старте (после load) и на
+    // каждое изменение в настройках. Слушатель, а не разовое чтение, — иначе
+    // вставленный ключ заработал бы только со следующего запуска.
+    _settings.addListener(_applyQuotesKey);
+
     _market.init();
     // Дожидаемся только того, что решает первый экран (портфель + настройки/
     // онбординг). Планирование уведомлений НЕ блокирует первый кадр —
@@ -164,8 +169,16 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
       _settings.load().catchError((_) {}),
     ]).timeout(const Duration(seconds: 8), onTimeout: () => <void>[]).whenComplete(() {
       if (mounted) setState(() => _loaded = true);
+      _applyQuotesKey(); // ключ прочитан из настроек — включаем живые цены
       _notifications.init(); // фоном, по настройкам
     });
+  }
+
+  /// Передаёт ключ Finnhub в рынок. Пустой ключ выключает живые цены и
+  /// возвращает прежние — с честным бейджем «ДЕМО».
+  void _applyQuotesKey() {
+    _market.repo.useFinnhub(_settings.finnhubKey);
+    _market.refreshQuotes();
   }
 
   @override
@@ -181,6 +194,7 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _portfolio.dispose();
+    _settings.removeListener(_applyQuotesKey);
     _market.dispose();
     _chat.dispose();
     _learn.dispose();

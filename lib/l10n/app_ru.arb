@@ -256,5 +256,11 @@
   "lessonButtonFinish": "Завершить урок",
   "lessonCompleteTitle": "Урок пройден!",
   "lessonScore": "Верно {correct} из {total}",
-  "lessonButtonReady": "Готово"
+  "lessonButtonReady": "Готово",
+  "settingsQuotesKeyHelp": "Без ключа цены смоделированы и помечены «ДЕМО». С бесплатным ключом с finnhub.io акции и ETF США показывают настоящие биржевые цены. Ключ остаётся на этом устройстве. Крипта и валюты в бесплатный тариф не входят — у них бейдж «ДЕМО» сохранится.",
+  "settingsQuotesKeyHint": "вставь ключ с finnhub.io",
+  "settingsQuotesKeyLabel": "Ключ Finnhub",
+  "settingsQuotesOff": "Цены смоделированы",
+  "settingsQuotesOn": "Настоящие цены включены",
+  "settingsQuotesSection": "Настоящие цены"
 }

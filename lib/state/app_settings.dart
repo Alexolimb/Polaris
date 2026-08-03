@@ -107,6 +107,12 @@ class AppSettings extends ChangeNotifier {
   NotificationPrefs _notifications = const NotificationPrefs();
   LocalePref _localePref = LocalePref.auto;
 
+  /// Ключ Finnhub — источник НАСТОЯЩИХ биржевых цен. Пусто = как раньше,
+  /// синтетические цены с честным бейджем «ДЕМО».
+  /// Хранится только на этом устройстве и никуда не отправляется, кроме самого
+  /// Finnhub (тот же принцип, что у ключа Gemini в Dayo).
+  String _finnhubKey = '';
+
   AppSettings({StorageGateway? storage}) : storage = storage ?? MemoryStorage();
 
   // ---- чтение ----
@@ -115,6 +121,8 @@ class AppSettings extends ChangeNotifier {
   UserGoal? get userGoal => _userGoal;
   NotificationPrefs get notifications => _notifications;
   LocalePref get localePref => _localePref;
+  String get finnhubKey => _finnhubKey;
+  bool get hasRealQuotesKey => _finnhubKey.trim().isNotEmpty;
 
   /// Язык интерфейса как код 'ru' | 'en' | 'es' — учитывает выбор в настройках,
   /// а для [LocalePref.auto] распознаёт язык устройства (тот же принцип, что
@@ -159,6 +167,9 @@ class AppSettings extends ChangeNotifier {
       try {
         _localePref = _parseLocalePref(snap['localePref'] as String?);
       } catch (_) {}
+      try {
+        _finnhubKey = (snap['finnhubKey'] as String?)?.trim() ?? '';
+      } catch (_) {}
     }
     _loaded = true;
     notifyListeners();
@@ -170,7 +181,17 @@ class AppSettings extends ChangeNotifier {
       'userGoal': _userGoal?.name,
       'notifications': _notifications.toJson(),
       'localePref': _localePref.name,
+      'finnhubKey': _finnhubKey,
     });
+  }
+
+  /// Вставить/убрать ключ настоящих котировок.
+  Future<void> setFinnhubKey(String key) async {
+    final next = key.trim();
+    if (next == _finnhubKey) return;
+    _finnhubKey = next;
+    await _persist();
+    notifyListeners();
   }
 
   // ---- операции ----

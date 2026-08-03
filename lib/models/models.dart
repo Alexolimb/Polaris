@@ -33,6 +33,18 @@ class Asset {
     this.freshness = QuoteFreshness.realtime,
   });
 
+  /// Та же бумага с другой свежестью цены. Нужна, когда приходит настоящая
+  /// биржевая котировка и бумага перестаёт быть «демо».
+  Asset withFreshness(QuoteFreshness value) => Asset(
+        symbol: symbol,
+        name: name,
+        type: type,
+        currency: currency,
+        themeIds: themeIds,
+        sector: sector,
+        freshness: value,
+      );
+
   factory Asset.fromJson(Map<String, dynamic> j) => Asset(
         symbol: j['symbol'] as String,
         name: (j['name'] as String?) ?? (j['symbol'] as String),

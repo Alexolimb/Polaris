@@ -256,5 +256,11 @@
   "lessonButtonFinish": "Terminar lección",
   "lessonCompleteTitle": "¡Lección completada!",
   "lessonScore": "{correct} de {total} correctas",
-  "lessonButtonReady": "Listo"
+  "lessonButtonReady": "Listo",
+  "settingsQuotesKeyHelp": "Sin clave, los precios son simulados y llevan la etiqueta DEMO. Con una clave gratuita de finnhub.io, las acciones y ETF de EE. UU. muestran precios reales de bolsa. La clave se queda en este dispositivo. Las criptomonedas y divisas no entran en el plan gratuito y mantienen la etiqueta DEMO.",
+  "settingsQuotesKeyHint": "pega la clave de finnhub.io",
+  "settingsQuotesKeyLabel": "Clave de Finnhub",
+  "settingsQuotesOff": "Precios simulados",
+  "settingsQuotesOn": "Precios reales activados",
+  "settingsQuotesSection": "Precios reales"
 }

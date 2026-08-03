@@ -174,6 +174,12 @@ class MarketCatalog {
 typedef HttpGetFn = Future<String> Function(Uri uri, Duration timeout);
 
 /// Боевой транспорт на dart:io (пакетов не тянем — http нам не нужен).
+///
+/// Публичный, потому что тем же транспортом ходит источник настоящих котировок
+/// (см. `finnhub.dart`): два разных способа качать JSON в одном приложении —
+/// две разные обработки таймаутов и ошибок, а значит два набора граблей.
+Future<String> ioHttpGet(Uri uri, Duration timeout) => _ioGet(uri, timeout);
+
 Future<String> _ioGet(Uri uri, Duration timeout) async {
   final client = HttpClient()..connectionTimeout = timeout;
   try {

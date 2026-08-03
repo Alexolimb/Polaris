@@ -132,11 +132,22 @@ void main() {
     expect(find.byType(SettingsScreen), findsOneWidget);
     expect(find.text('Язык'), findsOneWidget);
 
-    // Остальные секции могут быть ниже видимой области — скроллим список вручную.
-    await tester.drag(find.byType(ListView), const Offset(0, -500));
-    await _settle(tester);
-    expect(find.text('Уведомления'), findsOneWidget);
-    expect(find.text('Сбросить портфель'), findsOneWidget);
+    // Остальные секции ниже видимой области.
+    //
+    // ⚠️ Раньше здесь была прокрутка ровно на 500 пикселей — и тест краснел
+    // от любой новой секции на экране: одни надписи ещё не доехали, другие
+    // уже уехали вверх. Прокручиваем ДО нужной надписи: проверяется «секция
+    // есть», а не «секция на такой-то высоте».
+    final list = find.byType(Scrollable).first;
+    for (final label in const [
+      'Уведомления',
+      'Настоящие цены',
+      'Сбросить портфель',
+    ]) {
+      await tester.scrollUntilVisible(find.text(label), 120, scrollable: list);
+      await _settle(tester);
+      expect(find.text(label), findsOneWidget, reason: label);
+    }
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(const SizedBox());

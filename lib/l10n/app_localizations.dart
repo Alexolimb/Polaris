@@ -1521,6 +1521,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get lessonButtonReady;
+
+  /// No description provided for @settingsQuotesKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Without a key, prices are simulated and marked DEMO. With a free key from finnhub.io, US stocks and ETFs show real exchange prices. The key stays on this device. Crypto and currencies are not covered by the free plan and keep the DEMO badge.'**
+  String get settingsQuotesKeyHelp;
+
+  /// No description provided for @settingsQuotesKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'paste the key from finnhub.io'**
+  String get settingsQuotesKeyHint;
+
+  /// No description provided for @settingsQuotesKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Finnhub key'**
+  String get settingsQuotesKeyLabel;
+
+  /// No description provided for @settingsQuotesOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices are simulated'**
+  String get settingsQuotesOff;
+
+  /// No description provided for @settingsQuotesOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Real prices are on'**
+  String get settingsQuotesOn;
+
+  /// No description provided for @settingsQuotesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Real prices'**
+  String get settingsQuotesSection;
 }
 
 class _AppLocalizationsDelegate
