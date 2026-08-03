@@ -30,6 +30,12 @@ class MarketState extends ChangeNotifier {
   List<MarketTheme> _themes = [];
   final Map<String, Quote> _quotes = {};
 
+  /// Свежесть, какой её объявил каталог сервера. Нужна, чтобы вернуть бумаге
+  /// её честное «демо», когда настоящая цена перестала приходить: в _assets к
+  /// тому моменту уже лежит поднятое `realtime`, и исходное значение иначе
+  /// негде взять.
+  final Map<String, QuoteFreshness> _catalogFreshness = {};
+
   // ---- ui-состояние ----
   bool _loading = false;
   bool _initDone = false;
@@ -99,6 +105,11 @@ class MarketState extends ChangeNotifier {
     try {
       final cat = await repo.catalog();
       _assets = cat.assets;
+      // Запоминаем, что сказал каталог, ДО того как поднимем свежесть по
+      // настоящим ценам — иначе вернуть честное «демо» будет уже не из чего.
+      for (final a in cat.assets) {
+        _catalogFreshness[a.symbol] = a.freshness;
+      }
       _themes = cat.themes;
       final qs = await repo.quotes(_pollSymbols());
       _mergeQuotes(qs);
@@ -202,18 +213,28 @@ class MarketState extends ChangeNotifier {
     _upgradeRealAssets();
   }
 
-  /// Бумаге, по которой пришла НАСТОЯЩАЯ биржевая цена, поднимаем свежесть
-  /// до `realtime`.
+  /// Приводит свежесть бумаг в соответствие с тем, откуда взята цена ПРЯМО
+  /// СЕЙЧАС: пришла настоящая биржевая — `realtime`, не пришла — как было в
+  /// каталоге сервера (обычно `demo`).
   ///
   /// Сделано здесь, а не в каждом месте интерфейса: бейдж «ДЕМО» и подписи
   /// читают `asset.freshness` в семи местах на двух экранах. Поправить одну
   /// точку надёжнее, чем семь — и новый экран получит правильный бейдж сам.
+  ///
+  /// ⚠️ Работает В ОБЕ СТОРОНЫ, и это главное. Первая версия только поднимала
+  /// свежесть. Тогда после того, как человек убирал ключ (или кончался лимит
+  /// запросов к бирже), цены снова становились выдуманными, а надпись
+  /// «настоящие» оставалась. Приложение учит инвестировать — показывать
+  /// выдуманную цену как биржевую нельзя ни секунды.
   void _upgradeRealAssets() {
     var changed = false;
     for (var i = 0; i < _assets.length; i++) {
       final a = _assets[i];
-      if (a.freshness != QuoteFreshness.realtime && repo.isRealQuote(a.symbol)) {
-        _assets[i] = a.withFreshness(QuoteFreshness.realtime);
+      final want = repo.isRealQuote(a.symbol)
+          ? QuoteFreshness.realtime
+          : (_catalogFreshness[a.symbol] ?? a.freshness);
+      if (a.freshness != want) {
+        _assets[i] = a.withFreshness(want);
         changed = true;
       }
     }

@@ -176,9 +176,15 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
 
   /// Передаёт ключ Finnhub в рынок. Пустой ключ выключает живые цены и
   /// возвращает прежние — с честным бейджем «ДЕМО».
+  ///
+  /// ⚠️ Перезапрос котировок делаем ТОЛЬКО когда ключ реально изменился.
+  /// Слушатель висит на всех настройках сразу, и без этой проверки любое
+  /// переключение (язык, галочка уведомлений) выстреливало бы десятками
+  /// запросов к бирже и съедало бесплатный лимит.
   void _applyQuotesKey() {
-    _market.repo.useFinnhub(_settings.finnhubKey);
-    _market.refreshQuotes();
+    if (_market.repo.useFinnhub(_settings.finnhubKey)) {
+      _market.refreshQuotes();
+    }
   }
 
   @override

@@ -11,6 +11,8 @@ library;
 import 'dart:math' as math;
 
 import '../models/models.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import 'api.dart';
 import 'finnhub.dart';
 // Каталог, цены и дивиденды офлайн-режима СГЕНЕРИРОВАНЫ из общего с сервером
@@ -39,17 +41,33 @@ class MarketRepo {
   bool isRealQuote(String symbol) => _realtime.contains(symbol);
 
   /// Подключить/сменить источник настоящих котировок. Пустой ключ — отключить.
-  void useFinnhub(String? apiKey) {
+  ///
+  /// Возвращает true, если источник действительно изменился. Вызывающему это
+  /// нужно, чтобы не дёргать перезапрос котировок на каждое чиханье в
+  /// настройках: перезапрос — это до 80 запросов к бирже.
+  bool useFinnhub(String? apiKey) {
     final key = (apiKey ?? '').trim();
     if (key.isEmpty) {
+      if (_finnhub == null) return false;
       _finnhub = null;
+      // Отметки «живое» и кэш сбрасываем ОБА: иначе последние настоящие цены
+      // остались бы висеть как свежие, хотя источника уже нет.
       _realtime.clear();
-      return;
+      _quotesAt.clear();
+      return true;
     }
-    if (_finnhub?.apiKey == key) return;
+    if (_finnhub?.apiKey == key) return false;
     _finnhub = FinnhubApi(apiKey: key);
-    // Ключ сменили — прежние отметки «живое» больше ничего не значат, и кэш
-    // надо перечитать, иначе на экране останутся старые выдуманные цены.
+    _realtime.clear();
+    _quotesAt.clear();
+    return true;
+  }
+
+  /// Подставить готовый источник настоящих цен — для тестов, где нельзя
+  /// ходить в сеть.
+  @visibleForTesting
+  void useFinnhubApi(FinnhubApi? api) {
+    _finnhub = api;
     _realtime.clear();
     _quotesAt.clear();
   }
@@ -139,8 +157,16 @@ class MarketRepo {
           _realtime.add(q.symbol);
         }
         if (real.isNotEmpty) _offline = false;
-        stale.removeWhere((s) => _realtime.contains(s));
+        final got = real.map((q) => q.symbol).toSet();
+        stale.removeWhere(got.contains);
       }
+
+      // ⚠️ Всё, что до сюда доехало, настоящей цены НЕ получило — значит и
+      // отметку «живое» с него надо снять. Без этой строки бумага, у которой
+      // цена когда-то была настоящей, продолжала бы показываться без бейджа
+      // «ДЕМО» после того, как ключ убрали или лимит запросов кончился.
+      // Для приложения, которое учит инвестировать, это прямое враньё.
+      _realtime.removeAll(stale);
 
       final api = _api;
       if (api != null && stale.isNotEmpty) {

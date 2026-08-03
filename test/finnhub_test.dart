@@ -107,6 +107,65 @@ void main() {
     expect(seen!.host, 'finnhub.io');
   });
 
+  group('бюджет запросов (бесплатный тариф — 60 в минуту)', () {
+    test('больше разрешённого за минуту не спрашиваем', () async {
+      var calls = 0;
+      var clock = DateTime(2026, 8, 3, 12, 0, 0);
+      final api = FinnhubApi(
+        apiKey: 'ключ',
+        maxPerMinute: 3,
+        now: () => clock,
+        httpGet: (uri, _) async {
+          calls++;
+          return jsonEncode({'c': 10.0, 'pc': 10.0, 't': 0});
+        },
+      );
+
+      // Просим десять бумаг — экран «Рынки» опрашивает до 80 за раз.
+      final quotes = await api.fetchQuotes(
+          List.generate(10, (i) => 'S$i'));
+
+      expect(calls, 3, reason: 'лимит должен останавливать, а не выбиваться');
+      expect(quotes, hasLength(3));
+      expect(api.budgetLeft, 0);
+    });
+
+    test('через минуту бюджет возвращается', () async {
+      var clock = DateTime(2026, 8, 3, 12, 0, 0);
+      final api = FinnhubApi(
+        apiKey: 'ключ',
+        maxPerMinute: 2,
+        now: () => clock,
+        httpGet: (uri, _) async => jsonEncode({'c': 1.0, 'pc': 1.0, 't': 0}),
+      );
+
+      await api.fetchQuotes(['A', 'B', 'C']);
+      expect(api.budgetLeft, 0);
+
+      clock = clock.add(const Duration(seconds: 61));
+      expect(api.budgetLeft, 2);
+
+      final again = await api.fetchQuotes(['C']);
+      expect(again, hasLength(1));
+    });
+
+    test('бумаги, до которых не хватило бюджета, просто не возвращаются',
+        () async {
+      var clock = DateTime(2026, 8, 3, 12, 0, 0);
+      final api = FinnhubApi(
+        apiKey: 'ключ',
+        maxPerMinute: 1,
+        now: () => clock,
+        httpGet: (uri, _) async => jsonEncode({'c': 5.0, 'pc': 5.0, 't': 0}),
+      );
+
+      final quotes = await api.fetchQuotes(['AAPL', 'MSFT']);
+      expect(quotes.map((q) => q.symbol), ['AAPL']);
+      // MSFT не пришла — значит вызывающий возьмёт её из прежнего источника
+      // и честно оставит бейдж «ДЕМО».
+    });
+  });
+
   test('бумага с настоящей ценой перестаёт быть «демо»', () {
     const demo = Asset(
         symbol: 'AAPL',

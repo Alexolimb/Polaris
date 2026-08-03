@@ -18,26 +18,58 @@ import 'api.dart';
 /// Крипта и валюты на бесплатном ключе не отдаются — по ним останется прежний
 /// источник, и бейдж «ДЕМО» у них честно сохранится.
 class FinnhubApi {
-  FinnhubApi({required this.apiKey, HttpGetFn? httpGet, this.timeout = const Duration(seconds: 6)})
-      : _get = httpGet ?? ioHttpGet;
+  FinnhubApi({
+    required this.apiKey,
+    HttpGetFn? httpGet,
+    this.timeout = const Duration(seconds: 6),
+    this.maxPerMinute = 50,
+    DateTime Function()? now,
+  })  : _get = httpGet ?? ioHttpGet,
+        _now = now ?? DateTime.now;
 
   final String apiKey;
   final Duration timeout;
   final HttpGetFn _get;
+  final DateTime Function() _now;
+
+  /// Сколько запросов в минуту себе разрешаем.
+  ///
+  /// ⚠️ У бесплатного тарифа Finnhub потолок 60 запросов в минуту, а запрос
+  /// нужен на КАЖДУЮ бумагу. Экран «Рынки» опрашивает до 80 бумаг раз в
+  /// 30 секунд — это 160 запросов в минуту, то есть лимит выбивается за
+  /// полминуты, дальше приходят отказы, и настоящие цены пропадают у всех.
+  /// Держим потолок ниже разрешённого, с запасом.
+  final int maxPerMinute;
+
+  /// Времена последних запросов — скользящее окно в минуту.
+  final List<DateTime> _sent = [];
 
   static const _base = 'https://finnhub.io/api/v1';
 
   bool get configured => apiKey.trim().isNotEmpty;
 
+  /// Сколько запросов ещё можно сделать в текущем окне.
+  int get budgetLeft {
+    final edge = _now().subtract(const Duration(minutes: 1));
+    _sent.removeWhere((t) => t.isBefore(edge));
+    final left = maxPerMinute - _sent.length;
+    return left < 0 ? 0 : left;
+  }
+
   /// Котировки по списку тикеров. Finnhub отдаёт по одной бумаге за запрос,
   /// поэтому идём подряд; неответившие бумаги просто отсутствуют в результате,
-  /// и вызывающий возьмёт для них прежний источник.
+  /// и вызывающий возьмёт для них прежний источник (и честно вернёт им
+  /// бейдж «ДЕМО»).
   ///
   /// Ошибка одной бумаги не роняет остальные: это фон, а не действие человека.
+  /// Кончился бюджет запросов — молча останавливаемся: лучше отдать половину
+  /// настоящих цен, чем нарваться на отказы и не отдать ни одной.
   Future<List<Quote>> fetchQuotes(List<String> symbols) async {
     if (!configured || symbols.isEmpty) return const [];
     final out = <Quote>[];
     for (final symbol in symbols) {
+      if (budgetLeft <= 0) break;
+      _sent.add(_now());
       final quote = await _one(symbol);
       if (quote != null) out.add(quote);
     }
