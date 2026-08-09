@@ -244,6 +244,30 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /*
+           * Сохранённый портфель не прочитался. Молчать об этом нельзя:
+           * человек увидел бы свежие 10 000 и решил, что приложение
+           * «сбросилось само». Сами данные при этом целы — хранилище отложило
+           * их в сторону. Найдено ревизией 10.08.2026.
+           */
+          if (AppScope.of(context).portfolio.snapshotBityy)
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: PolarisColors.loss.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: PolarisColors.loss.withValues(alpha: 0.5)),
+              ),
+              child: const Text(
+                'Не смог прочитать твой сохранённый портфель.\n'
+                'Он НЕ потерян: я отложил его в сторону и ничего не затираю. '
+                'Пока играешь с чистого счёта — покажи мне это сообщение, и я верну.',
+                style: TextStyle(
+                    color: PolarisColors.textPrimary, fontSize: 13, height: 1.35),
+              ),
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -25,14 +25,42 @@ class PrefsStorage implements StorageGateway {
   @override
   Future<Map<String, dynamic>?> readJson(String key) async {
     final raw = (await _p).getString(key);
-    if (raw == null) return null;
+    if (raw == null) return null; // записи нет — это новый человек, всё честно
+
+    Object? decoded;
     try {
-      final decoded = jsonDecode(raw);
-      return decoded is Map<String, dynamic> ? decoded : null;
+      decoded = jsonDecode(raw);
     } catch (_) {
-      return null; // битый снапшот не должен ронять старт
+      decoded = null;
     }
+    if (decoded is Map<String, dynamic>) return decoded;
+
+    /*
+     * Запись ЕСТЬ, но не разбирается. Это НЕ новый человек.
+     *
+     * ⚠️ Раньше здесь просто возвращался null — то же самое, что «данных нет».
+     * Приложение показывало свежие 10 000 долларов, как после установки, а
+     * первая же покупка записывала пустой портфель поверх настоящего: позиции,
+     * вся история сделок и все дивиденды исчезали навсегда, без единого слова.
+     * Найдено ревизией 10.08.2026.
+     *
+     * Теперь непрочитанное откладывается в сторону под своим именем с датой —
+     * оно остаётся на устройстве, и его можно разобрать руками, — а приложение
+     * узнаёт о беде и говорит о ней вслух.
+     */
+    final kuda = '$key.broken-${DateTime.now().toIso8601String().substring(0, 10)}';
+    final prefs = await _p;
+    if (!prefs.containsKey(kuda)) await prefs.setString(kuda, raw);
+    _bityeKlyuchi.add(key);
+    return null;
   }
+
+  /// Записи, которые нашлись на устройстве, но не разобрались.
+  /// Пусто — всё в порядке.
+  static final Set<String> _bityeKlyuchi = <String>{};
+
+  /// Была ли запись по этому ключу и оказалась ли она нечитаемой.
+  static bool bitaya(String key) => _bityeKlyuchi.contains(key);
 
   @override
   Future<void> writeJson(String key, Map<String, dynamic> value) async {

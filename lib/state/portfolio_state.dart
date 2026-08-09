@@ -122,9 +122,29 @@ class PortfolioState extends ChangeNotifier {
         _firstHeldAt.putIfAbsent(sym, () => DateTime.fromMillisecondsSinceEpoch(0));
       }
     }
+    /*
+     * Портфель на устройстве ЕСТЬ, но не прочитался.
+     *
+     * ⚠️ Раньше это было неотличимо от первого запуска: приложение показывало
+     * свежие 10 000 долларов, а первая же покупка записывала пустой портфель
+     * поверх настоящего. Позиции, вся история сделок и все дивиденды
+     * исчезали навсегда, молча. Найдено ревизией 10.08.2026.
+     *
+     * Сама запись при этом никуда не делась — хранилище отложило её в сторону
+     * (см. PrefsStorage.readJson), поэтому сохранять дальше уже не опасно.
+     * Но сказать человеку обязаны: иначе он решит, что приложение «сбросилось
+     * само», и продолжит играть на пустом счёте.
+     */
+    _snapshotBityy = PrefsStorage.bitaya(_snapshotKey);
     _loaded = true;
     notifyListeners();
   }
+
+  bool _snapshotBityy = false;
+
+  /// Сохранённый портфель нашёлся, но не разобрался. Его отложили в сторону,
+  /// ничего не потеряно — но человеку надо об этом сказать.
+  bool get snapshotBityy => _snapshotBityy;
 
   Future<void> _persist() async {
     await storage.writeJson(_snapshotKey, {
