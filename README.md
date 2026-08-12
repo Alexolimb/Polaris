@@ -58,7 +58,7 @@ flutter run -d windows       # run on Windows
 flutter build windows        # release build  -> build/windows/x64/runner/Release/polaris.exe
 flutter build apk            # release build for Android
 flutter analyze              # static analysis — expected: 0 issues
-flutter test                 # test suite — expected: 236 tests, all green
+flutter test                 # test suite — expected: 338 tests, all green
 ```
 
 ## Requirements
