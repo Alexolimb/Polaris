@@ -11,6 +11,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../services/sync.dart';
 import '../../state/app_scope.dart';
 import '../../state/app_settings.dart';
 import '../../theme/theme.dart';
@@ -82,11 +83,109 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _SectionLabel(l10n.settingsQuotesSection),
             _QuotesKeyCard(settings: settings, l10n: l10n),
             const SizedBox(height: 8),
+            // Обмен показываем ТОЛЬКО когда он вообще включён: приложение,
+            // собранное без ключа склада, не должно дразнить кнопкой,
+            // которая ничего не делает.
+            if (AppScope.of(context).sync?.vklyuchen ?? false) ...[
+              _SectionLabel(_syncTexts(settings.resolvedLanguageCode).$1),
+              _SyncCard(
+                sync: AppScope.of(context).sync!,
+                lang: settings.resolvedLanguageCode,
+              ),
+              const SizedBox(height: 8),
+            ],
             _SectionLabel(l10n.settingsDataSection),
             _ResetPortfolioTile(l10n: l10n),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Подписи блока обмена: (заголовок, кнопка, «ни разу не обменивались»).
+///
+/// Живут здесь маленьким словарём, а не в arb-файлах, — тот же приём, что
+/// у `ApiException.localizedMessage`: три строки не стоят перегенерации всей
+/// локализации, а язык всё равно уважается.
+(String, String, String) _syncTexts(String lang) => switch (lang) {
+      'ru' => ('Общий портфель', 'Обменяться сейчас', 'обмена ещё не было'),
+      'es' => ('Cartera compartida', 'Sincronizar ahora', 'aún no se ha sincronizado'),
+      _ => ('Shared portfolio', 'Sync now', 'never synced yet'),
+    };
+
+/// Обмен с общим складом: телефон, ноутбук и Финансист видят один портфель.
+///
+/// ⚠️ Показываем ТРИ вещи, а не одну «Готово». В Tycha экран смотрел только на
+/// «получилось или нет» и писал «Готово» даже тогда, когда своё никуда не
+/// уехало, а последняя беда не показывалась вообще — обмен молча падал
+/// неделями. Здесь видно и когда был удачный обмен, и что мешает сейчас.
+class _SyncCard extends StatefulWidget {
+  const _SyncCard({required this.sync, required this.lang});
+
+  final PolarisSync sync;
+  final String lang;
+
+  @override
+  State<_SyncCard> createState() => _SyncCardState();
+}
+
+class _SyncCardState extends State<_SyncCard> {
+  String? _itog;
+
+  Future<void> _obmen() async {
+    final itog = await widget.sync.sync(force: true);
+    if (!mounted) return;
+    setState(() => _itog = PolarisSync.itogTekstom(itog, widget.lang));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = _syncTexts(widget.lang);
+    return AnimatedBuilder(
+      animation: widget.sync,
+      builder: (context, _) {
+        final lastOk = widget.sync.lastOk;
+        final kogda = lastOk == null
+            ? t.$3
+            : lastOk
+                .toLocal()
+                .toIso8601String()
+                .substring(0, 16)
+                .replaceFirst('T', ' ');
+        final stroka = _itog ?? kogda;
+        return GlowCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      stroka,
+                      style: const TextStyle(
+                          fontSize: 12.5, color: PolarisColors.textFaint),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  FilledButton(
+                    onPressed: widget.sync.busy ? null : _obmen,
+                    child: Text(t.$2),
+                  ),
+                ],
+              ),
+              if (widget.sync.beda != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  widget.sync.beda!,
+                  style: const TextStyle(
+                      fontSize: 12, color: PolarisColors.loss),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

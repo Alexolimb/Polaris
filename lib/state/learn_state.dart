@@ -14,6 +14,22 @@ import '../services/storage.dart';
 
 const _learnSnapshotKey = 'polaris.learn.v1';
 
+/// Прогресс обучения не сохранён — и урок НЕ засчитан.
+///
+/// Бросается, когда прогресс не удалось прочитать при запуске (писать поверх
+/// нельзя — сотрём всё) или когда запись на устройство не прошла. Экран
+/// «Учёба» обязан сказать об этом вслух: молчание здесь стоит человеку всего
+/// пройденного и накопленного стрика.
+class LearnProgressNotSaved implements Exception {
+  final Object? cause;
+
+  const LearnProgressNotSaved([this.cause]);
+
+  @override
+  String toString() =>
+      'LearnProgressNotSaved${cause == null ? '' : ': $cause'}';
+}
+
 /// Результат прохождения квиза одного урока (последняя попытка).
 class QuizResult {
   final int correct;
@@ -66,6 +82,13 @@ class LearnState extends ChangeNotifier {
   DateTime? _lastLessonDate;
   int _currentStreak = 0;
   int _longestStreak = 0;
+
+  /// Когда прогресс правился последний раз. Это время — и только оно — решает
+  /// спор двух копий на складе. Не время отправки: у отправителя оно всегда
+  /// «сейчас», и побеждал бы не тот, кто занимался последним, а тот, кто
+  /// последним открыл приложение.
+  DateTime? _changedAt;
+  DateTime? get changedAt => _changedAt;
 
   LearnState({StorageGateway? storage, DateTime Function()? now})
       : storage = storage ?? MemoryStorage(),
@@ -128,8 +151,38 @@ class LearnState extends ChangeNotifier {
 
   // ---- загрузка/сохранение ----
 
+  /// Прогресс НЕ прочитался с устройства.
+  ///
+  /// ⚠️ Раньше ошибку чтения никто не ловил: вкладка «Учёба» навсегда
+  /// застывала на серых заготовках «загружаю» — ни ошибки, ни кнопки
+  /// «повторить». А если человек всё-таки доходил до конца урока в этот
+  /// момент, сохранение записывало поверх ПУСТОТУ и стирало все пройденные
+  /// уроки и стрик. Найдено ревизией 10.08.2026.
+  ///
+  /// Теперь: экран говорит вслух и даёт «Попробовать снова», а запись поверх
+  /// не пройдёт вообще — [completeLesson] откажется молча портить прогресс.
+  bool _loadFailed = false;
+  bool get loadFailed => _loadFailed;
+
+  /// Прогресс на устройстве нашёлся, но не разобрался — его отложили в
+  /// сторону (см. [PrefsStorage.readJson]). Данные целы, но сказать надо.
+  bool _snapshotBityy = false;
+  bool get snapshotBityy => _snapshotBityy;
+
   Future<void> load() async {
-    final snap = await storage.readJson(_learnSnapshotKey);
+    _loadFailed = false;
+    final Map<String, dynamic>? snap;
+    try {
+      snap = await storage.readJson(_learnSnapshotKey);
+    } catch (_) {
+      // Хранилище отказало целиком. Мы НЕ знаем, что там лежит, — значит
+      // писать поверх нельзя ни при каких условиях.
+      _loadFailed = true;
+      _loaded = true;
+      notifyListeners();
+      return;
+    }
+    _snapshotBityy = PrefsStorage.bitaya(_learnSnapshotKey);
     if (snap != null) {
       try {
         final completed = snap['completed'];
@@ -162,6 +215,9 @@ class LearnState extends ChangeNotifier {
         _currentStreak = (snap['currentStreak'] as num?)?.toInt() ?? 0;
         _longestStreak = (snap['longestStreak'] as num?)?.toInt() ?? 0;
       } catch (_) {}
+      try {
+        _changedAt = DateTime.tryParse(snap['changedAt'] as String? ?? '');
+      } catch (_) {}
     }
     _loaded = true;
     notifyListeners();
@@ -174,7 +230,80 @@ class LearnState extends ChangeNotifier {
       'lastLessonDate': _lastLessonDate?.toIso8601String(),
       'currentStreak': _currentStreak,
       'longestStreak': _longestStreak,
+      if (_changedAt != null) 'changedAt': _changedAt!.toIso8601String(),
     });
+  }
+
+  // ---- синхронизация ----
+
+  /// Прогресс в том виде, в каком он уезжает на склад.
+  Map<String, dynamic> slepokDlyaObmena() => {
+        'completed': _completed.toList()..sort(),
+        'quizResults': _quizResults.map((k, v) => MapEntry(k, v.toJson())),
+        if (_lastLessonDate != null)
+          'lastLessonDate': _lastLessonDate!.toIso8601String(),
+        'currentStreak': _currentStreak,
+        'longestStreak': _longestStreak,
+        'changedAt': (_changedAt ?? DateTime.fromMillisecondsSinceEpoch(0))
+            .toUtc()
+            .toIso8601String(),
+      };
+
+  /// Применить прогресс, получившийся после слияния (см. `LearnMerge`).
+  ///
+  /// Возвращает false, если записать не удалось: тогда всё остаётся как было.
+  /// Если прогресс не прочитался при запуске — не применяем ВООБЩЕ: в памяти
+  /// сейчас пусто, и записать поверх значит стереть всё пройденное.
+  Future<bool> primenitSliyanie(Map<String, dynamic> merged) async {
+    if (_loadFailed) return false;
+    final before = (
+      completed: Set.of(_completed),
+      quiz: Map.of(_quizResults),
+      lastDate: _lastLessonDate,
+      current: _currentStreak,
+      longest: _longestStreak,
+      changed: _changedAt,
+    );
+    _completed
+      ..clear()
+      ..addAll([
+        for (final id in (merged['completed'] as List?) ?? const [])
+          if (id is String) id,
+      ]);
+    _quizResults.clear();
+    final results = merged['quizResults'];
+    if (results is Map) {
+      results.forEach((k, v) {
+        if (k is String && v is Map<String, dynamic>) {
+          try {
+            _quizResults[k] = QuizResult.fromJson(v);
+          } catch (_) {}
+        }
+      });
+    }
+    final last = DateTime.tryParse(merged['lastLessonDate'] as String? ?? '');
+    _lastLessonDate = last == null ? null : _dateOnly(last);
+    _currentStreak = (merged['currentStreak'] as num?)?.toInt() ?? 0;
+    _longestStreak = (merged['longestStreak'] as num?)?.toInt() ?? 0;
+    _changedAt = DateTime.tryParse(merged['changedAt'] as String? ?? '');
+    try {
+      await _persist();
+    } catch (_) {
+      _completed
+        ..clear()
+        ..addAll(before.completed);
+      _quizResults
+        ..clear()
+        ..addAll(before.quiz);
+      _lastLessonDate = before.lastDate;
+      _currentStreak = before.current;
+      _longestStreak = before.longest;
+      _changedAt = before.changed;
+      notifyListeners();
+      return false;
+    }
+    notifyListeners();
+    return true;
   }
 
   // ---- операции ----
@@ -187,13 +316,44 @@ class LearnState extends ChangeNotifier {
     int quizCorrect = 0,
     int quizTotal = 0,
   }) async {
+    // Прогресс не прочитался — в памяти сейчас ПУСТО, и это не «человек ничего
+    // не проходил», а «мы не знаем». Записать сейчас = стереть всё пройденное
+    // и стрик. Лучше честно отказать.
+    if (_loadFailed) throw const LearnProgressNotSaved();
+    final before = (
+      completed: Set.of(_completed),
+      quiz: Map.of(_quizResults),
+      lastDate: _lastLessonDate,
+      current: _currentStreak,
+      longest: _longestStreak,
+      changed: _changedAt,
+    );
     _completed.add(lessonId);
     if (quizTotal > 0) {
       _quizResults[lessonId] =
           QuizResult(correct: quizCorrect, total: quizTotal, ts: _now());
     }
     _bumpStreak();
-    await _persist();
+    _changedAt = _now().toUtc();
+    try {
+      await _persist();
+    } catch (e) {
+      // Не записалось — откатываем и говорим вслух. Иначе урок «пройден» на
+      // экране, а после перезапуска его нет: человек уверен, что занимался,
+      // а стрик обнулился сам собой.
+      _completed
+        ..clear()
+        ..addAll(before.completed);
+      _quizResults
+        ..clear()
+        ..addAll(before.quiz);
+      _lastLessonDate = before.lastDate;
+      _currentStreak = before.current;
+      _longestStreak = before.longest;
+      _changedAt = before.changed;
+      notifyListeners();
+      throw LearnProgressNotSaved(e);
+    }
     notifyListeners();
   }
 
@@ -206,6 +366,7 @@ class LearnState extends ChangeNotifier {
     _lastLessonDate = null;
     _currentStreak = 0;
     _longestStreak = 0;
+    _changedAt = _now().toUtc();
     await _persist();
     notifyListeners();
   }

@@ -99,7 +99,19 @@ class Position {
 enum TradeSide { buy, sell }
 
 class Trade {
+  /// МЕСТНЫЙ номер: «t1», «t2» — обычный счётчик внутри этого устройства.
+  ///
+  /// ⚠️ Между устройствами он ничего не значит: «сделка t1» на ноутбуке и
+  /// «сделка t1» на телефоне — это РАЗНЫЕ сделки. Синхронизировать по нему
+  /// нельзя: записи склеятся и часть пропадёт. На этом уже обожглись в Dayo.
+  /// Для обмена есть [uid].
   final String id;
+
+  /// ГЛОБАЛЬНЫЙ номер, одинаковый на всех устройствах и на складе.
+  /// Пусто — сделка ещё не получила его (старая запись до синхронизации);
+  /// такие раздаёт миграция при запуске, см. `SimEngine.vydatUid`.
+  final String uid;
+
   final String symbol;
   final TradeSide side;
   final double qty;
@@ -108,8 +120,24 @@ class Trade {
   final DateTime ts;
   final int realizedPnlCents; // только для продаж
 
+  /// Когда запись ПРАВИЛАСЬ последний раз. Именно это время решает спор двух
+  /// копий на складе — не время отправки. Иначе телефон, неделю пролежавший
+  /// в кармане, затёр бы своей старой копией свежую правку с ноутбука.
+  /// null — сделка ни разу не правилась, тогда это момент сделки.
+  final DateTime? changedAt;
+
+  /// Учтена ли эта сделка в деньгах и позициях.
+  ///
+  /// ⚠️ false НЕ значит «сделки не было». Значит «запись в журнале есть, но
+  /// применить её к деньгам нельзя» — например, продажа бумаги, которой в
+  /// журнале никогда не покупали. Раньше такие записи просто ВЫБРАСЫВАЛИСЬ
+  /// при слиянии двух устройств: ни в позициях, ни в истории, ни в файле на
+  /// диске. Теперь запись остаётся на месте и её видно человеку.
+  final bool primenena;
+
   const Trade({
     required this.id,
+    this.uid = '',
     required this.symbol,
     required this.side,
     required this.qty,
@@ -117,10 +145,36 @@ class Trade {
     required this.totalCents,
     required this.ts,
     this.realizedPnlCents = 0,
+    this.changedAt,
+    this.primenena = true,
   });
+
+  /// Время последней правки — то, по которому спорят копии.
+  DateTime get changed => changedAt ?? ts;
+
+  Trade copyWith({
+    String? id,
+    String? uid,
+    int? realizedPnlCents,
+    bool? primenena,
+  }) =>
+      Trade(
+        id: id ?? this.id,
+        uid: uid ?? this.uid,
+        symbol: symbol,
+        side: side,
+        qty: qty,
+        priceCents: priceCents,
+        totalCents: totalCents,
+        ts: ts,
+        realizedPnlCents: realizedPnlCents ?? this.realizedPnlCents,
+        changedAt: changedAt,
+        primenena: primenena ?? this.primenena,
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        if (uid.isNotEmpty) 'uid': uid,
         'symbol': symbol,
         'side': side.name,
         'qty': qty,
@@ -128,10 +182,15 @@ class Trade {
         'totalCents': totalCents,
         'ts': ts.toIso8601String(),
         'realizedPnlCents': realizedPnlCents,
+        if (changedAt != null) 'changedAt': changedAt!.toIso8601String(),
+        // Пишем только «не применена»: у подавляющего большинства записей флаг
+        // обычный, и раздувать файл незачем.
+        if (!primenena) 'primenena': false,
       };
 
   factory Trade.fromJson(Map<String, dynamic> j) => Trade(
         id: j['id'] as String,
+        uid: (j['uid'] as String?) ?? '',
         symbol: j['symbol'] as String,
         side: TradeSide.values.asNameMap()[j['side']] ?? TradeSide.buy,
         qty: (j['qty'] as num).toDouble(),
@@ -139,6 +198,8 @@ class Trade {
         totalCents: (j['totalCents'] as num).toInt(),
         ts: DateTime.tryParse(j['ts'] as String? ?? '') ?? DateTime.now(),
         realizedPnlCents: (j['realizedPnlCents'] as num?)?.toInt() ?? 0,
+        changedAt: DateTime.tryParse(j['changedAt'] as String? ?? ''),
+        primenena: j['primenena'] is bool ? j['primenena'] as bool : true,
       );
 }
 
@@ -150,13 +211,42 @@ class DividendPayout {
   final int totalCents;
   final DateTime ts;
 
+  /// ГЛОБАЛЬНЫЙ номер выплаты. Для начислений из календаря он НАРОЧНО
+  /// одинаков на всех устройствах — «dv_AAPL_2026-08-08». Телефон и ноутбук
+  /// начислят один и тот же дивиденд каждый у себя, и на складе эти две записи
+  /// обязаны слиться в одну. Иначе деньги в учебном портфеле удвоятся.
+  final String uid;
+
+  /// День отсечки (ex-date), «2026-08-08». Из него собирается [uid] и по нему
+  /// же приложение помнит, что эту выплату уже начисляло.
+  final String? exDay;
+
+  /// Когда запись правилась. Для выплаты это момент начисления.
+  final DateTime? changedAt;
+
   const DividendPayout({
     required this.symbol,
     required this.perShareCents,
     required this.qtyAtRecord,
     required this.totalCents,
     required this.ts,
+    this.uid = '',
+    this.exDay,
+    this.changedAt,
   });
+
+  DateTime get changed => changedAt ?? ts;
+
+  DividendPayout copyWith({String? uid}) => DividendPayout(
+        symbol: symbol,
+        perShareCents: perShareCents,
+        qtyAtRecord: qtyAtRecord,
+        totalCents: totalCents,
+        ts: ts,
+        uid: uid ?? this.uid,
+        exDay: exDay,
+        changedAt: changedAt,
+      );
 
   Map<String, dynamic> toJson() => {
         'symbol': symbol,
@@ -164,6 +254,9 @@ class DividendPayout {
         'qtyAtRecord': qtyAtRecord,
         'totalCents': totalCents,
         'ts': ts.toIso8601String(),
+        if (uid.isNotEmpty) 'uid': uid,
+        if (exDay != null) 'exDay': exDay,
+        if (changedAt != null) 'changedAt': changedAt!.toIso8601String(),
       };
 
   factory DividendPayout.fromJson(Map<String, dynamic> j) => DividendPayout(
@@ -172,5 +265,8 @@ class DividendPayout {
         qtyAtRecord: (j['qtyAtRecord'] as num).toDouble(),
         totalCents: (j['totalCents'] as num).toInt(),
         ts: DateTime.tryParse(j['ts'] as String? ?? '') ?? DateTime.now(),
+        uid: (j['uid'] as String?) ?? '',
+        exDay: j['exDay'] as String?,
+        changedAt: DateTime.tryParse(j['changedAt'] as String? ?? ''),
       );
 }

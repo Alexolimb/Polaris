@@ -137,6 +137,32 @@ class Candle {
   });
 }
 
+/// Свечи + честный ответ на вопрос «это настоящая биржевая история?».
+///
+/// ⚠️ Сервер Polaris сам приписывает к ответу
+/// `"freshness":"demo"` и `"disclaimer":"Учебные данные: цены и дивиденды
+/// сгенерированы алгоритмом, это НЕ реальные котировки."` — а приложение это
+/// поле просто не читало. Получалась настоящая цена (ключ Finnhub) и рядом
+/// выдуманный годовой график с выдуманным «диапазоном за период», без единого
+/// намёка. Приложение учит инвестировать: человек переносит такой вывод на
+/// настоящие деньги. Найдено ревизией 10.08.2026.
+///
+/// Умолчание — [simulated] = true: пока сервер прямо не сказал «realtime»,
+/// считаем историю учебной. Ошибиться в эту сторону безопасно.
+class CandlesResult {
+  final List<Candle> candles;
+  final bool simulated;
+
+  /// Пояснение сервера как есть (если прислал) — для лога/диагностики.
+  final String? disclaimer;
+
+  const CandlesResult({
+    required this.candles,
+    required this.simulated,
+    this.disclaimer,
+  });
+}
+
 /// Тема-подборка для чипов («ИИ», «Дивидендные гиганты»…).
 class MarketTheme {
   final String id;
@@ -272,9 +298,18 @@ class PolarisApi {
     return out;
   }
 
-  Future<List<Candle>> fetchCandles(String symbol, CandleRange range) async {
+  Future<CandlesResult> fetchCandles(String symbol, CandleRange range) async {
     final json = await _getJson(
         '/v1/candles', {'symbol': symbol, 'range': range.query});
+    final map = json is Map<String, dynamic> ? json : const <String, dynamic>{};
+    // Метку читаем ДО разбора свечей: даже если список окажется кривым, знать,
+    // что данные учебные, важнее.
+    final freshness = map['freshness'];
+    final simulated = freshness is String
+        ? freshness.toLowerCase() != 'realtime'
+        : true; // сервер молчит — считаем учебными, это честнее
+    final disclaimer =
+        map['disclaimer'] is String ? map['disclaimer'] as String : null;
     final list = json is Map<String, dynamic> ? json['candles'] : null;
     if (list is! List) {
       throw const ApiException(
@@ -296,7 +331,8 @@ class PolarisApi {
       } catch (_) {}
     }
     out.sort((a, b) => a.t.compareTo(b.t));
-    return out;
+    return CandlesResult(
+        candles: out, simulated: simulated, disclaimer: disclaimer);
   }
 
   Future<List<DividendEvent>> fetchDividends(String symbol) async {

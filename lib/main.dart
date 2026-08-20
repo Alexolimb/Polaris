@@ -18,6 +18,7 @@ import 'services/lessons.dart';
 import 'services/orbita_beacon.dart';
 import 'services/notifications.dart';
 import 'services/storage.dart';
+import 'services/sync.dart';
 import 'state/app_scope.dart';
 import 'state/app_settings.dart';
 import 'state/chat_state.dart';
@@ -126,9 +127,15 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
   late final LearnState _learn;
   late final AppSettings _settings;
   late final NotificationsController _notifications;
+  late final PolarisSync _sync;
 
   bool _splashDone = false;
   bool _loaded = false;
+
+  /// Пауза после правки: человек покупает бумагу, потом ещё одну — незачем
+  /// ходить в сеть дважды подряд. Таймеров, тикающих в пустоту, здесь нет:
+  /// обмен случается при запуске, через полминуты после сделки и по кнопке.
+  Timer? _syncDebounce;
 
   @override
   void initState() {
@@ -148,6 +155,13 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
     _notifications = NotificationsController(
       gateway: LocalNotificationsPluginGateway(),
       settings: _settings,
+    );
+    // Обмен с общим складом. Без ключа сборки он молча выключен — ровно как
+    // у Dayo, Nutri, Tycha и Fluxo.
+    _sync = PolarisSync(
+      portfolio: _portfolio,
+      learn: _learn,
+      storage: storage,
     );
 
     // Ключ настоящих котировок: подхватываем при старте (после load) и на
@@ -171,6 +185,22 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
       if (mounted) setState(() => _loaded = true);
       _applyQuotesKey(); // ключ прочитан из настроек — включаем живые цены
       _notifications.init(); // фоном, по настройкам
+      // Обмен — только ПОСЛЕ загрузки портфеля. Иначе отправили бы на склад
+      // пустой журнал и попросили бы забыть всё, что там уже лежит.
+      if (_sync.vklyuchen) {
+        unawaited(_sync.start());
+        _portfolio.addListener(_planirovatObmen);
+        _learn.addListener(_planirovatObmen);
+      }
+    });
+  }
+
+  /// Портфель или прогресс изменились — обменяемся через полминуты.
+  void _planirovatObmen() {
+    if (_sync.busy) return; // своё же эхо обменом не считается
+    _syncDebounce?.cancel();
+    _syncDebounce = Timer(const Duration(seconds: 30), () {
+      unawaited(_sync.sync());
     });
   }
 
@@ -199,6 +229,10 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _syncDebounce?.cancel();
+    _portfolio.removeListener(_planirovatObmen);
+    _learn.removeListener(_planirovatObmen);
+    _sync.dispose();
     _portfolio.dispose();
     _settings.removeListener(_applyQuotesKey);
     _market.dispose();
@@ -233,6 +267,7 @@ class _RootState extends State<_Root> with WidgetsBindingObserver {
       learn: _learn,
       settings: _settings,
       notifications: _notifications,
+      sync: _sync,
       child: screen,
     );
   }

@@ -128,11 +128,25 @@ class _LessonPlayerState extends State<LessonPlayer> {
       for (var i = 0; i < _lesson.quiz.length; i++) {
         if (_selected[i] == _lesson.quiz[i].correctIndex) correct++;
       }
-      await widget.learnState.completeLesson(
-        _lesson.id,
-        quizCorrect: correct,
-        quizTotal: _lesson.quiz.length,
-      );
+      try {
+        await widget.learnState.completeLesson(
+          _lesson.id,
+          quizCorrect: correct,
+          quizTotal: _lesson.quiz.length,
+        );
+      } on LearnProgressNotSaved {
+        // Прогресс не лёг на устройство (или не читался при запуске). Показать
+        // «Урок пройден!» здесь — прямое враньё: после перезапуска урока не
+        // будет. Говорим прямо и не рисуем поздравление.
+        _completedOnce = false; // можно попробовать ещё раз
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).learnNotSavedError),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 6),
+        ));
+        return;
+      }
     }
     if (mounted) setState(() => _phase = _Phase.done);
   }

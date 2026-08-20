@@ -6,7 +6,7 @@
 /// - публичное состояние снаружи только читается.
 library;
 
-import 'dart:math' as math;
+import 'dart:convert' show jsonEncode;
 
 import '../models/models.dart';
 
@@ -28,6 +28,36 @@ double _roundQty(double q) => (q * 1e8).roundToDouble() / 1e8;
 // больше долей, чем реально оплачено (round мог бы дать «бесплатную» долю).
 double _floorQty(double q) => (q * 1e8).floorToDouble() / 1e8;
 
+/// Что получилось, когда портфель пересобрали из событий (см. [SimEngine.fromEvents]).
+class ReplayResult {
+  final SimEngine engine;
+
+  /// Сколько записей НЕ удалось учесть в деньгах — например, продажа бумаги,
+  /// которую в журнале никогда не покупали (тогда деньги взялись бы из
+  /// воздуха). ⚠️ Сами записи при этом ОСТАЮТСЯ в журнале с пометкой
+  /// `primenena: false`: выбрасывать нельзя ничего.
+  final int propushcheno;
+
+  /// С какого момента честно держим каждую бумагу (для честных дивидендов).
+  final Map<String, DateTime> firstHeldAt;
+
+  /// Покупки, на которые в общем журнале не хватило учебного счёта. Они
+  /// ПРИМЕНЕНЫ (деньги ушли в минус), а не выброшены. Этот список нужен, чтобы
+  /// сказать человеку прямо: «вот из-за каких сделок счёт ушёл в минус».
+  final List<Trade> sverhScheta;
+
+  /// Насколько счёт ушёл в минус (0 — всё сошлось).
+  final int pererashodCents;
+
+  const ReplayResult({
+    required this.engine,
+    required this.propushcheno,
+    required this.firstHeldAt,
+    this.sverhScheta = const [],
+    this.pererashodCents = 0,
+  });
+}
+
 class SimEngine {
   int _cashCents;
   final Map<String, Position> _positions;
@@ -36,7 +66,12 @@ class SimEngine {
   int _seq = 0;
   final DateTime Function() _now;
 
-  SimEngine({DateTime Function()? now})
+  /// Откуда берётся ГЛОБАЛЬНЫЙ номер новой записи. Пусто — номера не
+  /// раздаются (тогда синхронизация просто не включится, а приложение
+  /// работает как раньше). Ставится снаружи, когда известно имя устройства.
+  String Function()? uidFactory;
+
+  SimEngine({DateTime Function()? now, this.uidFactory})
       : _cashCents = startingCashCents,
         _positions = {},
         _trades = [],
@@ -105,6 +140,7 @@ class SimEngine {
     );
     final t = Trade(
       id: 't${++_seq}',
+      uid: uidFactory?.call() ?? '',
       symbol: symbol,
       side: TradeSide.buy,
       qty: qty,
@@ -155,6 +191,7 @@ class SimEngine {
     }
     final t = Trade(
       id: 't${++_seq}',
+      uid: uidFactory?.call() ?? '',
       symbol: symbol,
       side: TradeSide.sell,
       qty: sellQty,
@@ -174,6 +211,9 @@ class SimEngine {
     var q = 0.0;
     for (final t in _trades) {
       if (t.symbol != symbol || t.ts.isAfter(date)) continue;
+      // Запись, которую не удалось применить, лежит в журнале, но в деньгах и
+      // бумагах её нет — иначе она исказила бы базу дивиденда.
+      if (!t.primenena) continue;
       q += t.side == TradeSide.buy ? t.qty : -t.qty;
     }
     return q <= 0 ? 0.0 : _roundQty(q);
@@ -194,16 +234,25 @@ class SimEngine {
     final total = (basisQty * perShareCents).round();
     if (total <= 0) return null;
     _cashCents += total;
+    final exDay = asOf?.toIso8601String().substring(0, 10);
     final d = DividendPayout(
       symbol: symbol,
       perShareCents: perShareCents,
       qtyAtRecord: basisQty,
       totalCents: total,
       ts: _now(),
+      // Номер выплаты НАРОЧНО не зависит от устройства: телефон и ноутбук
+      // начислят один и тот же дивиденд каждый у себя, и на складе эти две
+      // записи обязаны слиться в одну, а не удвоить деньги.
+      uid: exDay != null ? uidVyplaty(symbol, exDay) : (uidFactory?.call() ?? ''),
+      exDay: exDay,
     );
     _dividends.add(d);
     return d;
   }
+
+  /// Глобальный номер выплаты по бумаге и дате отсечки — одинаковый везде.
+  static String uidVyplaty(String symbol, String exDay) => 'dv_${symbol}_$exDay';
 
   /// Полный сброс к старту (решение Алекса: можно в любой момент).
   void reset() {
@@ -211,7 +260,74 @@ class SimEngine {
     _positions.clear();
     _trades.clear();
     _dividends.clear();
+    _neprochitannye.clear();
     _seq = 0;
+  }
+
+  // ---- непрочитанные куски файла ----
+
+  /// Записи, которые в файле ЕСТЬ, но прочитать их не удалось (оборвалась
+  /// запись, испортилась кодировка, поле не того вида).
+  ///
+  /// ⚠️ Раньше такие записи просто молча пропускались, и приложение считало,
+  /// что прочитало файл целиком. На экране всё выглядело целым (деньги и
+  /// позиции лежат в файле ОТДЕЛЬНО от журнала), приложение спокойно шло в
+  /// сеть — а обмен объявляет журнал единственной правдой и стирает то, чего
+  /// в журнале нет. Так испарялась целая бумага. Найдено ревизией 10.08.2026.
+  ///
+  /// Теперь: непрочитанный кусок ХРАНИТСЯ КАК ЕСТЬ (человека из него ещё можно
+  /// вытащить руками), переезжает из сохранения в сохранение и поднимает флаг
+  /// «прочиталось не полностью» — с таким портфелем в сеть не выходим.
+  final List<Map<String, dynamic>> _neprochitannye = [];
+
+  List<Map<String, dynamic>> get neprochitannyeZapisi =>
+      List.unmodifiable(_neprochitannye);
+
+  /// В файле остались куски, которые не прочитались.
+  bool get estNeprochitannye => _neprochitannye.isNotEmpty;
+
+  /// Забрать непрочитанные куски у прежнего движка.
+  ///
+  /// ⚠️ Пересборка движка (см. [fromEvents]) создаёт ЧИСТЫЙ движок: у него
+  /// своих непрочитанных кусков нет. Раньше это значило, что любая пересборка
+  /// — слияние со складом или кнопка «Убрать» — стирала единственную копию
+  /// битой записи, из которой её ещё можно было вытащить руками, И ЗАОДНО
+  /// молча опускала запрет на обмен: приложение спокойно уходило на склад, а
+  /// склад стирает всё, чего нет в журнале. Найдено ревизией 10.08.2026.
+  ///
+  /// Теперь непрочитанное переживает ЛЮБУЮ пересборку, а запрет опускается
+  /// только там, где кусок правда убран и отложен в сторону (см. [reset]).
+  ///
+  /// Кусков после вызова не меньше, чем было в [byli]. Те, что уже приехали
+  /// вместе со снапшотом, повторно не добавляются; одинаковые считаются
+  /// поштучно — два одинаковых битых куска так и останутся двумя.
+  void zabratNeprochitannye(List<Map<String, dynamic>> byli) {
+    if (byli.isEmpty) return;
+    final uzheEst = <String, int>{};
+    for (final m in _neprochitannye) {
+      final k = _otpechatok(m);
+      uzheEst[k] = (uzheEst[k] ?? 0) + 1;
+    }
+    for (final m in byli) {
+      final k = _otpechatok(m);
+      final skolko = uzheEst[k] ?? 0;
+      if (skolko > 0) {
+        uzheEst[k] = skolko - 1; // такой кусок уже здесь — не удваиваем
+        continue;
+      }
+      _neprochitannye.add(m);
+    }
+  }
+
+  /// Отпечаток куска — только чтобы не удваивать одно и то же. Сравнение
+  /// нарочно грубое: ошибиться можно лишь в сторону «оставить лишнюю копию»,
+  /// а терять куски нельзя.
+  static String _otpechatok(Map<String, dynamic> m) {
+    try {
+      return jsonEncode(m);
+    } catch (_) {
+      return '$m';
+    }
   }
 
   // ---- сохранение/загрузка (json-friendly) ----
@@ -221,29 +337,55 @@ class SimEngine {
         'positions': _positions.values.map((p) => p.toJson()).toList(),
         'trades': _trades.map((t) => t.toJson()).toList(),
         'dividends': _dividends.map((d) => d.toJson()).toList(),
+        // Непрочитанное НЕ выбрасываем при следующей записи: иначе первое же
+        // сохранение стёрло бы то единственное, из чего запись ещё можно
+        // восстановить руками.
+        if (_neprochitannye.isNotEmpty) 'neprochitannye': _neprochitannye,
       };
 
-  /// Загрузка терпима к мусору: битые записи пропускаются, отрицательный кэш
-  /// зажимается в ноль — движок обязан подняться с любого снапшота.
+  /// Загрузка терпима к мусору: движок обязан подняться с любого снапшота.
+  /// Но «поднялся» ≠ «прочитал всё»: каждый непрочитанный кусок запоминается
+  /// в [neprochitannyeZapisi] и остаётся в файле.
   static int? _asInt(Object? v) => v is num ? v.toInt() : null;
 
-  static SimEngine fromJson(Map<String, dynamic>? j, {DateTime Function()? now}) {
-    final e = SimEngine(now: now);
+  static SimEngine fromJson(
+    Map<String, dynamic>? j, {
+    DateTime Function()? now,
+    String Function()? uidFactory,
+  }) {
+    final e = SimEngine(now: now, uidFactory: uidFactory);
     if (j == null) return e;
-    e._cashCents = math.max(0, _asInt(j['cashCents']) ?? startingCashCents);
+    // ⚠️ Кэш БОЛЬШЕ НЕ зажимается в ноль. После слияния двух устройств счёт
+    // может честно уйти в минус (потратили с двух счетов больше, чем было на
+    // одном), и «поправить» его до нуля значило бы подарить человеку деньги и
+    // молча скрыть перерасход при следующем запуске.
+    e._cashCents = _asInt(j['cashCents']) ?? startingCashCents;
     // Поля-списки берём с проверкой типа (is List), а НЕ через `as List?`:
     // валидный JSON, где positions/trades оказались не списком, иначе бросил бы
     // TypeError мимо внутренних try/catch и уронил бы старт (вечная заставка).
     var maxSeq = _asInt(j['seq']) ?? 0;
+
+    void neprochitano(String gde, Object? raw) =>
+        e._neprochitannye.add({'gde': gde, 'raw': raw});
+
     final positionsRaw = j['positions'];
     if (positionsRaw is List) {
       for (final raw in positionsRaw) {
         try {
           final p = Position.fromJson(raw as Map<String, dynamic>);
-          if (p.qty > 0 && p.costCents >= 0) e._positions[p.symbol] = p;
-        } catch (_) {}
+          if (p.qty > 0 && p.costCents >= 0) {
+            e._positions[p.symbol] = p;
+          } else {
+            neprochitano('positions', raw);
+          }
+        } catch (_) {
+          neprochitano('positions', raw);
+        }
       }
+    } else if (positionsRaw != null) {
+      neprochitano('positions', positionsRaw);
     }
+
     final tradesRaw = j['trades'];
     if (tradesRaw is List) {
       for (final raw in tradesRaw) {
@@ -254,18 +396,199 @@ class SimEngine {
           // отсутствующем/заниженном seq новые сделки получат дублирующие id.
           final n = t.id.startsWith('t') ? int.tryParse(t.id.substring(1)) : null;
           if (n != null && n > maxSeq) maxSeq = n;
-        } catch (_) {}
+        } catch (_) {
+          neprochitano('trades', raw);
+        }
       }
+    } else if (tradesRaw != null) {
+      neprochitano('trades', tradesRaw);
     }
+
     final dividendsRaw = j['dividends'];
     if (dividendsRaw is List) {
       for (final raw in dividendsRaw) {
         try {
           e._dividends.add(DividendPayout.fromJson(raw as Map<String, dynamic>));
-        } catch (_) {}
+        } catch (_) {
+          neprochitano('dividends', raw);
+        }
       }
+    } else if (dividendsRaw != null) {
+      neprochitano('dividends', dividendsRaw);
     }
+
+    // То, что не прочиталось в прошлые разы, едет дальше без изменений.
+    final staroe = j['neprochitannye'];
+    if (staroe is List) {
+      for (final raw in staroe) {
+        if (raw is Map) {
+          e._neprochitannye.add(raw.cast<String, dynamic>());
+        } else {
+          neprochitano('?', raw);
+        }
+      }
+    } else if (staroe != null) {
+      neprochitano('?', staroe);
+    }
+
     e._seq = maxSeq;
     return e;
+  }
+
+  // ---- глобальные номера и пересборка из событий ----
+
+  /// Раздать ГЛОБАЛЬНЫЕ номера записям, у которых их ещё нет.
+  ///
+  /// ⚠️ Это и есть та самая миграция, без которой синхронизировать нельзя.
+  /// У всего, что человек накопил ДО обновления, есть только местный счётчик
+  /// («t1», «t2»), и он на разных устройствах означает разные сделки. Пока
+  /// каждой записи не выдан свой глобальный номер, на склад отправлять нечего.
+  ///
+  /// Возвращает, скольким записям номер выдали. Ноль — всё уже размечено.
+  int vydatUid() {
+    final gen = uidFactory;
+    if (gen == null) return 0;
+    var skolko = 0;
+    for (var i = 0; i < _trades.length; i++) {
+      if (_trades[i].uid.isEmpty) {
+        _trades[i] = _trades[i].copyWith(uid: gen());
+        skolko++;
+      }
+    }
+    for (var i = 0; i < _dividends.length; i++) {
+      if (_dividends[i].uid.isEmpty) {
+        final d = _dividends[i];
+        // Есть дата отсечки — номер device-независимый (склеится с копией
+        // соседнего устройства). Нет — только случайный, иначе не отличить.
+        _dividends[i] =
+            d.copyWith(uid: d.exDay != null ? uidVyplaty(d.symbol, d.exDay!) : gen());
+        skolko++;
+      }
+    }
+    return skolko;
+  }
+
+  /// Все записи размечены глобальными номерами — синхронизироваться можно.
+  bool get vseUidNaMeste =>
+      _trades.every((t) => t.uid.isNotEmpty) &&
+      _dividends.every((d) => d.uid.isNotEmpty);
+
+  /// Пересобрать портфель ЦЕЛИКОМ из списка событий (сделки + выплаты).
+  ///
+  /// Зачем так, а не «слить два портфеля». Деньги и позиции — это не то, что
+  /// можно «объединить»: два числа всегда спорят, и любое решение кого-то
+  /// обворовывает. А вот сделки складываются честно: событие либо было, либо
+  /// нет. Поэтому склад хранит ЖУРНАЛ СОБЫТИЙ, а деньги и позиции каждое
+  /// устройство считает само, проигрывая журнал по порядку. Тогда телефон и
+  /// ноутбук приходят к одинаковым цифрам без всякого спора.
+  ///
+  /// ⚠️ ИЗ ЖУРНАЛА НЕ ВЫБРАСЫВАЕТСЯ НИЧЕГО. Раньше покупка, на которую при
+  /// пересборке «не хватило денег», просто пропускалась — и исчезала навсегда:
+  /// ни в позициях, ни в истории, ни в файле на диске. Так испарялась целая
+  /// бумага, купленная на втором устройстве, и обмен повторял это каждый раз.
+  /// Найдено ревизией 10.08.2026.
+  ///
+  /// Теперь деньги — величина ПРОИЗВОДНАЯ от журнала: если сложенные с двух
+  /// устройств покупки не влезают в один учебный счёт, счёт честно уходит в
+  /// минус, а список таких покупок возвращается наверх, чтобы приложение
+  /// сказало об этом прямо. Это учебное приложение: некрасивый минус не
+  /// страшен, потеря записи — страшна.
+  ///
+  /// Записи, которые применить нельзя вообще (продажа бумаги, которой в
+  /// журнале никогда не покупали — деньги взялись бы из воздуха), остаются в
+  /// журнале с пометкой `primenena: false` и считаются в [ReplayResult.propushcheno].
+  static ReplayResult fromEvents({
+    required List<Trade> trades,
+    required List<DividendPayout> dividends,
+    DateTime Function()? now,
+    String Function()? uidFactory,
+  }) {
+    final e = SimEngine(now: now, uidFactory: uidFactory);
+    final firstHeld = <String, DateTime>{};
+    final sverhScheta = <Trade>[];
+    var propushcheno = 0;
+
+    // Порядок — по времени события. При равенстве времени по глобальному
+    // номеру: иначе телефон и ноутбук могли бы проиграть журнал по-разному
+    // и получить разные деньги из одних и тех же событий.
+    final sobytiya = <(DateTime, String, Trade?, DividendPayout?)>[
+      for (final t in trades) (t.ts, t.uid, t, null),
+      for (final d in dividends) (d.ts, d.uid, null, d),
+    ]..sort((a, b) {
+        final c = a.$1.compareTo(b.$1);
+        return c != 0 ? c : a.$2.compareTo(b.$2);
+      });
+
+    for (final s in sobytiya) {
+      final d = s.$4;
+      if (d != null) {
+        e._cashCents += d.totalCents;
+        e._dividends.add(d);
+        continue;
+      }
+      final t = s.$3!;
+      if (t.side == TradeSide.buy) {
+        // Мусорная запись (нулевое количество, отрицательная сумма) — применить
+        // нельзя: деньги взялись бы из воздуха. Но и выбросить нельзя, поэтому
+        // она едет в журнал непринятой.
+        if (t.qty <= 0 || t.totalCents < 0) {
+          propushcheno++;
+          e._trades.add(
+              t.copyWith(id: 't${++e._seq}', primenena: false, realizedPnlCents: 0));
+          continue;
+        }
+        // Денег не хватило — покупку всё равно ПРИМЕНЯЕМ, счёт уходит в минус,
+        // а сама покупка попадает в список «из-за чего так вышло».
+        if (t.totalCents > e._cashCents) sverhScheta.add(t);
+        e._cashCents -= t.totalCents;
+        final old = e._positions[t.symbol];
+        if (old == null) firstHeld[t.symbol] = t.ts;
+        e._positions[t.symbol] = Position(
+          symbol: t.symbol,
+          qty: _roundQty((old?.qty ?? 0) + t.qty),
+          costCents: (old?.costCents ?? 0) + t.totalCents,
+        );
+        e._trades.add(t.copyWith(id: 't${++e._seq}'));
+      } else {
+        final pos = e._positions[t.symbol];
+        if (pos == null || t.qty <= 0 || t.qty > pos.qty + 1e-8) {
+          // Продать больше, чем в журнале покупали, нельзя — это были бы деньги
+          // из воздуха. Запись остаётся в журнале непринятой: её видно, она
+          // едет на склад, её накрывает надгробие при «начать заново».
+          propushcheno++;
+          e._trades.add(
+              t.copyWith(id: 't${++e._seq}', primenena: false, realizedPnlCents: 0));
+          continue;
+        }
+        final q = (pos.qty - t.qty).abs() < 1e-8 ? pos.qty : _roundQty(t.qty);
+        final costOfSold = q >= pos.qty
+            ? pos.costCents
+            : (pos.costCents * (q / pos.qty)).round();
+        e._cashCents += t.totalCents;
+        final remaining = _roundQty(pos.qty - q);
+        if (remaining <= 0) {
+          e._positions.remove(t.symbol);
+          firstHeld.remove(t.symbol);
+        } else {
+          e._positions[t.symbol] = Position(
+            symbol: t.symbol,
+            qty: remaining,
+            costCents: pos.costCents - costOfSold,
+          );
+        }
+        e._trades.add(t.copyWith(
+          id: 't${++e._seq}',
+          realizedPnlCents: t.totalCents - costOfSold,
+        ));
+      }
+    }
+
+    return ReplayResult(
+      engine: e,
+      propushcheno: propushcheno,
+      firstHeldAt: firstHeld,
+      sverhScheta: List.unmodifiable(sverhScheta),
+      pererashodCents: e._cashCents < 0 ? -e._cashCents : 0,
+    );
   }
 }

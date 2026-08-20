@@ -39,6 +39,10 @@ class _AssetScreenState extends State<AssetScreen> {
   List<cm.Candle> _candles = const [];
   bool _loadingCandles = true;
 
+  /// История на графике придумана (генератор на устройстве или синтетический
+  /// движок сервера), а не снята с биржи. Пока не доказано обратное — да.
+  bool _candlesSimulated = true;
+
   /// Свеча под пальцем при скраббинге; null — палец отпущен, шапка
   /// показывает актуальную котировку.
   cm.Candle? _scrubCandle;
@@ -67,6 +71,7 @@ class _AssetScreenState extends State<AssetScreen> {
                 closeCents: c.c,
               ))
           .toList();
+      _candlesSimulated = widget.state.repo.candlesAreSimulated(symbol, range);
       _loadingCandles = false;
     });
   }
@@ -290,6 +295,50 @@ class _AssetScreenState extends State<AssetScreen> {
               child: CircularProgressIndicator(
                   color: PolarisColors.polar, strokeWidth: 2.4),
             ),
+          // Пометка стоит ПРЯМО НА графике — там, где обман и происходил.
+          if (_candlesSimulated && _candles.isNotEmpty)
+            Positioned(left: 10, right: 10, top: 0, child: _simulatedChartNotice()),
+        ],
+      ),
+    );
+  }
+
+  /// Честная подпись под графиком.
+  ///
+  /// ⚠️ Без неё получалось так: человек вставил ключ Finnhub, цена сверху —
+  /// настоящая биржевая, бейджи «ДЕМО» с карточки исчезли, а график под этой
+  /// ценой и «Диапазон за период» — чистая выдумка генератора случайных чисел.
+  /// Он делает вывод «бумага растёт весь год» и несёт его в настоящего
+  /// брокера с настоящими деньгами. Найдено ревизией 10.08.2026.
+  Widget _simulatedChartNotice() {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: PolarisColors.dividend.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(10),
+        border:
+            Border.all(color: PolarisColors.dividend.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.science_outlined,
+              color: PolarisColors.dividend, size: 14),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              l10n.assetChartSimulatedNotice,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: PolarisColors.dividend,
+                  fontSize: 11.5,
+                  height: 1.25,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
         ],
       ),
     );
@@ -410,11 +459,17 @@ class _AssetScreenState extends State<AssetScreen> {
     }
     final range = candles.isEmpty ? null : cm.rangeOfCandles(candles);
     if (range != null && !range.isFlat) {
+      // Диапазон считается ИЗ ТЕХ ЖЕ свечей. Если график учебный — цифры
+      // максимума и минимума тоже выдуманы, и подпись обязана это сказать.
       metrics.add(_Metric(
-        label: l10n.assetMetricRange,
+        label: _candlesSimulated
+            ? l10n.assetMetricRangeSimulated
+            : l10n.assetMetricRange,
         value: l10n.assetMetricRangeValue(
             formatCents(range.minCents.round()), formatCents(range.maxCents.round())),
-        hint: l10n.assetMetricRangeHint,
+        hint: _candlesSimulated
+            ? l10n.assetMetricRangeHintSimulated
+            : l10n.assetMetricRangeHint,
       ));
     }
     metrics.add(_Metric(
@@ -450,9 +505,16 @@ class _AssetScreenState extends State<AssetScreen> {
   // --------------------------------------------------------------- торговля
 
   /// Текущая цена для сделки: живая котировка, иначе последняя цена графика.
+  ///
+  /// ⚠️ Запасной вариант берётся ТОЛЬКО с настоящего графика. Раньше сделка
+  /// могла пройти по цене из последней ВЫДУМАННОЙ свечи — то есть человек
+  /// покупал по числу, которого на бирже не было вовсе. Теперь в таком случае
+  /// цены нет, и шторка честно говорит «сейчас нет цены».
   int? _currentPriceCents() =>
       widget.state.quoteOf(widget.asset.symbol)?.priceCents ??
-      (_candles.isNotEmpty ? _candles.last.closeCents : null);
+      (!_candlesSimulated && _candles.isNotEmpty
+          ? _candles.last.closeCents
+          : null);
 
   bool _tradeSheetOpen = false; // защита от двойного тапа (две шторки подряд)
 

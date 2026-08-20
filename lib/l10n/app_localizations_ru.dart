@@ -846,4 +846,37 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsQuotesSection => 'Настоящие цены';
+
+  @override
+  String get tradeNotSavedError =>
+      'Не смог сохранить на устройстве — сделка отменена. Деньги на месте. Освободи немного места и попробуй ещё раз.';
+
+  @override
+  String get assetChartSimulatedNotice =>
+      'Учебный график: история придумана алгоритмом, а не взята с биржи';
+
+  @override
+  String get assetMetricRangeSimulated => 'Диапазон за период (учебный график)';
+
+  @override
+  String get assetMetricRangeHintSimulated =>
+      'Считается по учебному графику, поэтому эти числа тоже выдуманы — не сравнивай их с настоящей биржей.';
+
+  @override
+  String get learnLoadFailedTitle => 'Не смог открыть твой прогресс';
+
+  @override
+  String get learnLoadFailedBody =>
+      'Ничего не потеряно: пройденные уроки и стрик остаются на устройстве. Пока прогресс не прочитан, отмечать уроки пройденными нельзя — иначе старый прогресс затрётся пустым.';
+
+  @override
+  String get learnRetryAction => 'Попробовать снова';
+
+  @override
+  String get learnNotSavedError =>
+      'Урок НЕ засчитан: прогресс не удалось сохранить на устройстве. Попробуй ещё раз — иначе после перезапуска урока не будет.';
+
+  @override
+  String get learnProgressUnreadableNotice =>
+      'Не смог прочитать твой сохранённый прогресс обучения. Он НЕ потерян: я отложил его в сторону и ничего не затираю. Покажи мне это сообщение, и я верну.';
 }

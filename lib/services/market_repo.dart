@@ -203,6 +203,19 @@ class MarketRepo {
   final Map<String, List<Candle>> _candles = {};
   final Map<String, DateTime> _candlesAt = {};
 
+  /// Учебная ли история по этому графику. true — свечи придуманы (генератором
+  /// на устройстве или синтетическим движком сервера), а не сняты с биржи.
+  final Map<String, bool> _candlesSimulated = {};
+
+  /// ⚠️ Главный вопрос этого экрана: можно ли верить графику?
+  ///
+  /// Настоящая цена (ключ Finnhub) и выдуманная история рядом — то, из-за чего
+  /// человек решает «бумага растёт весь год» и несёт вывод в настоящего
+  /// брокера. Неизвестность трактуем как «учебные»: соврать в эту сторону
+  /// безопасно, в обратную — нет. Найдено ревизией 10.08.2026.
+  bool candlesAreSimulated(String symbol, CandleRange range) =>
+      _candlesSimulated['$symbol/${range.query}'] ?? true;
+
   Future<List<Candle>> candles(String symbol, CandleRange range) async {
     final key = '$symbol/${range.query}';
     final cached = _candles[key];
@@ -211,11 +224,12 @@ class MarketRepo {
     if (api != null) {
       try {
         final fetched = await api.fetchCandles(symbol, range);
-        if (fetched.isNotEmpty) {
+        if (fetched.candles.isNotEmpty) {
           _offline = false;
-          _candles[key] = fetched;
+          _candles[key] = fetched.candles;
+          _candlesSimulated[key] = fetched.simulated;
           _candlesAt[key] = _now();
-          return fetched;
+          return fetched.candles;
         }
       } on ApiException catch (e) {
         _markOffline(e);
@@ -223,6 +237,7 @@ class MarketRepo {
     }
     final generated = _generateCandles(symbol, range);
     _candles[key] = generated;
+    _candlesSimulated[key] = true; // случайное блуждание на устройстве
     _candlesAt[key] = _now();
     return generated;
   }
@@ -242,10 +257,26 @@ class MarketRepo {
     if (api != null) {
       try {
         final fetched = await api.fetchDividends(symbol);
-        _offline = false;
-        _dividends[symbol] = fetched;
-        _dividendsAt[symbol] = _now();
-        return fetched;
+        /*
+         * ⚠️ Пустой ответ БОЛЬШЕ не принимается за правду.
+         *
+         * Раньше дивиденды были единственными, кто запоминал пустоту
+         * безоговорочно — на целый час — и заодно объявлял «связь в порядке».
+         * Достаточно было одного переименованного поля в ответе сервера
+         * (разбор молча выбрасывает такие записи), и приложение решало: «эта
+         * бумага дивидендов не платит». Встроенный календарь при этом не
+         * подставлялся, начисления не приходили никогда, и нигде об этом не
+         * говорилось. Найдено ревизией 10.08.2026.
+         *
+         * Теперь как у каталога, котировок и свечей: принимаем только
+         * непустой ответ, иначе идём во встроенный календарь.
+         */
+        if (fetched.isNotEmpty) {
+          _offline = false;
+          _dividends[symbol] = fetched;
+          _dividendsAt[symbol] = _now();
+          return fetched;
+        }
       } on ApiException catch (e) {
         _markOffline(e);
       }

@@ -849,4 +849,38 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsQuotesSection => 'Precios reales';
+
+  @override
+  String get tradeNotSavedError =>
+      'No pude guardar en este dispositivo — la operación se canceló. Tu dinero está intacto. Libera espacio e inténtalo de nuevo.';
+
+  @override
+  String get assetChartSimulatedNotice =>
+      'Gráfico de práctica: historial generado por un algoritmo, no viene de la bolsa';
+
+  @override
+  String get assetMetricRangeSimulated =>
+      'Rango del período (gráfico de práctica)';
+
+  @override
+  String get assetMetricRangeHintSimulated =>
+      'Se calcula con el gráfico de práctica, así que estos números también son inventados — no los compares con la bolsa real.';
+
+  @override
+  String get learnLoadFailedTitle => 'No pude abrir tu progreso';
+
+  @override
+  String get learnLoadFailedBody =>
+      'No se ha perdido nada: las lecciones completadas y la racha siguen en el dispositivo. Hasta poder leerlo, no se pueden marcar lecciones como hechas — si no, el progreso antiguo se borraría con uno vacío.';
+
+  @override
+  String get learnRetryAction => 'Intentar de nuevo';
+
+  @override
+  String get learnNotSavedError =>
+      'La lección NO se contó: no se pudo guardar el progreso en este dispositivo. Inténtalo otra vez — si no, la lección desaparecerá al reiniciar.';
+
+  @override
+  String get learnProgressUnreadableNotice =>
+      'No pude leer tu progreso de aprendizaje guardado. NO se ha perdido: lo aparté y no sobrescribo nada. Enséñame este mensaje y lo recupero.';
 }

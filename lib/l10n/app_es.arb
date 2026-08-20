@@ -1,20 +1,16 @@
 {
   "@@locale": "es",
-
   "navPortfolio": "Cartera",
   "navMarkets": "Mercados",
   "navCosmo": "Cosmo",
   "navLearn": "Aprende",
   "navMore": "Más",
-
   "cancelLabel": "Cancelar",
   "doneLabel": "Entendido",
   "commonNothingFound": "No se encontró nada",
-
   "resetDialogTitle": "¿Empezar de nuevo?",
   "resetDialogBody": "Tu cartera volverá a los $10,000 iniciales. El historial de operaciones se borrará. Es dinero de práctica, no pasa nada.",
   "resetConfirmAction": "Empezar de nuevo",
-
   "moreScreenTitle": "Más",
   "moreSettingsTitle": "Ajustes",
   "moreSettingsSubtitle": "Notificaciones y datos de la cartera",
@@ -26,7 +22,6 @@
   "morePrivacySubtitle": "Qué datos salen de la app y adónde",
   "moreLegalTitle": "Información legal",
   "moreLegalSubtitle": "Avisos legales y condiciones de uso",
-
   "settingsTitle": "Ajustes",
   "settingsLanguageSection": "Idioma",
   "settingsLanguageAuto": "Automático (del sistema)",
@@ -45,7 +40,6 @@
   "settingsDataSection": "Datos",
   "settingsResetPortfolio": "Reiniciar cartera",
   "settingsResetPortfolioSub": "Restaurar los $10,000 iniciales y borrar el historial",
-
   "aboutTitle": "Acerca de la app",
   "aboutVersionLabel": "Versión {version} · simulador de inversión",
   "aboutWhatIsItTitle": "Qué es esto",
@@ -61,7 +55,6 @@
   "aboutAttrCurrency": "Tipos de cambio: open.er-api.com",
   "aboutAttrCrypto": "Tickers cripto: API pública de Binance",
   "aboutAttrStocks": "Cotizaciones de acciones: Yahoo Finance (puede tener retraso)",
-
   "brokersTitle": "¿Listo para invertir de verdad?",
   "brokersRiskTop": "Invertir implica riesgo de pérdida de capital. Nada de lo siguiente es asesoramiento financiero ni una recomendación personal: Polaris no es un asesor financiero autorizado. Antes de invertir dinero real, estudia tú mismo las condiciones y riesgos con el broker que elijas.",
   "brokersRiskBottom": "La lista de abajo es informativa y está en orden alfabético, no por recomendación. No recibimos dinero por el broker que elijas (fase 1). La decisión es solo tuya.",
@@ -77,7 +70,6 @@
   "brokersScalableDesc": "Neobroker alemán con acciones fraccionadas y planes de ahorro ya armados; regulado por BaFin (Alemania).",
   "brokersTraderepublicDesc": "Neobanco-broker alemán con una app sencilla y comisiones bajas; regulado como banco en la UE.",
   "brokersXtbDesc": "Broker polaco con acciones/ETF gratis hasta cierto volumen y materiales educativos para principiantes; con licencia en la UE.",
-
   "legalTitle": "Información legal",
   "legalIntro": "En palabras simples sobre lo que Polaris puede y no puede hacer — sin letra pequeña.",
   "legalSimTitle": "Simulador educativo",
@@ -92,7 +84,6 @@
   "legalAiBody": "Cosmo explica términos y comenta tus operaciones de práctica en lenguaje simple, pero no elige valores concretos para tu situación ni promete rentabilidad. Las respuestas de Cosmo pueden ser inexactas — como cualquier IA — y no sustituyen la consulta con un profesional autorizado.",
   "legalEntityTitle": "Quién hace Polaris",
   "legalEntityBody": "En la etapa de simulador, Polaris es un proyecto educativo sin fines de lucro, sin licencia bancaria ni de correduría y sin recaudar dinero real de los usuarios. La información sobre la entidad legal se publicará aquí cuando se lance la negociación real en la siguiente etapa.",
-
   "privacyTitle": "Privacidad",
   "privacyIntro": "En resumen: Polaris no tiene cuenta, no tiene tu nombre ni tu correo, y no vende datos a anunciantes. Abajo está exactamente qué pasa con los datos.",
   "privacyLocalTitle": "Se guarda en el dispositivo",
@@ -105,7 +96,6 @@
   "privacyRightsBody": "Como los datos nunca salen del dispositivo y no hay cuenta, puedes borrarlos tú mismo en cualquier momento: reinicia la cartera en ajustes o desinstala la app por completo para borrar todo. No hace falta pedirnos por separado que eliminemos datos — sencillamente no hay nada en un servidor.",
   "privacyFullPolicyLabel": "Política de privacidad completa",
   "privacyFullPolicyNote": "se abre en nuestro sitio web",
-
   "onboardingWelcomeTitle": "Hola, soy Cosmo",
   "onboardingWelcomeBody": "Soy tu mentor. Te ayudaré a entender la inversión: explicando cada paso con palabras simples, sin prisas ni presión.",
   "onboardingMoneyTitle": "$10,000 en dinero virtual",
@@ -122,7 +112,6 @@
   "onboardingBack": "Atrás",
   "onboardingNext": "Siguiente",
   "onboardingStart": "Empezar",
-
   "homeMyPortfolio": "Mi cartera",
   "homeLivePrices": "precios en vivo",
   "homeResetTooltip": "Empezar de nuevo",
@@ -131,7 +120,6 @@
   "homeSharesCount": "{qty} uds",
   "homeEmptyTitle": "Tu cartera está vacía",
   "homeEmptyBody": "Tienes $10,000 en dinero virtual para practicar sin riesgo. Entra en \"Mercados\" y compra tu primer valor — Cosmo te lo explicará todo.",
-
   "tradeNoPriceSnack": "Sin precio actual — inténtalo de nuevo en un momento",
   "tradeBuyTitle": "Comprar {symbol}",
   "tradeSellTitle": "Vender {symbol}",
@@ -151,7 +139,6 @@
   "tradeSoldVerb": "Vendido",
   "tradeDoneSnack": "{verb}: {symbol}",
   "tradeCosmoComment": "🧑‍🚀 Cosmo: {comment}",
-
   "simErrorBuyAmountPriceInvalid": "El importe y el precio deben ser mayores que cero",
   "simErrorInsufficientCash": "No tienes suficiente dinero virtual",
   "simErrorAmountTooSmall": "Importe demasiado pequeño para este precio",
@@ -159,7 +146,6 @@
   "simErrorNoPosition": "No tienes ese valor en tu cartera",
   "simErrorSellTooMuch": "Tienes menos unidades de las que intentas vender",
   "simErrorDividendInvalid": "El dividendo debe ser mayor que cero",
-
   "marketScreenTitle": "Mercados",
   "marketOfflineBadge": "datos de demostración",
   "marketDemoTag": "DEMO",
@@ -177,20 +163,17 @@
   "marketTradeComingTitle": "La operativa se está conectando",
   "marketTradeComingBodyBuy": "Pronto podrás comprar {symbol} con dinero virtual — Cosmo ya está preparando el módulo de operaciones.",
   "marketTradeComingBodySell": "Pronto podrás vender {symbol} con dinero virtual — Cosmo ya está preparando el módulo de operaciones.",
-
   "assetTypeStock": "Acción",
   "assetTypeEtf": "ETF",
   "assetTypeBondEtf": "ETF de bonos",
   "assetTypeCrypto": "Criptomoneda",
   "assetTypeFiat": "Divisa",
-
   "assetDescStock": "Una acción es un pequeño trozo de la empresa «{name}». Al comprarla, te conviertes en copropietario del negocio: si crece, también crece tu parte. Pero también puede ir al revés, por eso las acciones se consideran un activo de riesgo medio.",
   "assetDescEtf": "Un ETF es una cesta ya armada de decenas o cientos de valores a la vez. Con un clic eres dueño de un trozo de todo un mercado, no de una sola empresa. Para un principiante, es la forma más tranquila de invertir.",
   "assetDescBondEtf": "Un ETF de bonos es una cesta de préstamos a gobiernos y grandes empresas. Crece despacio, pero se mueve mucho menos que las acciones — un \"colchón de seguridad\" en la cartera.",
   "assetDescCrypto": "La criptomoneda es dinero digital sin bancos ni gobiernos. Puede subir mucho y bajar igual de fuerte: es la clase de activo más \"salvaje\", así que mantén su peso en la cartera pequeño.",
   "assetDescFiat": "Una divisa mundial normal. Aquí se muestra el precio de 100 unidades en dólares. Los tipos de cambio se mueven con más calma que las acciones, pero también afectan a la cartera.",
   "assetSectorLine": "Sector: {sector}.",
-
   "sectorTechnology": "Tecnología — software, hardware y todo lo digital",
   "sectorFinancial": "Servicios financieros — bancos y sistemas de pago",
   "sectorHealthcare": "Salud — medicina y farmacéuticas",
@@ -200,7 +183,6 @@
   "sectorEnergy": "Energía — petróleo y gas",
   "sectorUtilities": "Servicios públicos — electricidad y agua",
   "sectorIndustrials": "Industria — fábricas y equipamiento",
-
   "assetEodTag": "EOD",
   "assetQuoteUnavailable": "Cotización no disponible por ahora",
   "assetPriceEndOfDay": "Precio de cierre del día",
@@ -231,7 +213,6 @@
   "assetMetricSectorHint": "El sector en el que opera la empresa.",
   "assetSellAction": "Vender",
   "assetBuyAction": "Comprar",
-
   "learnScreenTitle": "Aprende",
   "learnProgressLabel": "Completado el {pct}% del camino",
   "learnGlossaryTooltip": "Glosario",
@@ -245,7 +226,6 @@
   "streakSubtitleDoneToday": "Ya practicaste hoy — ¡muy bien!",
   "streakSubtitleTodo": "Completa una lección hoy para no perder tu racha",
   "streakLabelWithDays": "Racha: {daysText}",
-
   "lessonCloseTooltip": "Cerrar lección",
   "lessonButtonDone": "Listo",
   "lessonButtonToQuiz": "Al cuestionario",
@@ -262,5 +242,14 @@
   "settingsQuotesKeyLabel": "Clave de Finnhub",
   "settingsQuotesOff": "Precios simulados",
   "settingsQuotesOn": "Precios reales activados",
-  "settingsQuotesSection": "Precios reales"
+  "settingsQuotesSection": "Precios reales",
+  "tradeNotSavedError": "No pude guardar en este dispositivo — la operación se canceló. Tu dinero está intacto. Libera espacio e inténtalo de nuevo.",
+  "assetChartSimulatedNotice": "Gráfico de práctica: historial generado por un algoritmo, no viene de la bolsa",
+  "assetMetricRangeSimulated": "Rango del período (gráfico de práctica)",
+  "assetMetricRangeHintSimulated": "Se calcula con el gráfico de práctica, así que estos números también son inventados — no los compares con la bolsa real.",
+  "learnLoadFailedTitle": "No pude abrir tu progreso",
+  "learnLoadFailedBody": "No se ha perdido nada: las lecciones completadas y la racha siguen en el dispositivo. Hasta poder leerlo, no se pueden marcar lecciones como hechas — si no, el progreso antiguo se borraría con uno vacío.",
+  "learnRetryAction": "Intentar de nuevo",
+  "learnNotSavedError": "La lección NO se contó: no se pudo guardar el progreso en este dispositivo. Inténtalo otra vez — si no, la lección desaparecerá al reiniciar.",
+  "learnProgressUnreadableNotice": "No pude leer tu progreso de aprendizaje guardado. NO se ha perdido: lo aparté y no sobrescribo nada. Enséñame este mensaje y lo recupero."
 }

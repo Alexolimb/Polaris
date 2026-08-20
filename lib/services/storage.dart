@@ -15,6 +15,26 @@ abstract class StorageGateway {
   Future<void> remove(String key);
 }
 
+/// Запись на устройство НЕ прошла.
+///
+/// ⚠️ Раньше ответ системы «не сохранил» просто выбрасывался: приложение
+/// рапортовало «Куплено AAPL», а на диске не появлялось ничего. Человек мог
+/// неделю растить портфель и потерять всё при первом перезапуске — без
+/// единого слова. Найдено ревизией 10.08.2026.
+///
+/// Теперь неудачная запись — громкая: тот, кто её заказал, обязан либо
+/// откатить изменение, либо сказать человеку вслух.
+class StorageWriteFailed implements Exception {
+  final String key;
+  final Object? cause;
+
+  const StorageWriteFailed(this.key, [this.cause]);
+
+  @override
+  String toString() =>
+      'StorageWriteFailed($key)${cause == null ? '' : ': $cause'}';
+}
+
 /// Боевая реализация на SharedPreferences.
 class PrefsStorage implements StorageGateway {
   SharedPreferences? _prefs;
@@ -62,9 +82,19 @@ class PrefsStorage implements StorageGateway {
   /// Была ли запись по этому ключу и оказалась ли она нечитаемой.
   static bool bitaya(String key) => _bityeKlyuchi.contains(key);
 
+  /// ⚠️ Ответ `setString` — это «да/нет», и раньше он никуда не присваивался.
+  /// Через эту одну строку идёт ВСЁ: портфель, прогресс обучения, история
+  /// чата, настройки. Молчаливое «нет» означало потерю всего, что человек
+  /// накопил с последнего удачного сохранения. Найдено ревизией 10.08.2026.
   @override
   Future<void> writeJson(String key, Map<String, dynamic> value) async {
-    await (await _p).setString(key, jsonEncode(value));
+    final bool ok;
+    try {
+      ok = await (await _p).setString(key, jsonEncode(value));
+    } catch (e) {
+      throw StorageWriteFailed(key, e);
+    }
+    if (!ok) throw StorageWriteFailed(key);
   }
 
   @override
@@ -75,6 +105,10 @@ class PrefsStorage implements StorageGateway {
 class MemoryStorage implements StorageGateway {
   final Map<String, Map<String, dynamic>> _data;
   MemoryStorage([Map<String, Map<String, dynamic>>? seed]) : _data = seed ?? {};
+
+  /// Всё содержимое разом — снимок «файла на диске». Нужен тестам, чтобы
+  /// проверять именно то, что переживёт перезапуск, а не то, что на экране.
+  Map<String, Map<String, dynamic>> get vsyo => Map.of(_data);
 
   @override
   Future<Map<String, dynamic>?> readJson(String key) async => _data[key];

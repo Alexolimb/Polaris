@@ -140,6 +140,15 @@ class _TradeSheetState extends State<_TradeSheet> {
         _busy = false;
         _error = _localizedSimError(AppLocalizations.of(context), e);
       });
+    } on TradeNotSaved catch (_) {
+      // Сделка НЕ прошла: портфель уже вернули в прежнее состояние. Говорим
+      // об этом прямо, иначе человек решит, что «просто глюк», нажмёт ещё раз
+      // и купит дважды (ровно этим кончалась прежняя «неизвестная ошибка»).
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = AppLocalizations.of(context).tradeNotSavedError;
+      });
     } catch (_) {
       if (!mounted) return;
       setState(() {

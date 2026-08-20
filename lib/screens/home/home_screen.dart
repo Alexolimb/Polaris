@@ -166,7 +166,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         ],
       ),
     );
-    if (ok == true) await p.reset();
+    if (ok != true) return;
+    try {
+      await p.reset();
+    } on TradeNotSaved {
+      // Сброс не записался — портфель остался прежним. Молчать нельзя: иначе
+      // человек уверен, что начал заново, а после перезапуска увидит старое.
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context).tradeNotSavedError),
+        behavior: SnackBarBehavior.floating,
+      ));
+    }
   }
 
   @override
@@ -268,6 +279,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     color: PolarisColors.textPrimary, fontSize: 13, height: 1.35),
               ),
             ),
+          /*
+           * Счёт ушёл в минус: на двух устройствах потратили больше, чем было
+           * на одном учебном счёте.
+           *
+           * ⚠️ Раньше приложение решало это молча — просто ВЫБРАСЫВАЛО
+           * покупку, на которую не хватило, вместе с бумагой и историей.
+           * Теперь ничего не выбрасывается, а человеку показывают, из-за каких
+           * именно сделок так вышло, с суммами и датами, и дают убрать лишние
+           * руками. Найдено ревизией 10.08.2026.
+           */
+          if (p.denegNeHvatilo) _pererashodBanner(context, p),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -331,6 +353,99 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             Text(l10n.homeDividendsReceived(CountUpText.formatCents(p.dividendsTotalCents)),
                 style: const TextStyle(
                     color: PolarisColors.dividend, fontSize: 13)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// Убрать сделку руками — только после ясного «да».
+  ///
+  /// ⚠️ Кнопка «Убрать» сама по себе не смеет стать новым путём потери: одно
+  /// случайное касание не должно стирать запись о покупке навсегда. Поэтому
+  /// сначала спрашиваем, называя бумагу, сумму и дату.
+  Future<void> _podtverditUbrat(PortfolioState p, Trade t) async {
+    final summa = CountUpText.formatCents(t.totalCents);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: PolarisColors.surface,
+        title: const Text('Убрать сделку?',
+            style: TextStyle(color: PolarisColors.textPrimary)),
+        content: Text(
+          'Покупка ${t.symbol} на $summa будет убрана из портфеля, '
+          'и деньги пересчитаются. Вернуть её будет нельзя.',
+          style: const TextStyle(color: PolarisColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(AppLocalizations.of(context).cancelLabel)),
+          FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(backgroundColor: PolarisColors.loss),
+              child: const Text('Убрать')),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final zapisalos = await p.ubratSdelku(t.uid);
+    // Не записалось — портфель остался прежним, и молчать об этом нельзя.
+    if (!zapisalos && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context).tradeNotSavedError),
+        behavior: SnackBarBehavior.floating,
+      ));
+    }
+  }
+
+  /// «Ты потратил больше, чем было на счёте» — со списком сделок, суммами,
+  /// датами и кнопкой убрать лишнее руками.
+  ///
+  /// Ничего не спрятано и ничего не выброшено: минус на экране честный, а
+  /// решение, что с ним делать, остаётся за человеком.
+  Widget _pererashodBanner(BuildContext context, PortfolioState p) {
+    final vinovnye = p.sdelkiSverhScheta;
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: PolarisColors.loss.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: PolarisColors.loss.withValues(alpha: 0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'На двух устройствах ты потратил больше, чем было на счёте: '
+            'не хватило ${CountUpText.formatCents(p.pererashodCents)}.\n'
+            'Ни одна сделка не выброшена — они все на месте. '
+            'Можешь убрать лишние руками.',
+            style: const TextStyle(
+                color: PolarisColors.textPrimary, fontSize: 13, height: 1.35),
+          ),
+          for (final t in vinovnye) ...[
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${t.symbol} · ${CountUpText.formatCents(t.totalCents)} · '
+                    '${t.ts.day.toString().padLeft(2, '0')}.'
+                    '${t.ts.month.toString().padLeft(2, '0')}.${t.ts.year}',
+                    style: const TextStyle(
+                        color: PolarisColors.textSecondary, fontSize: 12),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => _podtverditUbrat(p, t),
+                  child: const Text('Убрать',
+                      style: TextStyle(color: PolarisColors.loss, fontSize: 12)),
+                ),
+              ],
+            ),
           ],
         ],
       ),

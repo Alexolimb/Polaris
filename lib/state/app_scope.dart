@@ -7,6 +7,7 @@ library;
 import 'package:flutter/widgets.dart';
 
 import '../services/notifications.dart';
+import '../services/sync.dart';
 import 'app_settings.dart';
 import 'chat_state.dart';
 import 'learn_state.dart';
@@ -21,6 +22,10 @@ class AppScope extends InheritedWidget {
   final AppSettings settings;
   final NotificationsController notifications;
 
+  /// Обмен с общим складом (телефон ↔ ноутбук ↔ Финансист). null — приложение
+  /// собрано без ключа склада, обмена нет, всё работает как раньше.
+  final PolarisSync? sync;
+
   const AppScope({
     super.key,
     required this.portfolio,
@@ -29,6 +34,7 @@ class AppScope extends InheritedWidget {
     required this.learn,
     required this.settings,
     required this.notifications,
+    this.sync,
     required super.child,
   });
 
@@ -52,5 +58,6 @@ class AppScope extends InheritedWidget {
       chat != oldWidget.chat ||
       learn != oldWidget.learn ||
       settings != oldWidget.settings ||
-      notifications != oldWidget.notifications;
+      notifications != oldWidget.notifications ||
+      sync != oldWidget.sync;
 }

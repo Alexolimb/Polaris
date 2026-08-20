@@ -63,6 +63,10 @@ class _LearnScreenState extends State<LearnScreen> {
   late final bool _ownsState;
   LessonsContent? _content;
 
+  /// Уроки не загрузились (ассеты не прочитались). Раньше такая беда
+  /// оставляла экран на серых заготовках навсегда — молча.
+  bool _contentFailed = false;
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +80,16 @@ class _LearnScreenState extends State<LearnScreen> {
     }
   }
 
+  /// Повторить обе загрузки — прогресс с устройства и содержимое уроков.
+  Future<void> _retry() async {
+    setState(() {
+      _contentFailed = false;
+      _content = widget.content;
+    });
+    await _state.load();
+    if (widget.content == null) await _loadContent();
+  }
+
   @override
   void dispose() {
     if (_ownsState) _state.dispose();
@@ -84,7 +98,15 @@ class _LearnScreenState extends State<LearnScreen> {
 
   Future<void> _loadContent() async {
     final repo = widget.repo ?? LessonsRepo(lang: widget.lang ?? _defaultContentLang);
-    final c = await repo.load();
+    final LessonsContent c;
+    try {
+      c = await repo.load();
+    } catch (_) {
+      // Молчать нельзя: без этого экран вечно показывал серые полоски, и
+      // понять, чинить его или ждать, было невозможно.
+      if (mounted) setState(() => _contentFailed = true);
+      return;
+    }
     if (mounted) setState(() => _content = c);
   }
 
@@ -104,6 +126,17 @@ class _LearnScreenState extends State<LearnScreen> {
   Widget _buildBody(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final content = _content;
+    /*
+     * Прогресс не прочитался или уроки не загрузились.
+     *
+     * ⚠️ Раньше здесь просто оставался скелетон — навсегда. Ни ошибки, ни
+     * кнопки «повторить»: вкладка выглядела «вечно грузится». А закончив урок
+     * в этот момент, человек стирал ВЕСЬ прошлый прогресс и стрик, потому что
+     * поверх записывалась пустота из памяти. Найдено ревизией 10.08.2026.
+     */
+    if (_state.loadFailed || _contentFailed) {
+      return _errorState(l10n);
+    }
     if (content == null || !_state.loaded) {
       // Скелетон, а не крутилка: сразу понятно, что грузится список уроков.
       // trailing:false — у урока справа нет цены, только кружок и две строки.
@@ -127,6 +160,27 @@ class _LearnScreenState extends State<LearnScreen> {
 
     return CustomScrollView(
       slivers: [
+        // Прогресс на устройстве нашёлся, но не разобрался: хранилище отложило
+        // его в сторону, ничего не потеряно — но человек обязан узнать, почему
+        // «Учёба» вдруг пустая, а не решить, что она сбросилась сама.
+        if (_state.snapshotBityy)
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: PolarisColors.loss.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14),
+                border:
+                    Border.all(color: PolarisColors.loss.withValues(alpha: 0.5)),
+              ),
+              child: Text(
+                l10n.learnProgressUnreadableNotice,
+                style: const TextStyle(
+                    color: PolarisColors.textPrimary, fontSize: 13, height: 1.35),
+              ),
+            ),
+          ),
         SliverToBoxAdapter(child: _header(content, overallPct, l10n)),
         SliverToBoxAdapter(child: _streakCard(l10n)),
         for (final module in content.modulesSorted)
@@ -270,6 +324,42 @@ class _LearnScreenState extends State<LearnScreen> {
               l10n.learnEmptyBody,
               textAlign: TextAlign.center,
               style: const TextStyle(color: PolarisColors.textSecondary, fontSize: 13),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Громкий отказ вместо вечных серых заготовок: что случилось, что с
+  /// прогрессом, и кнопка «Попробовать снова».
+  Widget _errorState(AppLocalizations l10n) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline,
+                color: PolarisColors.loss, size: 48),
+            const SizedBox(height: 14),
+            Text(l10n.learnLoadFailedTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: PolarisColors.textPrimary,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700)),
+            const SizedBox(height: 6),
+            Text(
+              l10n.learnLoadFailedBody,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: PolarisColors.textSecondary, fontSize: 13, height: 1.4),
+            ),
+            const SizedBox(height: 18),
+            FilledButton(
+              onPressed: () => unawaited(_retry()),
+              child: Text(l10n.learnRetryAction),
             ),
           ],
         ),
